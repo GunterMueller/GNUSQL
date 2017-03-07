@@ -1,0 +1,832 @@
+Wed Sep 30 02:39:48 1998  Michael Kimelman  <kimelman@agate.ncbi.nlm.nih.gov>
+
+	* *.c : copyright years & some stylystic changes
+
+	* etc/make-util.in, Makefile.in: distclean process fixed
+
+Tue Sep 29 22:23:52 1998  Michael Kimelman  <kimelman@agate.ncbi.nlm.nih.gov>
+
+	* src/trl/vcblib.c, src/trl/trl_dump.c, src/synthes/synlib.c, src/synthes/optim.c, src/synthes/codegen.c, src/semantic/binding.k, src/other/vmemory.c, src/other/xmem.c, src/other/type_lib.c, src/other/cl_lib.c, src/other/conn_handler.c, src/main/dyn_funcs.c, src/kitty/node.c, src/interpr/interpr.c, src/interpr/intlib.c, src/engine/trans/inscon.c, src/engine/trans/orddel.c, src/engine/trans/ind_scan.c, src/engine/synch/snipc.c, src/engine/trans/aggravg.c, src/engine/rcvutl/strgcr.c, src/engine/jour/ljipc.c, src/engine/jour/microj.c, src/engine/buf/buf.c, src/engine/buf/bufipc.c, src/comp-lib/copy.c:
+	make SGI compiler happy about {} around 'else'
+
+Tue Sep 29 00:39:43 1998  Michael Kimelman  <kimelman@agate.ncbi.nlm.nih.gov>
+
+	* version 0.7b6.0 issued. 
+
+Tue Sep 29 00:39:43 1998  Michael Kimelman  <kimelman@agate.ncbi.nlm.nih.gov>
+
+	* src/trl/Makefile.in, src/synthes/syndef.h, src/opt/Makefile.in, src/synthes/codegen.c, src/main/gsqltrn_lib.c, src/engine/trans/trns.c, src/engine/trans/trns_decl.c, src/engine/trans/ind_ins.c, src/engine/trans/ind_rem.c, src/engine/rcvutl/strgcr.c, src/engine/trans/Makefile.in, src/engine/rcvutl/Makefile.in, src/engine/rcvutl/memcr.c, src/engine/jour/Makefile.in, configure.in, etc/make-util.in, configure:
+	port to SGI
+
+Mon Sep 28 05:00:06 1998  Michael Kimelman <kimelman@agate.ncbi.nlm.nih.gov>
+
+	* src/parse/parse.y:
+	fixed arity counter for condition on quantified subquery.
+
+	* src/opt/optimize.k: clear 'quantification' & 'some' flags in case of
+	transformation it to 'exist'
+
+	* test/Makefile.in: space in rule added
+
+	* etc/rpcgen-sh.in:
+	always add include proto.h when we remove rpc.h from files -
+	to assure everything required has already included at the point.
+
+Sun Sep 27 21:35:02 1998  Michael Kimelman <kimelman@agate.ncbi.nlm.nih.gov>
+
+	* config.h.in, configure, configure.in: test for 'make include item' changed
+
+	* Makefile.in: dependencies simpilfied
+
+	* aclocal.m4:
+	AC_CHECK_LIB fixed: now it's checking if the desired function is in some of
+	system (previously attached) libraries
+
+Wed Sep 16 23:05:28 1998  Michael Kimelman <kimelman@agate.ncbi.nlm.nih.gov>
+
+	* src/semantic/binding.k: type was omitted 8*
+
+	* src/trl/treecode.def, src/synthes/codegen.c, src/synthes/struct.c, src/other/type_lib.c:
+	drop ALL & SOME codes - replaced by exists subquery
+
+	* src/opt/optimize.k: some2exist transformation - bugfixes
+
+	* src/opt/get_up.k: grounding work for getting up nested subqueries
+
+	* src/kitty/kitty.c: check for 'case 0' moved to compare.c
+
+	* src/kitty/compare.c:
+	order of comparision enforced and checked for empty string condition.
+
+	* src/engine/rcvutl/librcv.c: splitted string fixed
+
+	* src/main/Makefile.in, src/engine/Makefile.in:
+	. --> srcdir for rpcgen.sh dependencies
+
+Tue Sep 15 05:47:40 1998  Michael Kimelman <kimelman@agate.ncbi.nlm.nih.gov>
+
+	* configure: . => sarcdir
+
+	* etc/boot.in: reduce delays at boot
+
+	* src/opt/optimize.k:
+	query transformation rule added - every subquery transformed to Exist
+
+	* src/trl/vcblib.c, src/other/check_tp.c: pattern node types : bugfix
+
+	* src/kitty/kitty.c: fail on 'selector' error
+
+	* src/kitty/kitty.c: assume (Op:xxx ) matchs to everything
+
+Mon Sep 14 20:19:43 1998  Michael Kimelman <kimelman@agate.ncbi.nlm.nih.gov>
+
+	* src/semantic/binding.k: fields lookup fix
+
+Sun Sep 13 20:18:19 1998  Michael Kimelman <kimelman@agate.ncbi.nlm.nih.gov>
+
+	* etc/rpcgen-sh.in:
+	simplified procressing & reduced number of obsolete temporary files
+
+	* src/include/Makefile.in, etc/preserve.in: bugfix: srcdir case
+
+	* src/include/engine/Makefile.in: dependecies fixed for srcdir case
+
+	* src/include/Makefile.in: dependencies for multifunctional configure
+
+Sat Sep 12 22:15:13 1998  Michael Kimelman  <kimelman@agate.ncbi.nlm.nih.gov>
+
+	* src/engine/trans/next.c: obsolete code removed
+
+
+	* src/include/options.def, src/semantic/Makefile.in, src/main/servlib.c:
+	* src/semantic/Attic/subquery.c, src/semantic/Attic/rul_sub.k:
+	remove sq phase of compiler - redundant code
+
+	* configure, config.h.in, configure.in: check for rpc/rpc.h
+
+	* src/opt/get_up.k: comments
+
+Fri Sep 11 19:54:22 1998  Michael Kimelman  <kimelman@agate.ncbi.nlm.nih.gov>
+
+	* src/synthes/struct.c: made few routines static
+
+	* test/testM1.ec: add log mark
+
+	* test/testM1.ec:
+	test slightly changed - mode pressure on performance issue.
+	additional changing required - some parts of test select 0 rows :(
+
+	* test/testM3.ec: unnecessary core deleted
+
+	* src/interpr/intlib.c: debugging stuff added
+
+	* src/engine/rcvutl/libini.c:
+	redlines for logs increased by few orders of magnitude.
+
+	* test/testM1.ec: bugfix: wierd bug - reference to unscanned table
+
+	* src/semantic/binding.k:
+	bugfix: field's names lookup for nested queries.
+
+Sat Aug 29 05:27:10 1998  Michael Kimelman  <kimelman@agate.ncbi.nlm.nih.gov>
+
+	* test/testM1.ec: incorrect data in the tree provocation
+
+Sat Aug 22 04:21:14 1998  Michael Kimelman  <kimelman@agate.ncbi.nlm.nih.gov>
+
+	* test/testd4.ec, test/Attic/testd.ec: dynamic test fixing
+
+	* src/other/conn_handler.c: direct_mode timeout handling
+
+	* src/other/conn_handler.c: debug func addedd
+
+	* src/engine/adm.c: cosmetics
+
+Fri Aug 21 00:29:14 1998  Michael Kimelman  <kimelman@agate.ncbi.nlm.nih.gov>
+
+	* src/other/conn_handler.c, src/include/setup_os.h, src/include/conn_handler.h:
+	fix:SVC_UNREG for direct mode
+
+	* src/engine/trans/cntrid.c: macro 2 functions
+
+	* src/engine/synch/fdclsyn.h: indent
+
+	* src/engine/synch/dessnch.h: adjust & align cp size
+
+Thu Aug 20 17:39:26 1998  Michael Kimelman  <kimelman@agate.ncbi.nlm.nih.gov>
+
+	* src/engine/synch/lock.c: align lock sizes
+
+Tue Aug 18 22:30:53 1998  Michael Kimelman  <kimelman@agate.ncbi.nlm.nih.gov>
+
+	* test/testM1.ec: switched to full test mode
+
+	* src/engine/trans/libtran.c, src/engine/trans/ind_rem.c:
+	move assert test deeper
+
+	* etc/dq.in: bugfix
+
+	* src/engine/synch/shartest.c, src/engine/synch/snipc.c, src/engine/synch/synpr.c, src/engine/synch/unlock.c, src/engine/synch/dlock.c, src/engine/synch/fdclsyn.h, src/engine/synch/incrs.c, src/engine/synch/lock.c, src/engine/synch/dessnch.h:
+	style & types
+
+	* src/engine/Makefile.in, src/main/Makefile.in: rpcgen-sh dependencies
+
+	* etc/dq.in: another bugfix
+
+Mon Aug 17 22:36:22 1998  Michael Kimelman  <kimelman@agate.ncbi.nlm.nih.gov>
+
+	* src/other/conn_handler.c:
+	direct_mode : final bug fixes and throw away debugging stuff
+
+	* configure: sync to ...in
+
+	* src/engine/chpars.c: obsolete stuff removed
+
+	* src/other/conn_handler.c: conn_fix
+
+	* configure.in, etc/dq.in, etc/rpcgen-sh.in: AWK settings
+
+	* src/engine/Makefile.in, src/main/Makefile.in:
+	dependencies from rpcgen-sh added
+
+Sat Aug 15 02:01:23 1998  Michael Kimelman  <kimelman@agate.ncbi.nlm.nih.gov>
+
+	* src/other/conn_handler.c: debugging stuff flow
+
+	* src/other/cl_lib.c: null handle workaround
+
+	* src/engine/dispatch.c: supress alarm signal logging
+
+	* src/engine/adm.c: debug stuff added for start/stop debugging
+
+	* etc/rpcgen-sh.in:
+	bugfix for direct mode : workaround for variable rpc PROGRAM id
+
+Wed Aug 12 22:31:23 1998  Michael Kimelman  <kimelman@agate.ncbi.nlm.nih.gov>
+
+	* src/other/conn_handler.c: direct_mode: debug phase
+
+	* src/other/cl_lib.c: bugfix - extra rpcclnterror call
+
+	* src/comp-lib/Makefile.in: tools dependencies added
+
+	* configure: in sync to ..in
+
+	* src/engine/buf/bufipc.c: silent exit
+
+Tue Aug 11 14:26:43 1998  Michael Kimelman  <kimelman@agate.ncbi.nlm.nih.gov>
+
+	* configure.in: rpcgen options fixed for direct mode
+
+Sun Aug  2 02:52:46 1998  Michael Kimelman  <kimelman@agate.ncbi.nlm.nih.gov>
+
+	* configure.in: flexlib workaround
+
+	* configure.in: lexlib directory moved from LIBS to LEXLIB
+
+Sat Aug  1 04:38:32 1998  Michael Kimelman  <kimelman@agate.ncbi.nlm.nih.gov>
+
+	* src/other/conn_handler.c, src/include/conn_handler.h : membrane for rpc connection
+
+	* etc/rpcgen-sh.in: awk --> nawk
+
+Thu Jul 30 03:23:40 1998  Michael Kimelman  <kimelman@agate.ncbi.nlm.nih.gov>
+
+	* src/trl/trl.c, src/other/cl_lib.c, src/semantic/Attic/rul_sub.k, src/synthes/codegen.c, src/main/gsql_cli.c, src/main/gsqltrn.x, src/other/Makefile.in, src/include/setup_os.h, src/interpr/int_cli.c, src/main/cs_link.c, src/main/dyn_client.c, src/engine/adm.c, src/engine/chpars.c, src/include/cl_lib.h, src/include/Makefile.in, src/comp-lib/db_cre_cli.c, src/comp-lib/finadm.c, src/comp-lib/runadm.c, src/engine/Makefile.in, etc/move-if-change.in, etc/preserve.in, etc/rpcgen-sh.in, src/comp-lib/copy.c, src/Makefile.in, configure.in, version, acconfig.h, config.h.in, configure:
+	DIRECT_MODE
+
+Mon Jun  1 15:59:33 1998  Michael Kimelman  <kimelman@agate.ncbi.nlm.nih.gov>
+
+	* test/testd1.ec, test/test3b.ec, test/test30.ec, test/test23.ec:
+	indicators added
+
+	* src/main/gsqltrn_lib.c: printf --> PRINT
+
+	* src/include/engine/fdcltrn.h, src/engine/trans/obrind.c, src/engine/trans/ind_rem.c, src/engine/jour/fdeclmj.h:
+	i4_t ,=>int
+
+	* src/engine/buf/bufipc.c: added HEAVY_IPC_DEBUG printouts
+
+Wed May 20 06:02:06 1998  Michael Kimelman  <kml@alpha.gnu.org>
+
+	* PROBLEMS, README, GETTING.GNU.SOFTWARE, src/trl/cycler.c, src/trl/trl.c, src/synthes/synlib.c, src/synthes/codegen.c, src/semantic/binding.k, src/main/dyn_funcs.c, src/main/options.c, src/kitty/compare.c, src/interpr/intlib.c, src/interpr/int_cli.c, src/interpr/interpr.c, src/include/global.h, src/engine/adm.c, src/engine/trans/rllbck.c, src/engine/trans/tmpob.c, src/engine/trans/trns.c, src/engine/trans/ind_rem.c, src/engine/trans/ind_scan.c, src/engine/trans/inscon.c, src/engine/trans/insfltr.c, src/engine/trans/libtran.c, src/engine/trans/modcon.c, src/engine/trans/obrind.c, src/engine/trans/opinpg.c, src/engine/trans/opscin.c, src/engine/trans/page_op.c, src/engine/trans/addflds.c, src/engine/trans/aggrifn.c, src/engine/trans/bdunion.c, src/engine/trans/cmpftn.c, src/engine/trans/cmpkeys.c, src/engine/trans/cnttab.c, src/engine/trans/delcon.c, src/engine/trans/dltn.c, src/engine/trans/ind_ins.c, src/engine/synch/dlock.c, src/engine/synch/incrs.c, src/engine/synch/shartest.c, src/engine/synch/shtest1.c, src/engine/synch/synpr.c, src/engine/synch/unlock.c, src/engine/rcvutl/librcv.c, src/engine/jour/fdecllj.h, src/engine/jour/helpfu.c, src/engine/jour/logj.c, src/engine/jour/mjipc.c, src/engine/buf/buflock.c, src/engine/buf/fdeclbuf.h, src/comp-lib/catfun.c, src/comp-lib/copy.c, src/comp-lib/db_cre_ser.c:
+	commit port to solaris 2.5.1 native environment made by mike kelly 
+
+Sun May 10 04:20:52 1998  Michael Kimelman  <kml@alpha.gnu.org>
+
+	* etc/conf-templ: added remake testdeps.mk at configuration stage
+
+Fri May  10 00:25:12 1998  Michael Kimelman  <kml@alpha.gnu.org>
+
+	* etc/conf-templ : auto rebuild test/testmake.mk at configuration stage
+
+Fri May  8 02:42:40 1998  Michael Kimelman  <kml@alpha.gnu.org>
+
+	* configure.in, configure: AR path fixing
+
+Thu May  7 18:35:09 1998  Michael Kimelman  <kml@alpha.gnu.org>
+
+	* etc/preserve.in, etc/conf-templ, etc/dq.in, etc/Makefile.in:
+	portability fixes & tiny bugs
+
+	* configure, configure.in: fix in flex, bison and ranlib configuration
+
+	* src/comp-lib/libfunc1.c: throw away variable size 'auto' arrays
+
+Tue May  5 04:05:35 1998  Michael Kimelman  <kml@alpha.gnu.org>
+
+	* src/include/Makefile.in, src/include/engine/Makefile.in, src/engine/buf/Makefile.in:
+	added dependencies for header files transitional includes.
+
+	* src/include/setup_os.h, src/other/xmem.c, src/engine/adm.c:
+	debugger calling sequence is changed - less tricks.
+
+Tue Feb 24 23:37:36 1998  Michael Kimelman  <kml@alpha.gnu.org>
+
+	* src/include/engine/inpop.h, configure:
+	changed msg_buf definition . 'type' field is long now.
+
+Tue Jan 20 16:28:28 1998  Michael Kimelman  <kimelman@agate.nlm.nih.gov>
+
+	* */Makefile.in, etc/make-util.in etc/conf-templ :  system went to cvs - 
+	  Makefiles names changed and configuration/make tools changed a bit as well. 
+
+Tue Jan 13 12:26:26 1998  Vera Ponomarenko  <vera@gsql.ispras.ru>
+
+	* int_servlib.c, interpr.c, funall.h: Advanced interface with Engine
+
+	* fdcltrn.h: Advanced interface with Engine
+
+	* crtfrm.c, insrtn.c, mdfctn.c, modcon.c, snlock.c, librcv.c, catfun.c, copy.c, db_cre_ser.c, lib1.c, libfunc1.c:
+	Advanced interface with Engine
+
+Wed Nov  5 16:28:58 1997  Michael Kimelman <kml@gsql.ispras.ru>
+
+	* optim.c, moddump.c, codegen.c: data_unit_t
+
+	* xmem.c: exception handling fixed for fatal errors
+
+	* vmemory.c: cosmetic fixes
+
+	* type_lib.c: PutDataNext moved to intlib.put_data_next
+
+	* cl_lib.c: server localtion routine fixed a bit
+
+	* servlib.c: added comiler fatal error bug id
+
+	* intlib.c: cosmetics
+
+	* interpr.c, int_servlib.c, typepi.h, type_lib.h, pr_glob.h, inprtyp.h, funall.h:
+	data_unit_t
+
+	* errors.h: added compiler fatal error bug code
+
+	* deftr.h: error codes moved out to errors.h
+
+	* dispatch.c: srt->trn
+	create_transaction fix
+
+	* libfunc1.c, lib1.c: data_unit_t
+
+	* catfun.c: dataunit & rc
+
+Tue Nov  4 18:35:20 1997  Michael Kimelman <kml@gsql.ispras.ru>
+
+	* microj.c: new error codes
+
+	* aggrifn.c: dataunit fixed
+
+	* next.c: data_unit & error codes
+
+Mon Nov  3 14:17:08 1997  Vera Ponomarenko  <vera@gsql.ispras.ru>
+
+	* aggrifn.c, cmpftn.c, libtran.c, next.c, sort.c: next short interface
+
+	* lib1.c, libfunc1.c: DataUnit fix
+
+Wed Oct 22 16:25:42 1997  Michael Kimelman <kml@gsql.ispras.ru>
+
+	* Makefile.src.comp-lib.in, Makefile.src.engine.buf.in, Makefile.src.engine.rcvutl.in, Makefile.src.engine.synch.in, Makefile.src.engine.trans.in, Makefile.src.include.engine.in:
+	error codes are moved to errors.h. pupans.h is obsolete now
+
+	* bufipc.c, addflds.c, aggravg.c, aggrsfn.c, bdunion.c, blfltr.c, cntrid.c, cnttab.c, crind.c, crrel.c, delcon.c, delind.c, delrel.c, dltn.c, fltrel.c, ind_ins.c, inscon.c, insfltr.c, insrtn.c, join.c, makegr.c, mdfctn.c, modcon.c, opscfl.c, opscin.c, opscrl.c, page_op.c, rllbck.c, tmpob.c, trns.c:
+	error codes are moved to errors.h. it's names changed a bit as well
+
+Tue Oct 21 16:45:26 1997  Michael Kimelman <kml@gsql.ispras.ru>
+
+	* destrn.h: pupans.h ==> sql.h
+
+Mon Oct 20 18:03:57 1997  Michael Kimelman <kml@gsql.ispras.ru>
+
+	* vmemory.c: stupid bug fixed
+
+	* vmemory.c: cosmetics
+
+Mon Oct 20 10:55:43 1997  Vera Ponomarenko  <vera@gsql.ispras.ru>
+
+	* tidsrt.c, ordins.c, cmpkeys.c: cosmetics
+
+Sat Oct 18 19:03:28 1997  Michael Kimelman <kml@gsql.ispras.ru>
+
+	* cl_lib.c:
+	stop report error on attemt to down an already disconnected service.
+
+	* int_cli.c: cosmetics
+
+	* gsqltrn_lib.c: fatal error handlinhg fixed
+
+Thu Oct 16 10:29:51 1997  Michael Kimelman <kml@gsql.ispras.ru>
+
+	* xmem.c: error codes enumeration added
+
+	* fdcltrn.h: put_page definition removed - it's a static function
+	__P wrappers added
+
+	* errors.h: ER_9 ==> ER_NOMEM
+	++ ER_FATAL
+
+	* xmem.c: ER_9 ==> ER_NOMEM
+
+	* xmem.c: fixed "low memory" exception
+
+	* scan_c.l, gsqlmon.l: english grammar
+
+Thu Oct 16 09:58:47 1997  Vera Ponomarenko  <vera@gsql.ispras.ru>
+
+	* fdcltrn.h, cmpdecl.h, synpr.c, snipc.c, fdclsyn.h, dlock.c:
+	data types manipulation correction
+
+Thu Oct 16 09:55:43 1997  Michael Kimelman <kml@gsql.ispras.ru>
+
+	* xmem.c: added handling or EAGAIN error reported by malloc & realloc.
+
+Thu Oct 16 09:53:53 1997  Vera Ponomarenko  <vera@gsql.ispras.ru>
+
+	* ind_scan.c: data types manipulation correction
+
+	* ind_ins.c: unigue index management correction
+
+	* makegr.c, keyfrm.c: data types manipulation correction
+
+	* tmpob.c, sort.c, fdclsrt.h:
+	memory management for temporary objects correction
+
+	* cmpkeys.c, cmpkey.c, cmpftn.c, bdunion.c, aggrsfn.c, aggrifn.c, aggravg.c:
+	data types manipulation correction
+
+Tue Oct 14 16:59:38 1997  Michael Kimelman <kml@gsql.ispras.ru>
+
+	* page_op.c: cosmetix fix bugs :)
+
+	* page_op.c: cosmetic fixes
+
+	* optim.c: static attribute added to local function
+
+	* optim.c: stylistic fixes
+
+	* Makefile.test.in: distclean: removed duplication of actioon in
+	           make-util and this makefile
+
+Sun Oct 12 17:58:50 1997  Michael Kimelman <kml@gsql.ispras.ru>
+
+	* type_lib.c: NULLifed data pointer for NULL values.
+
+	* Makefile.etc.in: make-utli path fixed.
+
+Sat Oct 11 16:24:35 1997  Michael Kimelman <kml@gsql.ispras.ru>
+
+	* make-util.etc.in: fixed 'builddir' location procudure
+
+Thu Oct  9 12:43:09 1997  Vera Ponomarenko  <vera@gsql.ispras.ru>
+
+	* aggrifn.c, cmpftn.c, cmpdecl.h, fdcltrn.h: .
+
+Wed Oct  8 12:49:08 1997  Michael Kimelman <kml@gsql.ispras.ru>
+
+	* Makefile.in: ${srcdir}/etc/make-util ==> ${builddir}/etc/make-util
+
+	* make-util.etc.in: Initial revision
+
+	* Makefile.src.parse.in: monitor renamed to gsqlmon
+
+Fri Oct  3 16:21:29 1997  Michael Kimelman <kml@gsql.ispras.ru>
+
+	* bufipc.c: added exit(0) call at the end of finit procedure
+
+	* tree_gen.c: bug fix: assertation changed to regular bug reports
+
+	* dlock.c:
+	1. (bt == SML || bt || SMLEQ || bt == GRT || bt == GRTEQ ) ==>>
+	          (bt == SML || bt == SMLEQ || bt == GRT || bt == GRTEQ ))
+	2. cosmetics
+
+Wed Oct  1 13:36:06 1997  Vera Ponomarenko  <vera@gsql>
+
+	* fdcltrn.h, trns.c, tmpob.c: cosmetics
+
+	* ordmod.c: a structure definition modification
+
+	* cntrid.c: unreguired var removed
+
+	* shartest.c: added check for end of deadlock ring
+
+Mon Sep 29 13:08:53 1997  Michael Kimelman  <kml@gsql>
+
+	* page_op.c: nullify detached memory reference
+
+	* make-dist: cleanup routine added
+
+	* make-dist: EXPR construction fixed - port to solaris
+	version file updates moved after configure call
+
+Thu Aug 28 07:26:47 1997  Michael Kimelman  <kml@gsql>
+
+	* Makefile.test.in: makefile.dep ==>> testdeps.mk
+
+Sun Aug 24 17:02:42 1997  Michael Kimelman  <kml@kml.castle.ispras.ru>
+
+	* Makefile.test.in: fix path to make-util
+
+Tue Aug 19 20:03:00 1997  Michael Kimelman  <kml@kml.castle.ispras.ru>
+
+	* Makefile.src.engine.in: fix prepup includes
+
+	* cmpkey.c, extsrt.c, push.c, puts.c, quicksrt.c, rkfrm.c, sort.c, tidsrt.c:
+	headers fixes
+
+	* Makefile.src.engine.in: srt2trn : sort subdir removed
+
+	* Makefile.src.engine.trans.in: srt2trn: names fixed.
+
+	* tmpob.c, trns.c: srt2trn: header names fixed.
+
+Mon Aug 18 06:31:20 1997  Michael Kimelman  <kml@kml.castle.ispras.ru>
+
+	* Makefile.src.engine.trans.in, sort.c, tidsrt.c, rkfrm.c, quicksrt.c, 
+	puts.c, push.c, extsrt.c, cmpkey.c, fdclsrt.h:
+	sorter to trn
+
+Sun Jul 20 17:04:03 1997  Vera Ponomarenko <vera@gsql.ispras.ru>
+
+	* srtipc.c, librcv.c, addflds.c, aggravg.c, aggrsfn.c, bdunion.c, blfltr.c, 
+	cnttab.c, crind.c, crrel.c, delcon.c, delind.c, delrel.c, dltn.c, empty_page.c, 
+	fltrel.c, ind_ins.c, ind_rem.c, inscon.c, insrtn.c, libtran.c, mdfctn.c, modcon.c, 
+	obrind.c, opinpg.c, opscrl.c, orddel.c, ordins.c, ordmod.c, reclj.c, recmj.c, rllbck.c, 
+	rllbfn.c, snlock.c, adm.c, dispatch.c, adfstr.h, deftr.h, destrn.h, f1f2decl.h, 
+	fdcltrn.h, inpop.h:
+	SRT->TRN, TMPmem->TRN, interfaces fix
+
+Mon Jun  9 09:19:32 1997  Vera Ponomarenko <vera@gsql.ispras.ru>
+
+	* svr_lib.c: list of transaction arguments changed
+
+Sun Jun  8 14:33:45 1997  Michael Kimelman  <kml@kml.castle.ispras.ru>
+
+	* Makefile.in (install), etc/preserve, configure.in, make-util, etc :
+ 	configuration and installaton process fixed (plus some bugs).
+
+
+Thu Jun  5 06:08:27 1997  Vera Ponomarenko <vera@gsql.ispras.ru>
+
+	* adm.c, admdef.h, aggravg.c, aggrifn.c, aggrsfn.c, bdunion.c, blfltr.c, cnttab.c, delcon.c, dltn.c, fltrel.c, inscon.c, insfltr.c, join.c, makegr.c, mdfctn.c, modcon.c, next.c, page_op.c, tmpob.c, trns.c:
+	Temporary memory management modification
+	and SORT deletion
+
+	* bufipc.c, libini.c, librcv.c, strgcr.c:
+	Temporary memory management modification
+
+Fri May 30 08:52:39 1997  Vera Ponomarenko <vera@gsql.ispras.ru>
+
+	* dessrt.h, rllbck.c, rllbfn.c, tmpob.c:
+	A function parameter number reduction
+
+Mon May 12 09:50:21 1997  Michael Kimelman  <kml@kml.castle.ispras.ru>
+
+	* patch (0.7b5.2) provided
+	
+	* Makefile.in (test): added target to run test sequence
+
+	* configure.in (rpcgen_output): fixed pattern for 'main' prototype
+
+	* src/synthes/struct.c (set_command): space reservation bug fixed
+
+Thu May  8 12:26:58 1997  Vera Ponomarenko <vera@gsql.ispras.ru>
+
+	* addflds.c, aggravg.c, aggrifn.c, aggrsfn.c, bdunion.c, blfltr.c, cnttab.c, 
+	crind.c, crtfrm.c, delcon.c, delind.c, delrel.c, dltn.c, fltrel.c, inscon.c, 
+	insrtn.c, join.c, keyfrm.c, libtran.c, makegr.c, mdfctn.c, modcon.c, next.c, 
+	opscfl.c, opscin.c, opscrl.c, orddel.c, proind.c, rdcort.c, rllbfn.c, tmpob.c, 
+	trns.c, fdcltrn.h:
+	*** empty log message ***
+
+Tue May  6 01:15:34 1997  Michael Kimelman  <kml@kml.castle.ispras.ru>
+
+	* src/interpr/int_servlib.c (execute_stmt): immediate exit on error code - 
+	don't fill answer row.
+
+	* configure.in, acconfig.h, src/engine/dispath.x:  added check for 
+	skeleton main routine style. 
+
+Sat May  3 17:06:41 1997  Michael Kimelman  <kml@kml.castle.ispras.ru>
+
+	* etc/gss.texi (Data description): crossreferences fixed
+
+	* etc/make-util, Makefile.in : headers (client runtime interface) installed to 
+	(dbhome)/client/include now. symb link (prefix)/include/gnusql refers to this directory 
+
+	* make-dist (changing modes of src tree): file timestamps fixed
+
+Wed Apr 30 10:25:43 1997  Tim Pierce  <twp@twp.tezcat.com>
+ 
+	* configure.in (YFLAGS): initialize YFLAGS when $(YACC) is set to `preserve'.
+ 	(LFLAGS): ditto.
+ 	(AC_SUBST): add rules to expand new YFLAGS target.
+	* src/Makefile_h.in (YFLAGS): configured now
+ 
+Mon Apr 28 17:40:55 1997  Michael Kimelman  <kml@kml.castle.ispras.ru>
+
+	* make-dist: find call fixed -- add -print
+
+	* Makefile.src.include.in:
+	added gnusql link creation in srcdir directory
+
+	* Makefile_h.src.in:
+	special targets (.FORCE: .SUFFIXES: etc) moved to the end of
+	file
+
+Mon Apr 28 12:54:34 1997  Michael Kimelman  <kml@gsql.ispras.ru>
+
+	* Version 0.7b5 released
+
+	* configure.in: check for sys interpreter added.
+
+	* etc/**scripts**: rewritten for bash and fixed to
+        correspond to typical root environment
+        
+Mon Apr 28 12:15:01 1997  Vera Ponomarenko  <vera@gsql.ispras.ru>
+
+	* delcon.c, next.c: bug fixed: incorrect end of scan detection
+
+Fri Apr 25 10:50:38 1997  Michael Kimelman  <kml@gsql.ispras.ru>
+
+	* int_servlib.c: alignment problem : stage 2
+
+Thu Apr 24 18:04:08 1997  Michael Kimelman  <kml@dolly.srcc.msu.su>
+
+	* groupby.k: Query reduction inserted untyped constant: fixed
+
+	* access.c: bug fixed: assumed that compiler merges equal constant
+	strings. It was too brave idea
+
+	* struct.c, moddump.c, vmemory.c, interpr.c, xmem.h, pr_glob.h: bug 
+        fixed - alignment problem
+
+	* gsql_cli.c: bug fixed: returned adderess of auto variable
+
+	* config.guess: upgraded to 2.12
+
+	* make-dist, Makefile.src.include.in: added gnusql link processing
+
+Mon Apr 21 17:45:31 1997  Michael Kimelman  <kml@dolly.srcc.msu.su>
+
+	* sc.c: mistyping, aggregate initialization removed
+
+	* codegen.c, binding.k: fixed adjustments of DB identifiers 
+
+	* codegen.c: chckauth processing fixed (a bug in definitions 
+ 	and incorrect "sprintf to itself" sttement changed to strcat)
+
+Mon Apr 21 14:32:51 1997  Michael Kimelman  <kml@gsql.ispras.su>
+
+	* scan_c.l, sql.h, setup_os.h, dyn_funcs.h : read configuration info 
+	   now from gnusql/config.h
+
+Sat Apr 19 17:10:54 1997  Michael Kimelman  <kml@gsql.ispras.ru>
+
+	* codegen.c: fixed illegal reference to granted modes list 
+
+Thu Apr 17 11:03:59 1997  Vera Ponomarenko  <vera@dolly.srcc.msu.su>
+
+	* fdcltrn.h, blfltr.c, cntrid.c, delrel.c, opscfl.c, opscrl.c, 
+        rllbfn.c, trns.c: *** empty log message ***
+
+Wed Apr 16 09:39:37 1997  Michael Kimelman  <kml@dolly.srcc.msu.su>
+
+	* Makefile.src.engine.sort.in, Makefile.src.other.in, Makefile.test.in:
+	fixing dependencies
+
+Tue Apr 15 19:29:21 1997  Michael Kimelman  <kml@dolly.srcc.msu.su>
+
+	* configure.in: cycle recognizing check added
+
+Tue Apr 15 11:46:53 1997  Vera Ponomarenko  <vera@gsql.ispras.ru>
+
+	* fdcltrn.h, librcv.c, addflds.c, cntrid.c, crind.c,  empty_page.c, ind_ins.c, ind_rem.c,
+        insrtn.c, obrind.c, opinpg.c,   orddel.c,  ordins.c,  ordmod.c,  rdcort.c,   recmj.c,
+        rllbfn.c, addflds.c, aggravg.c, aggrifn.c, aggrsfn.c, bdunion.c, blfltr.c,   cmpkeys.c,
+        cntrid.c, cnttab.c,  crind.c,   delcon.c,  delind.c,  delrel.c,  dltn.c,     fltrel.c,
+        insrtn.c, libtran.c, makegr.c,  mdfctn.c,  modcon.c,  opscin.c,  orddel.c,
+        ordmod.c, rdcort.c,  reclj.c,   rllbck.c,  rllbfn.c,  trns.c,    f1f2decl.h, fdcltrn.h,
+        rllbck.c, inscon.c : interfaces modifications
+        
+	* ordins.c (table insertation): bug fixed  
+	
+Sat Apr 12 22:53:43 1997  Michael Kimelman  <kml@gsql.ispras.ru>
+
+	* etc/conf-templ (clean): 'clean' function added to makefiles generation
+        scripts and 'postconfi' function fixed to avoid early templates 
+        removing
+
+	* Makefile.in (install): fixed includes installation 
+
+Fri Apr 11 14:30:02 1997  Michael Kimelman  <kml@dolly.srcc.msu.su>
+
+	* configure.in: added test for make abiliy to recognize file by 
+        both long and short name
+
+	* make-dist : stamp-h* added to distributon to prevent autoheader call
+
+Sun Apr  6 20:29:13 1997  Michael Kimelman  <kml@gsql.ispras.ru>
+
+	* Version 0.7b4 released
+
+	* src/other/type_lib.c (PutDataNext): bug fixed : reference to 
+        inserted data changed
+
+Fri Apr  4 19:36:54 1997  Vera Ponomarenko  <vera@gsql.ispras.ru>
+
+	* src/engine/join.c (join & bdunion): bug fixed : logic of table join
+        
+Fri Apr  4 21:36:54 1997  Michael Kimelman  <kml@dolly.srcc.msu.su>
+
+	* src/synthes/struct.c (Pr_Constraints): bug fixed (contraint tree copying)
+
+	* src/main/servlib.c (do_pass): turn off debug printing in non debug mode
+
+	* src/other/check_tp.c (put_type_to_tree): bug fixed: added NULL_VL processing
+
+Thu Apr  1 23:45:34 1997  Michael Kimelman  <kml@kml.castle.srcc.msu.su>
+
+	* sources : most of 'int' and 'long' changed to configured type int4_t
+
+Mon Mar 31 05:25:53 1997  Michael Kimelman  <kml@kml.castle.ispras.ru>
+
+	* KNR: minor fixes done for knr compilers
+
+Sun Mar 30 03:33:58 1997  Michael Kimelman  <kml@kml.castle.ispras.ru>
+
+	* aclocal.m4: added AC_FIND_LIB macro to check list of libraries for 
+	given function.
+
+	* includes: "__P" added to all function prototypes.
+
+	* make-dist (find export directory): added code to find export directory
+	and guess last version to make a patch.
+
+Fri Mar 28 12:47:11 1997  Michael Kimelman  <kml@dolly.srcc.msu.su>
+
+	* configure.in (LDFLAGS): added usr/local/lib library path for non gnu 
+        compilers
+
+	* src/engine/trans/rllbfn.c (redo_dind): bug fixed
+
+Thu Mar 27 13:00:04 1997  Michael Kimelman  <kml@dolly.srcc.msu.su>
+
+	* src/engine/trans/rllbfn.c (redo_dltn): freeing memory bug fixed. 
+
+Thu Mar 26 23:00:00 1997  Michael Kimelman  <kml@dolly.srcc.msu.su>
+
+	* src/synthes/struct.c: aggregate initialization chanaged to portable one 
+	(about 15 functions fixed)
+
+Fri Mar 21 21:17:41 1997  Michael Kimelman  <kml@dolly.srcc.msu.su>
+
+	* etc/preserve (flex preserve): yywrap routine adds to source
+
+	* configure.in: 
+	 . added check for sco socket library
+	 . (LEX): it seems we really need a flex. if it is absent it's better to
+	   use preserved copy than use a standart lex.
+	 . (CFLAGS): changed CFLAGS settings. conditionally append -g[123]
+	   -O[1234] -Wall and -p[g] options. gcc considered as a "special case". 
+
+	* Makefile.in (clean): added cleaning of RCS links and generated Makefile 
+        from test directory
+
+	* Makefile.src.other.in (clean): added deletion of ansi2knr pass1 && pass1 
+        routine
+
+Fri Mar 21 01:10:10 1997  Michael Kimelman  <kml@kml.castle.ispras.ru>
+
+	* test/README: described how to run test and expected results
+
+Thu Mar 20 23:49:34 1997  Michael Kimelman  <kml@kml.castle.ispras.ru>
+
+	* src/engine/adm.c (get_msg_key): ftok conditionally processed
+
+	* Makefile.in: added dependencies to support rebuilding configure in
+	'--srcdir' case
+
+	* src/Makefile: added rules to on the first time converting sources to 
+	knr aceptable style. not finished yet.
+	* src/Makefile_h: added code to ansi2knr on-the-fly converting
+	* etc/ansi2knr-sh: new script converting ansi to knr code.
+	* src/other/a2k_p1.l: source code of ansi2knr pass1: clips strings, drop
+ 	away spaces in macro calls, changes "##" --> "/**/" and simular staff
+	* src/other/ansi2knr.c: incorporated Aladdin Enterprises converter
+
+	* configure.in: added checking of 'ipc' and 'rpc' libraries required by 
+ 	BSDI's  BSD/OS; sizeof(int, long, long long and void*) added as well. 
+	ftok function is checked now.
+	
+	* src/include/setup_os.h: added settings of int4_t ( 4 byte) int8_t (8b)
+	and "__P" (parameters wrapper)
+
+	* make-dist: help & verbose options added. RCS absence processed more 
+	carefully now
+
+Tue Mar 18 01:25:57 1997  Michael Kimelman  <kml@kml.castle.ispras.ru>
+
+	* array (BITMAR[8]) changed everywhere to macro BITVL(k)
+
+	* a lot  of cosmetic modifications  was made: commented out '#pragma
+ 	ident's, 'Log's deleted, constant arrays in struct.c declared as static
+
+Tue Mar 11 00:18:43 1997  Michael Kimelman  <kml@kml.castle.ispras.ru>
+
+	* installation scripts fixed: top level 'Makefile.in' & 'etc/make-util'
+	
+	* English verified by Joseph Hartmann.
+	
+	* 'default: }' ==>> everywhere changed to ==>> 'default: break; }'
+	
+	* SunOs 4.1.: added configuration hints : HAVE_STDARG_H in
+        configure, check for it in 'xmem.c', intlib.c, gen.c. and few
+	other places
+        
+Mon Feb 15 22:57:21 1997  Michael Kimelman  <kml@gsql.ispras.ru>
+
+	* Version 0.7b3 released.
+
+	documentation spelling corrected & minor configuration bugs fixed
+
+Thu Jan 30 22:57:21 1997  Vera Ponomarenko  <vera@gsql.ispras.ru>
+
+	* tuple format changed. tuple descriptor occupies now a whole byte.
+
+Tue Jan 7 22:57:21 1997  Michael Kimelman  <kml@gsql.ispras.ru>
+
+	* Version 0.7b2 released.
+        
+	* '--srcdir' configuration bug fixed
+
+Tue Dec 31 18:30:18 1996  Michael Kimelman  <kml@gsql.ispras.ru>
+
+	* Version 0.7b1 released.
+
+	a lot of cosmetic fixes done (Copyright , comments, etc)
+	tiny engine bugs fixed (something between 2 and 20) 
+
+Mon Oct 28 19:15:48 1996  Michael Kimelman  <kml@gsql.ispras.ru>
+
+	* Version 0.7b0 released.

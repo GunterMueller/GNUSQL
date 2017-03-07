@@ -1,0 +1,29 @@
+@INT_SHELL@
+#
+# move-if-change :
+#           
+# Contacts: gss@ispras.ru
+#
+
+SRC=$2
+TARGET=$3
+if [ -d $TARGET ] ; then
+  TARGET=$TARGET/$SRC
+fi
+
+if [ ! -f $TARGET ] ; then
+#   echo cp1 $SRC $TARGET
+    $1 $SRC $TARGET
+   exit
+fi
+
+if cmp $SRC $TARGET >/dev/null
+ then 
+   # echo $SRC == $TARGET
+   if [ "x$1" = "xmv" ] ; then 
+     rm -f $SRC
+   fi
+ else
+#   echo cp2 $SRC $TARGET
+   $1 $SRC $TARGET
+fi

@@ -1,0 +1,80 @@
+/*
+ *  options.def  -  set of regnizable options of GNU SQL compiler
+ *  
+ *  This file is a part of GNU SQL Server
+ *
+ *  Copyright (c) 1996-1998, Free Software Foundation, Inc
+ *  Developed at the Institute of System Programming
+ * 
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ *  Contacts: gss@ispras.ru
+ *
+ */
+
+/* $Id: options.def,v 1.247 1998/09/29 21:25:55 kimelman Exp $ */
+
+#ifdef DEF_OPTION  
+/* DEF_OPTION("option name",reference_name, is setted) 
+ * reference name - i4_t variable name  
+ */
+DEF_OPTION("Dp",parse_debug         ,0)
+DEF_OPTION("Ds",client_scanner_debug,0)
+DEF_OPTION("Dl",server_scanner_debug,0)
+DEF_OPTION("Dv",dump_vocabulary     ,0)
+DEF_OPTION("DL",cl_debug            ,0)
+#undef DEF_OPTION
+#endif
+
+#ifdef DEF_OPTION1
+/* DEF_OPTION1("option head",option_processor) 
+ * we assume that result state stored in variable "option_processor##_state"
+ */
+DEF_OPTION1("d",dump_modes)
+DEF_OPTION1("s",skip_modes)
+DEF_OPTION1("r",scan_mode)
+DEF_OPTION1("V",tree_memory_mode)
+DEF_OPTION1("v",vm_debug_mode)
+DEF_OPTION1("h",server_host)
+DEF_OPTION1("o",module_name)
+#undef DEF_OPTION1
+#endif
+
+#ifdef DEF_PASS
+ /* DEF_PASS("pass_name", "description" ,'pass_identifier'-used in options
+  *           processor, stage number, if_skip_pass, if_dump,
+  *           "dump_file_extension",dumper_routine)
+  */
+#ifdef NOT_DEBUG
+#define DEFLT_DMP 0
+#else
+#define DEFLT_DMP 1
+#endif
+
+DEF_PASS("parser"    ,"parsing"              ,'p',sql_parse ,0,0,DEFLT_DMP,"par",
+         trl_tail_dump)
+DEF_PASS("binder"    ,"DB binding"           ,'b',binding   ,1,0,DEFLT_DMP,"bin",
+         trl_dump)
+DEF_PASS("atributes" ,"types evaluatiion"    ,'t',eval_types,1,0,DEFLT_DMP,"atr",
+         trl_dump)
+DEF_PASS("access"    ,"checking privilegies" ,'a',chk_access,1,0,DEFLT_DMP,"acc",
+         trl_dump)
+DEF_PASS("optimizer" ,"tree optimization"    ,'o',transform ,1,0,DEFLT_DMP,"opt",
+         trl_dump)
+DEF_PASS("synthesys" ,"code generation"      ,'c',synthesys ,1,0,DEFLT_DMP,"dmp",
+         ModDump)
+#undef DEF_PASS
+#endif
+

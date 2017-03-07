@@ -1,0 +1,584 @@
+dnl Process this file with autoconf to produce a configure script.
+##
+## $Id: configure.in,v 1.25 1998/09/29 21:24:40 kimelman Exp $
+##
+## This file is a part of GNU SQL Server
+##
+## Copyright (c) 1996-1998, Free Software Foundation, Inc
+## Developed at Institute of System Programming of Russian Academy of Science
+## This file is written by Michael Kimelman
+##
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free
+## Software Foundation; either version 2 of the License, or (at your option)
+## any later version.
+##
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+## more details.
+##
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, write to the Free Software Foundation, Inc.,
+## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+## Contacts: gss@ispras.ru
+##
+
+AC_INIT(test/testd1.ec)
+AC_CONFIG_HEADER(src/include/config.h:config.h.in)
+
+AC_ARG_ENABLE(DEBUG,
+[  --enable-DEBUG          enable transaction processes debugging], 
+              , 
+              ac_not_debug=1 )
+AC_ARG_ENABLE(PROF,
+[  --enable-PROFILE        turn on execution profile mode    ], 
+              ac_profile=1   )
+AC_ARG_ENABLE(DIRECT_MODE,
+[  --enable-DIRECT_MODE    switch client/server interaction from rpc to Unix messages transport ], 
+              ac_direct_mode=1   )
+dnl self checking level
+dnl AC_ARG_ENABLE(TRLCHECK,
+dnl [  --enable-TRLCHECK      enable extensive compiler runtime checking], 
+dnl               AC_DEFINE(TRL_CHECK))
+
+
+version=`cat ${srcdir}/version`
+dbhome='$(prefix)/share/gnusql/$(version)/$(host)'
+builddir=`pwd`
+bindir='$(prefix)/bin'
+mandir='$(prefix)/man'
+infodir='$(prefix)/info'
+
+
+#### Make srcdir absolute, if it isn't already.  It's important to
+#### avoid running the path through pwd unnecessary, since pwd can
+#### give you automounter prefixes, which can go away.  
+case "${srcdir}" in
+  /* ) ;;
+  . )
+    ## We may be able to use the $PWD environment variable to make this
+    ## absolute.  But sometimes PWD is inaccurate.
+    ## Make sure CDPATH doesn't affect cd (in case PWD is relative).
+    CDPATH=
+    if test "${PWD}" != "" && test "`(cd ${PWD} ; sh -c pwd)`" = "`pwd`"  ;
+    then
+      srcdir="$PWD"
+    else
+      srcdir="`(cd ${srcdir}; pwd)`"
+    fi
+  ;;
+  *  ) srcdir="`(cd ${srcdir}; pwd)`" ;;
+esac
+
+#### Check if the source directory already has a configured system in it.
+if test `pwd` != `(cd ${srcdir} && pwd)` \
+   && test -f "${srcdir}/src/include/config.h" ; then
+  AC_MSG_WARN([The directory tree \`${srcdir}' is being used
+   as a build directory right now; it has been configured in its own
+   right.  To configure in another directory as well, you MUST
+   use GNU make.  If you do not have GNU make, then you must
+   now do \`make distclean' in ${srcdir},
+   and then run $0 again.])
+
+changequote(, )dnl
+  extrasub='/^VPATH[	 ]*=/c\
+changequote([, ])dnl
+vpath %.x   $(srcdir)\
+vpath %.k   $(srcdir)\
+vpath %.kt  $(srcdir)\
+vpath %.ec  $(srcdir)\
+vpath %.sql $(srcdir)\
+vpath %.y   $(srcdir)\
+vpath %.l   $(srcdir)\
+vpath %.c   $(srcdir)\
+vpath %.h   $(srcdir)\
+vpath %.def $(srcdir)\
+vpath %.texi $(srcdir)\
+vpath %.1   $(srcdir)\
+vpath %.in  $(srcdir)\
+vpath %.m4  $(srcdir)\
+vpath %.dep $(srcdir)\
+'
+fi
+
+AC_CANONICAL_HOST
+canonical=$host
+configuration=$host_alias
+
+AC_DEFINE_UNQUOTED(VERSION,"$version")
+AC_DEFINE_UNQUOTED(HOST,"$host")
+
+dnl Checks for programs.
+AC_SYS_INTERPRETER
+if test "$ac_cv_sys_interpreter" = "yes" ; then
+  INT_SHELL="#! /bin/sh"
+else
+  INT_SHELL=""
+fi
+AC_PROG_CC
+AC_PROG_CPP
+AC_PROG_AWK
+
+### ------------------------------------------------------------------
+### ----------------- flags setting ----------------------------------
+### ------------------------------------------------------------------
+
+### Checks for ansi compatibility
+### ---------------------------------
+
+dnl
+dnl Check if we can handle prototypes.
+dnl
+AM_C_PROTOTYPES
+
+if test "x$ANSI2KNR" = "x" ; then 
+  A2K_proc=:
+  A2K_entry=""
+else
+  A2K_proc=""
+  A2K_entry="ansi2knr"
+  ### emit warning about automatic converting all C files and 
+  ### assotiated stuff. 
+  echo "-------------------------------------------------------"
+  echo "<<<<<<<  Warning: Non ANSI compiler detected !! >>>>>>>"
+  echo "-------------------------------------------------------"
+  echo "All files will be automatically converted to KNR style."
+  echo "Be careful editing them and sending patches about it. "
+  echo "-------------------------------------------------------"
+  if test "${srcdir}" != "${builddir}" ; then
+    echo "You use --srcdir configuration. In this case source    "
+    echo "files are converted once and stored in the build tree  "
+    echo "Any modification in distribution tree will not take    "
+    echo "effect until your remove 'src/ansi2knrs' timestamp     "
+    echo "in your build tree. This lead to reading source tree   "
+    echo "again and repeating conversion                         "
+    echo "-------------------------------------------------------"
+  fi 
+  echo "ansi2knr feature has not been properly tested yet !!!  "
+  echo "-------------------------------------------------------"
+  sleep 5
+  ### override AM_C_PROTOTYPE difinition:we have another make's dependencies
+  U=""
+fi
+
+changequote(, )dnl
+if test -z "$ac_not_debug"  ; then ### if debug info required
+  ## turn off optimization
+  CFLAGS=`echo $CFLAGS | sed 's/[-]O[0-9]*//g'`
+else  ## if debug info not required -- turn off -g
+  CFLAGS=`echo $CFLAGS | sed 's/[-]g[0-9]//g'`
+fi
+
+if test "$GCC" = "yes" ; then
+  CFLAGS=`echo $CFLAGS | sed 's/[-]g[0-9]*/-g3/g;s/[-]O[0-9]*/-O4/g' `
+  CFLAGS="-Wall $CFLAGS"
+else
+  if test -d /usr/local/lib ; then
+    LDFLAGS="-L/usr/local/lib $LDFLAGS"
+  fi
+fi
+changequote([, ])dnl
+
+if test ! -z "$ac_profile" ; then ### if profiling is reqired
+  if test "$GCC" = "yes" ; then
+    CFLAGS="-pg $CFLAGS"
+  else
+    CFLAGS="-p $CFLAGS"
+  fi
+fi
+
+LDFLAGS="$CFLAGS $LDFLAGS"
+
+#### include directories path settings
+if test "${srcdir}" = "${builddir}" -o "x$ANSI2KNR" != "x" ; then
+  CPPFLAGS="$CPPFLAGS -I${builddir}/src/trl -I${builddir}/src/engine"
+  CPPFLAGS="$CPPFLAGS -I. -I${builddir}/src/include -I${builddir}/src/include/engine"
+else ###  --srcdir case and ansi compiler
+  CPPFLAGS="$CPPFLAGS -I. -I${srcdir}/src/include -I${srcdir}/src/include/engine"
+  CPPFLAGS="$CPPFLAGS -I${srcdir}/src/trl -I${srcdir}/src/engine"
+  CPPFLAGS="$CPPFLAGS -I\$(srcdir) -I${builddir}/src/include -I${builddir}/src/include/engine"
+fi
+
+### ------------------------------------------------------------------
+### ------------------------------------------------------------------
+
+AC_PROG_INSTALL
+if test `find ${srcdir} -name "*.preserve" | wc -l ` -gt 0 ; then
+    enable_preserve=yes
+else
+    enable_preserve=no
+fi
+
+AC_PROG_YACC
+dnl ## actually we strongly need bison because we use @n construction
+if test "$YACC" = "bison -y" ; then
+  YACC=bison
+  YFLAGS="-d -v -t"
+elif test $enable_preserve = yes ; then
+  YACC='$(ETC)/preserve'
+  YFLAGS="restore --bison"
+else 
+  echo "Can't find neither bison nor 'preserve' files -- "
+  echo " this distribution can not be configured for your environment"
+  echo " "
+  echo "--Aborted"
+  exit 1
+fi
+if test "x$ac_cv_lib_fl_yywrap" != x ; then
+    unset ac_cv_lib_fl_yywrap
+fi
+
+AC_PROG_LEX
+## and here we seems to need flex (generic lex is something unpredictable)
+## we also used %x constructions which happens to be unsopported by some lex.
+if test "$LEX" = "flex" ; then ### that's fine
+  LFLAGS="-d8i"
+  if test -z "$LEXLIB" ; then
+    AC_MSG_RESULT(flexlib not found - try some hackaround)
+    AC_PATH_PROG(FLEX,flex)
+    flexlib=`dirname $FLEX`/../lib
+    if test -d $flexlib ; then
+        unset ac_cv_lib_fl_yywrap
+        ac_save_LIBS_x="$LIBS"
+        LIBS="-L${flexlib} $LIBS"
+        AC_FIND_LIB(yywrap, fl)
+        LIBS="$ac_save_LIBS_x"
+        if test $ac_cv_lib_fl_yywrap = yes ; then
+            LEXLIB="-L${flexlib}  -lfl"
+        fi
+    fi
+  fi
+#elif test "$LEX" = "lex" ; then
+#  LFLAGS="-t"
+elif test $enable_preserve = yes ; then
+  if test $LEX = lex ; then
+     LEXLIB=
+  fi
+  LEX='$(ETC)/preserve'
+  LFLAGS='restore --flex'
+  
+else
+  echo "Can't find neither flex nor 'preserve' files --"
+  echo "  this distribution can not be configured for your environment"
+  echo " "
+  echo "--Aborted"
+  exit 1
+fi
+
+AC_PROG_LN_S
+
+AC_PATH_PROG(AR,ar)
+  ### we can found ranlib here but it's not enough : hp/ux used to have 
+  ### useless script with the same name. it's ok if you use standard 'ar'
+  ### but if you install GNU's binutils some trouble can arise. 
+dir_ar=`dirname $AR`
+if test -f $dir_ar/ranlib ; then
+  # the best case
+  ac_cv_prog_RANLIB=$dir_ar/ranlib
+  RANLIB=$ac_cv_prog_RANLIB
+else
+  RANLIB=":"
+fi
+
+dnl choose the best make
+ac_save_path="$PATH"
+PATH=/usr/local/bin:/usr/contrib/bin:/opt/bin:/opt/gnu/bin:/usr/bin:$PATH
+AC_PATH_PROGS(MAKE, gmake make)
+PATH="$ac_save_path"
+
+
+AC_MSG_CHECKING(for make include item)
+AC_CACHE_VAL(gss_cv_MAKE_includes,[
+     cat >maketst1 <<EOF
+
+subterm:
+	echo "making subterm"
+EOF
+     gss_cv_MAKE_includes="##include"
+     for inc_test in "include" ".include" "%include" ; do
+       cat >maketest <<EOF
+
+myterm: subterm
+	echo "making myterm"
+$inc_test maketst1
+all: myterm
+	echo "making all"
+
+EOF
+       ${MAKE} -f maketest all 2>>config.log >maketst.out
+       if test $? -eq 0 -a `grep "^making subterm" maketst.out | wc -l` -eq 1  ; then
+          ## we can include other makefiles
+          gss_cv_MAKE_includes="$inc_test"
+	  break
+       fi
+     done
+     rm -f maketest maketst1 maketst.out
+    ])
+AC_MSG_RESULT($gss_cv_MAKE_includes)
+
+SET_MAKE="MAKE=${MAKE-make}"
+
+AC_MSG_CHECKING(if make able to identify short and long file name)
+AC_CACHE_VAL(gss_cv_MAKE_short_long,[
+     gss_cv_MAKE_short_long="no"
+     cat >maketest <<EOF
+all: maketest
+	@echo >/dev/null
+maketest : `pwd`/maketest
+EOF
+     if test `${MAKE} -f maketest 2>&1 | wc -l ` -gt 0 ; then
+       gss_cv_MAKE_short_long="yes"
+     fi
+     rm -f maketest $$.log
+    ])
+AC_MSG_RESULT($gss_cv_MAKE_short_long)
+
+if test "$gss_cv_MAKE_short_long" = "yes" ; then
+  MCYCLE="## commnet cycle dependencies ##"
+fi
+
+
+dnl ------------------------------------------------------------------
+dnl -------- debugger environment customization ----------------------
+dnl ------------------------------------------------------------------
+if test -z "$ac_not_debug"  ; then
+  AC_PATH_PROG(DDD,ddd)                   dnl nice gdb/dbx environment
+  if test -n "$DDD"  ; then
+    AC_DEFINE_UNQUOTED(HAVE_DDD,"$DDD")
+  fi
+
+  AC_PATH_PROGS(XTERM,xterm shelltool cmdtool)
+  if test -n "$XTERM"  ; then
+     AC_DEFINE_UNQUOTED(HAVE_XTERM,"$XTERM")
+  fi
+
+  AC_PATH_PROG(XXGDB,xxgdb)               dnl gdb/dbx environment 
+  if test -n "$XXGDB"  ; then
+      AC_DEFINE_UNQUOTED(HAVE_XXGDB,"$XXGDB")
+  fi
+
+  if test -z "$XTERM" -a -z "$XXGDB" -a -z "$DDD" ; then
+        ac_not_debug=1
+  fi
+fi
+
+if test -z "$ac_not_debug"  ; then
+  AC_PATH_PROG(GDB,gdb)  
+  if test -n "$GDB"  ; then
+    AC_DEFINE_UNQUOTED(HAVE_GDB,"$GDB")
+  fi
+  AC_PATH_PROG(DBX,dbx)  
+  if test -n "$DBX"  ; then
+    AC_DEFINE_UNQUOTED(HAVE_DBX,"$DBX") 
+  fi
+  if test -z "$GDB" -a -z "$DBX" ; then
+      ac_not_debug=1
+  fi
+fi
+
+if test -n "$ac_not_debug"  ; then
+        AC_DEFINE(NOT_DEBUG)
+fi
+
+AC_PATH_PROG(RPCGEN,rpcgen)     dnl check rpc stubs generator
+if test -n "$RPCGEN" ; then
+    AC_MSG_CHECKING($RPCGEN output)
+    AC_CACHE_VAL(gss_cv_RPCGEN_output,[
+        cat >mytest.x <<EOF
+struct mytype {
+    int i;
+    float f;
+};
+
+program CT_P {
+  version CT_V { 
+    int         CT_P(mytype)   = 1;
+  } = 2 ;
+} = 3;
+EOF
+        $RPCGEN -T mytest.x
+        if test ! -f mytest_tbl.i ; then
+            if test "x$ac_direct_mode" = x1 ; then
+                msg="$RPCGEN doesn't generate mytest_tbl.i\n"
+                RPCGEN=
+            fi
+        fi
+        for fn in mytest.h mytest_clnt.c mytest_svc.c mytest_xdr.c
+        do
+            if test ! -f $fn ; then
+                msg="$msg $RPCGEN doesn't generate $fn"
+                RPCGEN=
+                break
+            fi
+        done
+        AC_EGREP_HEADER(ct_p_2_svc,mytest.h, stubs=svc, stubs=simple)
+        AC_EGREP_HEADER(changequote(, )main[ ]*\([ ]*(void)*[ ]*\)changequote([, ]),
+                        mytest_svc.c, main=void, main=proto)
+        AC_EGREP_CPP(Ok,[
+#include "mytest.h"
+#ifdef _MYTEST_H_RPCGEN
+Ok   
+#endif
+        ],opts="." , opts="Ihdr" )
+        rm -f mytest*
+        if test x$RPCGEN != x ; then
+            gss_cv_RPCGEN_output="stubs=$stubs opts=\"$opts\" main=$main direct=$ac_direct_mode"
+        else
+            gss_cv_RPCGEN_output="$msg"
+        fi
+    ])
+    AC_MSG_RESULT($gss_cv_RPCGEN_output)
+    for outparm in $gss_cv_RPCGEN_output; do
+      case $outparm in 
+        stubs=svc)
+                AC_DEFINE(RPCSTUB_SVC_STYLE)
+        ;;  
+        main=proto)
+                AC_DEFINE(RPCMAIN_PROTO)
+        ;;
+        opts=*)
+                rpcgen_opts=`echo $outparm | sed -e "s/opts=//g;s/\"//g"`
+        ;;  
+        direct=1)
+                AC_DEFINE(DIRECT_MODE)
+                rpcgen_opts="$rpcgen_opts dmode"
+        ;;
+        *)
+        ;;
+      esac
+    done
+    if test x$RPCGEN != x ; then
+        RPCGEN='$(ETC)/rpcgen-sh '"$RPCGEN \"$rpcgen_opts\""
+    fi
+fi
+
+if test "x$RPCGEN" = x ; then
+    AC_CHECK_HEADERS(rpc/rpc.h)
+    if test $ac_cv_header_rpc_rpc_h = no ; then
+        echo "FATAL: can not find RPC facilities (rpcgen, rpc/rpc.h ...) "
+        exit 1
+    fi
+    RPCGEN='$(ETC)/preserve restore --rpcgen'
+changequote(, )dnl
+    if grep '[0-9]*_svc' `find ${srcdir} -name '*.preserve'` >/dev/null; then
+changequote([, ])dnl
+      AC_DEFINE(RPCSTUB_SVC_STYLE)
+    fi
+changequote(, )dnl
+    if grep 'main[ ]*([ ]*\(void\)*[ ]*)' `find ${srcdir} -name '*_svc.c.preserve'` >/dev/null; then
+changequote([, ])dnl
+       echo "do nothing" >/dev/null
+    else  
+      AC_DEFINE(RPCMAIN_PROTO)
+    fi
+    if test x$ac_direct_mode = x1 ; then
+        if test `find ${srcdir} -name '*_tbl.i.preserve' | wc -l` -gt 0 ; then
+            AC_DEFINE(DIRECT_MODE)
+        else
+            ac_direct_mode=
+            echo "FATAL: 'DIRECT MODE' configuration imposible for this distribution and environment"
+            exit 1
+        fi
+    fi
+fi
+
+### Checks for libraries
+### ---------------------------------
+### find IPC library
+AC_FIND_LIB(shmat, ipc)
+
+### find RPC library
+AC_FIND_LIB(callrpc, nsl socket rpc)
+
+AC_FIND_LIB(ftok, compat)
+
+dnl Checks for header files.
+dnl ---------------------------------
+AC_HEADER_DIRENT
+AC_HEADER_STDC
+AC_HEADER_SYS_WAIT
+AC_CHECK_HEADERS(stdio.h stdlib.h stdarg.h fcntl.h sys/file.h sys/time.h unistd.h)
+AC_CHECK_HEADERS(sys/ipc.h sys/shm.h sys/msg.h sys/cdefs.h)
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+dnl --------------------------------------------------------------
+AC_C_CONST
+AC_TYPE_OFF_T
+AC_TYPE_PID_T
+AC_TYPE_SIZE_T
+AC_TYPE_SIGNAL
+AC_HEADER_TIME
+AC_STRUCT_TM
+
+dnl Checks for C standart types
+dnl ---------------------------------
+AC_C_LONG_DOUBLE
+AC_CHECK_SIZEOF(void*)
+AC_CHECK_SIZEOF(char)
+AC_CHECK_SIZEOF(short)
+AC_CHECK_SIZEOF(int)
+AC_CHECK_SIZEOF(long)
+AC_CHECK_SIZEOF(long long)
+AC_CHECK_SIZEOF(long double)
+
+dnl Checks for library functions.
+dnl ---------------------------------
+AC_FUNC_STRFTIME
+AC_FUNC_VPRINTF
+
+AC_CHECK_FUNCS(strstr memcpy uname cftime getlogin cuserid)
+AC_CHECK_FUNCS(svc_unreg svc_unregister atexit on_exit)
+
+if test "$GCC" != "yes" ; then
+  AC_CHECK_FUNCS(alloca)
+  if test $ac_cv_func_alloca = "no" ; then # if we have not found alloca
+    ## provide our own version instead
+    ALLOCA=alloca.o
+  fi
+fi
+
+### create makefiles list to configure
+
+configurables=`${srcdir}/etc/conf-templ create "${LN_S}" ${MAKE} $gss_cv_MAKE_includes`
+if test "x$configurables" = x ; then
+  exit 1
+fi
+
+dnl Configurables specification
+dnl ---------------------------
+
+AC_SUBST(srcdir)
+AC_SUBST(prefix)
+AC_SUBST(bindir)
+AC_SUBST(mandir)
+AC_SUBST(infodir)
+AC_SUBST(dbhome)
+AC_SUBST(builddir)
+AC_SUBST(version)
+AC_SUBST(host)
+AC_SUBST(CFLAGS)
+AC_SUBST(CPPFLAGS)
+AC_SUBST(LDFLAGS)
+AC_SUBST(LIBS)
+AC_SUBST(RPCGEN)
+AC_SUBST(RANLIB)
+AC_SUBST(YACC)
+AC_SUBST(YFLAGS)
+AC_SUBST(LEX)
+AC_SUBST(LFLAGS)
+AC_SUBST(LEXLIB)
+AC_SUBST(SET_MAKE)
+AC_SUBST(host_os)
+AC_SUBST(A2K_proc)
+AC_SUBST(A2K_entry)
+AC_SUBST(U)
+AC_SUBST(ALLOCA)
+AC_SUBST(MCYCLE)
+AC_SUBST(INT_SHELL)
+
+AC_OUTPUT(  ${configurables} ,
+          echo timestamp > stamp-h
+          ${top_srcdir}/etc/conf-templ postconfigure
+)

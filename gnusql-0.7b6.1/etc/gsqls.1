@@ -1,0 +1,79 @@
+.TH GNU "SQL Server" 0.7 "1996 October 1"
+.UC 4
+.SH NAME
+gsqls \- GNU SQL server administrator
+.SH SYNOPSIS
+.B gsqls
+[
+.I RPC program id
+]
+.br
+.SH DESCRIPTION
+.I GNU SQL Server administrator 
+is a part of 
+.I GNU SQL Server (GSS)
+written by the the small team at Institute of System Programing,
+Russian Academy of Science.  
+.br
+This program placed in the top directory of installed GNU SQL server area.
+(or
+.Isqlser 
+subdirectory of distribution). To start server you 
+need to run 'gsqls' from it. If you want to run it in background, 
+you have to redirect output streams to log. if you configured it
+to use debugger, you need to give administrator answers \- whether or 
+not you start debugger for each started subservice.
+.br
+The primary documentation of GSS is in the GNU SQL Server Manual,
+which you can read on line using Info, a subsystem of Emacs.  Please
+look there for complete and up-to-date documentation. The GSS
+maintainers' priority goal is to minimize the amount of time this man
+page takes away from other more useful projects.
+.br
+.PP
+.SM gsqls Options
+.PP
+The following options are of general interest:
+.TP 8
+.I RPC program id
+gives identificator of RCS program. Don't use!!. for testing only.
+
+.SH FILES
+.TP 4
+.I /usr/local/gnusql/(version)/(configuration) 
+db main directory. 
+It contains following subdirectories:
+.TP 8
+.I bin 
+server utilities
+.TP
+.I client 
+client tools end library
+.TP
+.I db    
+database area
+
+.PP
+.SH BUGS
+
+Use \fBbug-gnu-sql@prep.ai.mit.edu\fR for reporting GNU SQL Server bugs and fixes.  But before 
+reporting something as a bug, please try to be sure that it really is a bug, 
+not a misunderstanding or a deliberate feature. We ask you to read the 
+section ``Reporting GSS Bugs'' near the end of the reference manual (or Info 
+system) for hints on how and when to report bugs. Also, include the version 
+number of the GSS you are running in \fIevery\fR bug report that you send in.
+
+Do not expect a personal answer to a bug report.  The purpose of reporting
+bugs is to get them fixed for everyone in the next release, if possible.
+
+.PP
+.SH UNRESTRICTIONS
+.PP
+.I GNU SQL server 
+is free; anyone may redistribute copies of it to anyone under the terms 
+stated in the General Public License a copy of which accompanies each 
+copy of GNU SQL Server. In fact, the primary purpose of the General Public
+License is to prohibit anyone from attaching any other restrictions
+to redistribution of GNU SQL Server.
+.SH SEE ALSO
+gsqlc(1)

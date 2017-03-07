@@ -1,0 +1,26 @@
+@INT_SHELL@
+#
+# arc :  put object files to library
+#           
+# This file is a part of GNU SQL Server
+#
+# Copyright (c) 1997 Free Software Foundation, Inc.
+# This file is written by Michael Kimelman.
+#
+# Contacts: gss@ispras.ru
+#
+
+LF=$1
+shift
+set +x
+[ -f $1 ] || exit 0
+[ "`cat $1`" ] || exit 0
+
+files=`cat $1`
+echo arc : $LF $files
+ar ruc $LF $files
+#for fn in $files; do
+#	date >$fn
+#done
+rm -f $1
+echo "" >$1

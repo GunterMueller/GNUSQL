@@ -1,0 +1,85 @@
+# Generated automatically from Makefile.in by configure.
+##########################################################################
+##                    GNU SQL Server (Logging facility)                 ##
+##     lj  - Logical Journal in PUPSI                                   ##
+##     mj  - Microjournal in PUPSI                                      ##
+##########################################################################
+##
+## $Id: Makefile.in,v 1.249 1998/09/30 01:59:09 kimelman Exp $
+##
+## This file is a part of GNU SQL Server
+##
+## Copyright (c) 1996-1998, Free Software Foundation, Inc
+## Developed at Institute of System Programming of Russian Academy of Science
+## This file is written by Michael Kimelman
+##
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free
+## Software Foundation; either version 2 of the License, or (at your option)
+## any later version.
+##
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+## more details.
+##
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, write to the Free Software Foundation, Inc.,
+## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+## Contacts: gss@ispras.ru
+##
+
+
+srcdir=/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine/jour
+VPATH=/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine/jour
+include ../../Makefile_h
+##########################################################################
+#                make program                                            #
+##########################################################################
+
+all:	install
+install: bin
+	- [ -d $(SERVBIN) ] || mkdir -p $(SERVBIN)
+	$(CP)  lj $(SERVBIN)
+	$(CP)  mj $(SERVBIN)
+
+bin:     lj mj
+
+SRCL=    logj.c   ljipc.c helpfu.c
+SRCLOBS=	${SRCL:.c=.o}
+SRCM=    microj.c mjipc.c helpfu.c
+SRCMOBS=	${SRCM:.c=.o}
+
+
+lj:     $(SRCLOBS) 
+	echo --  generating $@
+	- $(RM) $@ 
+	$(LD) $(SRCLOBS) $(SRLIBS) -o $@ 
+mj:      $(SRCMOBS) 
+	echo --  generating $@
+	- $(RM) $@ 
+	$(LD) $(SRCMOBS) $(SRLIBS) -o $@ 
+
+clean::
+	- $(RM) lj mj
+
+$(SRCLOBS): $(IINC)/rnmtp.h $(IINC)/strml.h 
+ljipc.o: $(IINC)/inpop.h $(IINC)/pupsi.h
+
+$(SRCMOBS): $(IINC)/rnmtp.h $(IINC)/strml.h 
+mjipc.o: $(IINC)/inpop.h $(IINC)/pupsi.h
+
+logj.o   : logj.c $(IINC)/rnmtp.h $(IINC)/pupsi.h $(IINC)/strml.h fdecllj.h
+ljipc.o  : ljipc.c $(IINC)/rnmtp.h $(IINC)/pupsi.h $(IINC)/strml.h \
+           $(IINC)/inpop.h  fdecllj.h $(INC)/setup_os.h
+helpfu.o : helpfu.c $(IINC)/rnmtp.h $(IINC)/pupsi.h $(IINC)/strml.h  \
+           fdecllj.h fdeclmj.h
+microj.o : microj.c $(IINC)/rnmtp.h $(IINC)/pupsi.h $(IINC)/strml.h fdeclmj.h
+mjipc.o  : mjipc.c $(IINC)/rnmtp.h $(IINC)/pupsi.h $(IINC)/strml.h \
+           $(IINC)/inpop.h fdeclmj.h $(INC)/setup_os.h
+
+fdecllj.h:  $(IINC)/totdecl.h
+	- touch $@
+fdeclmj.h:  $(IINC)/totdecl.h
+	- touch $@

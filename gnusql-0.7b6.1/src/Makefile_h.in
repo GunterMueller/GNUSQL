@@ -1,0 +1,184 @@
+##############################################################
+##   GNU SQL Compiler (common rules and substitutions)      ##
+##############################################################
+##
+## $Id: Makefile_h.in,v 1.249 1998/09/29 21:24:46 kimelman Exp $
+##
+## This file is a part of GNU SQL Server
+##
+## Copyright (c) 1996-1998, Free Software Foundation, Inc
+## Developed at Institute of System Programming of Russian Academy of Science
+## This file is written by Michael Kimelman
+##
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free
+## Software Foundation; either version 2 of the License, or (at your option)
+## any later version.
+##
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+## more details.
+##
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, write to the Free Software Foundation, Inc.,
+## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+## Contacts: gss@ispras.ru
+##
+
+SHELL=/bin/sh
+
+# If Make doesn't predefine MAKE, set it here.
+@SET_MAKE@
+
+#build settings
+top_srcdir=@top_srcdir@
+#srcdir=@srcdir@
+builddir=@builddir@
+src_root=$(top_srcdir)/src
+ETC=$(builddir)/etc
+LIB=$(builddir)/lib
+
+INC=$(src_root)/include
+TRL=$(src_root)/trl
+IINC=$(INC)/engine
+EINC=$(src_root)/engine
+
+# for generated files
+LINC=$(builddir)/src/include
+LIINC=$(LINC)/engine
+
+SERVDIR=$(builddir)/sqlser
+SERVBIN=$(SERVDIR)/bin
+CLNT=$(SERVDIR)/client
+
+CC=@CC@
+RANLIB=@RANLIB@
+RPCGEN=@RPCGEN@
+INSTALL=@INSTALL@
+LN_S=@LN_S@
+YACC=@YACC@  #  -- yacc compatibility requires a lot of fixing @n problems
+LEX=@LEX@
+A2K=@A2K_proc@ $(ETC)/ansi2knr-sh srcdir=$(srcdir) lib=$(LIB)
+
+RM=rm -f 
+CP=cp
+CPI=$(ETC)/move-if-change cp
+MV=$(ETC)/move-if-change mv
+KITTY=$(LIB)/kitty
+O=@U@o
+C=@U@c
+H=@U@h
+
+MAKERT=$(MAKE) -k REV=$(REV)
+MAKECLEAN=$(MAKERT) clean
+
+LIBSER=$(LIB)/libgss_ser.a
+LIBCLI=$(CLNT)/libgss.a
+
+LIBSR_DEP= $(LIBSER)_stamp
+LIBCL_DEP= $(LIBCLI)_stamp
+SRLIBS=-lgss_ser @LEXLIB@ @LIBS@
+CLLIBS=-lgss @LEXLIB@ @LIBS@
+
+CPPFLAGS=@CPPFLAGS@
+CFLAGS= @CFLAGS@ $(CFLAGS1) @DEFS@
+LDFLAGS= @LDFLAGS@ -L$(LIB) -L$(CLNT) $(LDFLAGS1)
+LFLAGS=@LFLAGS@
+YFLAGS=@YFLAGS@
+
+LD=$(CC) $(LDFLAGS)
+ARC=$(ETC)/arc
+TOUCH=$(ETC)/Touch
+
+##################################################
+#                implicit rules                  #
+# ansi to knr rules : wget1.4 style - unused now #
+##################################################
+
+._c._o:
+	echo --$*
+	$(CP) $< $$.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $$.c
+	[ ! -f $@ ] || $(RM) $@
+	$(MV) $$.c $@
+
+.c._c:
+	echo ::$*
+	[ ! -f $@ ] || $(RM) $@
+	$(A2K) $@
+
+.h._h:
+	echo ::$*
+	[ ! -f $@ ] || $(RM) $@
+	$(A2K) $@
+
+##################################################
+#                implicit rules                  #
+#            -----standard set-----              #
+##################################################
+
+.c.o:
+	echo --$*
+	[ ! -f $@ ] || $(RM) $@
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
+
+.y.c:
+	[ ! -f $@   ] || $(RM) $@
+	[ ! -f $*.h ] || $(RM) $*.h
+	$(YACC) $(YFLAGS) $< 
+	[ ! -f y.tab.c ]  || $(MV)  y.tab.c $*.c
+	[ ! -f y.tab.h ]  || $(MV)  y.tab.h $*.h
+	[ ! -f $*.tab.c ] || $(MV) $*.tab.c $*.c
+	[ ! -f $*.tab.h ] || $(MV) $*.tab.h $*.h
+	[ ! -f $(srcdir)/y.tab.c ]  || $(MV) $(srcdir)/y.tab.c $*.c
+	[ ! -f $(srcdir)/y.tab.h ]  || $(MV) $(srcdir)/y.tab.h $*.h
+	[ ! -f $(srcdir)/$*.tab.c ] || $(MV) $(srcdir)/$*.tab.c $*.c
+	[ ! -f $(srcdir)/$*.tab.h ] || $(MV) $(srcdir)/$*.tab.h $*.h
+	$(A2K) $*.h $*.c
+
+.l.c:
+	[ ! -f $@ ] || $(RM) $@
+	$(LEX) $(LFLAGS) -t $< > $@
+	$(A2K) $@
+
+.k.c:
+	echo ..$*
+	[ ! -f $*.c ] || $(RM) $*.c
+	[ ! -f $*.h ] || $(RM) $*.h
+	$(KITTY) $<
+	$(A2K) $@
+
+.a.a_stamp :
+	echo -- refreshing $<
+	$(RANLIB) $<
+	[ ! -f $@ ] || $(RM) $@
+	date >$@
+
+maintarget : announce all
+
+clean:: announce
+	$(ETC)/make-util clean "$(MAKECLEAN)" 
+distclean:: clean
+	$(ETC)/make-util clean "$(MAKERT) distclean"
+
+announce   :
+	echo "++ `pwd` processed"
+force      :
+#	echo do nothing
+$(LIBSER)_stamp : $(LIBSER)
+$(LIBCLI)_stamp : $(LIBCLI)
+
+$(LIBSER)  : libgss_ser
+	$(ARC) $@ libgss_ser
+$(LIBCLI)  : libgss_cli
+	$(ARC) $@  libgss_cli
+libgss_ser :
+libgss_cli : 
+libgss     : 
+
+.SUFFIXES  :  .x .kt .k .y .l .c .h .def ._c .o ._o .a .a_stamp
+.FORCE     :
+.SILENT    :
+.PRECIOUS  : $(LIBSER) $(LIBCLI)

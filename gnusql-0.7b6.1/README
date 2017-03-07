@@ -1,0 +1,48 @@
+This directory tree holds version 0.7b6.1 of GNU SQL Server. This
+is the beta *test* of the system.
+
+You may encounter bugs in this release.  If you do, please report
+them; your bug reports are valuable contributions to the FSF, since
+they allow us to notice and fix problems on machines we don't have, or
+in code we don't use often.  See the file BUGS for more information on
+how to report bugs.
+
+The file INSTALL in this directory says how to bring up GSS
+on Unix, once you have loaded the entire subtree of this directory.
+The tail of INSTALL contains instructions for USING the server.
+
+The file PROBLEMS contains information on common problems that
+occur in building, installing and running GSS.
+
+Reports of bugs in GSS should be sent to bug-gnu-sql@gnu.org 
+You can also see the GSS news at http://www.ispras.ru/~gsql.
+
+The file `configure' is a shell script to enable GNU SQL server 
+to discover the oddities of your processor and operating system.  
+It creates the file `Makefile' (a script for the `make' program), 
+which automates the process of building and installing GSS.  
+See INSTALL for more detailed information.
+
+The file `configure.in' is the input used by the autoconf program to
+construct the `configure' script.  Since GSS has configuration
+requirements that autoconf can't meet, `configure.in' uses an unholy
+marriage of custom-baked configuration code and autoconf macros; it
+may be wise to avoid rebuilding `configure' from `configure.in' when
+possible.
+
+The file `Makefile.in' is a template used by `configure' to create
+`Makefile'.
+
+The file `make-dist' is a shell script to build a distribution tar
+file from the current GSS tree, containing only those files
+appropriate for distribution.  If you make extensive changes to GSS,
+this script will help you distribute your version to others.
+
+There are several subdirectories:
+
+`src'  holds the C code for GSS (the SQL compiler, run-time library,
+       and code of server processes).
+`test' holds the our set of tests. it can also helps as am example of how to
+       use system.
+`etc'  holds a set of useful scripts, required by the compilation and testing
+       process, and it also contains GSS documentation.

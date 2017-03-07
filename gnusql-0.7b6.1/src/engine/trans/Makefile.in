@@ -1,0 +1,128 @@
+##########################################################################
+##                     GNU SQL Transaction                              ##
+##########################################################################
+##
+## $Id: Makefile.in,v 1.250 1998/09/29 21:25:18 kimelman Exp $
+##
+## This file is a part of GNU SQL Server
+##
+## Copyright (c) 1996-1998, Free Software Foundation, Inc
+## Developed at Institute of System Programming of Russian Academy of Science
+## This file is written by Michael Kimelman
+##
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free
+## Software Foundation; either version 2 of the License, or (at your option)
+## any later version.
+##
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+## more details.
+##
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, write to the Free Software Foundation, Inc.,
+## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+## Contacts: gss@ispras.ru
+##
+
+srcdir=@srcdir@
+VPATH=@srcdir@
+include ../../Makefile_h
+
+SRC=	addflds.c aggravg.c aggrifn.c aggrsfn.c bdunion.c blfltr.c\
+	cmpkeys.c cntrid.c cnttab.c crind.c crrel.c crtfrm.c\
+	delcon.c delind.c delrel.c dltn.c empty_page.c fltrel.c\
+	ind_ins.c ind_rem.c ind_scan.c inscon.c insfltr.c insrtn.c\
+	join.c keyfrm.c makegr.c mdfctn.c modcon.c next.c \
+	obrind.c opinpg.c opscfl.c opscin.c opscrl.c orddel.c ordins.c \
+	ordmod.c page_op.c proind.c rdcort.c reclj.c recmj.c rllbck.c rllbfn.c\
+	snlock.c tmpob.c trns.c cmpftn.c libtran.c\
+	cmpkey.c extsrt.c push.c\
+	puts.c quicksrt.c rkfrm.c\
+	sort.c tidsrt.c trns_decl.c
+
+
+SRCOBJS=	${SRC:.c=.o}
+
+all:	install
+install: server
+	# nothing to do
+server: announce  $(LIBSER)
+libgss_ser : ${SRCOBJS}
+	echo $? >$@
+
+
+$(SRCOBJS): $(IINC)/destrn.h $(IINC)/fdcltrn.h $(IINC)/deftr.h $(IINC)/fieldtp.h \
+ $(IINC)/pupsi.h $(INC)/sql.h $(IINC)/tptrn.h $(IINC)/rnmtp.h $(IINC)/totdecl.h \
+ $(INC)/setup_os.h $(INC)/xmem.h
+
+SRT_H= dessrt.h $(IINC)/destrn.h $(IINC)/rnmtp.h $(IINC)/pupsi.h \
+    $(IINC)/tptrn.h $(INC)/sql.h $(IINC)/fieldtp.h $(IINC)/deftr.h \
+    $(IINC)/totdecl.h $(IINC)/fdcltrn.h fdclsrt.h
+
+fdcltrn.h    : $(IINC)/inpop.h $(IINC)/f1f2decl.h
+	- touch $@
+
+addflds.o    : addflds.c $(IINC)/strml.h
+aggravg.o    : aggravg.c $(IINC)/sctp.h
+aggrifn.o    : aggrifn.c $(IINC)/agrflg.h
+aggrsfn.o    : aggrsfn.c
+bdunion.o    : bdunion.c
+blfltr.o     : blfltr.c
+cmpkeys.o    : cmpkeys.c
+cntrid.o     : cntrid.c $(IINC)/sctp.h  $(EINC)/synch/sctpsyn.h 
+cnttab.o     : cnttab.c $(IINC)/agrflg.h 
+crind.o      : crind.c $(IINC)/strml.h
+crrel.o      : crrel.c
+crtfrm.o     : crtfrm.c $(IINC)/sctp.h 
+delcon.o     : delcon.c $(IINC)/strml.h
+delind.o     : delind.c $(IINC)/strml.h
+delrel.o     : delrel.c
+dltn.o       : dltn.c $(IINC)/strml.h
+empty_page.o : empty_page.c
+fltrel.o     : fltrel.c $(IINC)/strml.h
+ind_ins.o    : ind_ins.c
+ind_rem.o    : ind_rem.c
+ind_scan.o   : ind_scan.c $(IINC)/sctp.h 
+inscon.o     : inscon.c   $(IINC)/strml.h
+insfltr.o    : insfltr.c
+insrtn.o     : insrtn.c   $(IINC)/strml.h
+join.o       : join.c
+keyfrm.o     : keyfrm.c
+makegr.o     : makegr.c   $(IINC)/agrflg.h 
+mdfctn.o     : mdfctn.c   $(IINC)/strml.h $(IINC)/sctp.h 
+modcon.o     : modcon.c   $(IINC)/strml.h
+next.o       : next.c
+obrind.o     : obrind.c   $(IINC)/strml.h
+opinpg.o     : opinpg.c
+opscfl.o     : opscfl.c
+opscin.o     : opscin.c   $(IINC)/sctp.h 
+opscrl.o     : opscrl.c   $(IINC)/sctp.h 
+orddel.o     : orddel.c
+ordins.o     : ordins.c 
+ordmod.o     : ordmod.c
+page_op.o    : page_op.c
+proind.o     : proind.c
+rdcort.o     : rdcort.c
+reclj.o      : reclj.c    $(IINC)/strml.h $(IINC)/inpop.h 
+recmj.o      : recmj.c    $(IINC)/strml.h
+rllbck.o     : rllbck.c   $(IINC)/strml.h
+rllbfn.o     : rllbfn.c
+snlock.o     : snlock.c   $(IINC)/sctp.h  $(EINC)/synch/sctpsyn.h 
+tmpob.o      : tmpob.c    dessrt.h fdclsrt.h
+trns.o       : trns.c     dessrt.h fdclsrt.h $(IINC)/inpop.h $(IINC)/strml.h \
+                          $(IINC)/expop.h $(IINC)/totdecl.h
+
+cmpftn.o     : cmpftn.c  $(IINC)/cmpdecl.h $(IINC)/totdecl.h
+libtran.o    : libtran.c $(IINC)/sctp.h $(IINC)/f1f2decl.h
+
+cmpkey.o    : cmpkey.c   $(SRT_H)
+extsrt.o    : extsrt.c   $(SRT_H)
+push.o      : push.c     $(SRT_H) 
+puts.o      : puts.c     $(SRT_H) 
+quicksrt.o  : quicksrt.c $(SRT_H) 
+rkfrm.o     : rkfrm.c    $(SRT_H)
+sort.o      : sort.c     $(SRT_H)
+tidsrt.o    : tidsrt.c   $(SRT_H)

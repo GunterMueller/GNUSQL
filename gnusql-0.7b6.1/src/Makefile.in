@@ -1,0 +1,94 @@
+##########################################################################
+##                    GNU SQL Compiler                                  ##
+##########################################################################
+##
+## $Id: Makefile.in,v 1.251 1998/09/29 21:24:46 kimelman Exp $
+##
+## This file is a part of GNU SQL Server
+##
+## Copyright (c) 1996-1998, Free Software Foundation, Inc
+## Developed at Institute of System Programming of Russian Academy of Science
+## This file is written by Michael Kimelman
+##
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free
+## Software Foundation; either version 2 of the License, or (at your option)
+## any later version.
+##
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+## more details.
+##
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, write to the Free Software Foundation, Inc.,
+## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+## Contacts: gss@ispras.ru
+##
+
+srcdir=@srcdir@
+VPATH=@srcdir@
+include Makefile_h
+##########################################################################
+#                make program                                            #
+##########################################################################
+all:    install #TAGS #compile_all
+	date
+timetest:
+	time $(MAKE)
+ansi2knr: 
+	( cd other; $(MAKERT) a2k )
+### convert all files in subtree to knr style
+	$(A2K)
+	echo touchstamp >$@
+prepdirs: @A2K_entry@
+	[ -d $(SERVDIR) ] || mkdir -p $(SERVDIR)
+	[ -d $(SERVBIN) ] || mkdir -p $(SERVBIN)
+	[ -d $(CLNT)    ] || mkdir -p $(CLNT)
+	[ -d $(LIB)     ] || mkdir -p $(LIB)
+
+install : compile_all
+	( cd comp-lib ; $(MAKERT) install ;)
+	( cd main     ; $(MAKERT) install ;)
+	( cd parse    ; $(MAKERT) install ;) ## make gsqlmon and copy it to client area
+compile_all: server client  adm-utilities
+# client => interpretator client library and client part of the compiler
+client: prepdirs $(LIBCLI)
+	( cd main;  $(MAKERT) client; )
+server: prepdirs ENGINE services
+services: $(LIBSER)
+	( cd main; $(MAKERT) server; )
+ENGINE : headers libgss_ser
+	( cd engine ; $(MAKERT) server ;)
+adm-utilities: prepdirs
+	(cd comp-lib; $(MAKERT) binaries ;)
+libgss_ser : headers
+	echo "== << server library "
+	(cd other   ; $(MAKERT) server ;)
+	(cd trl     ; $(MAKERT) ;)
+	(cd kitty   ; $(MAKERT) ;)
+	(cd comp-lib; $(MAKERT) ;)
+	(cd parse   ; $(MAKERT) server ;)
+	(cd semantic; $(MAKERT) ;)
+	(cd opt     ; $(MAKERT) ;)
+	(cd synthes ; $(MAKERT) ;)
+	(cd interpr ; $(MAKERT) server;)
+	echo "== >> server library made"
+libgss_cli : headers
+	echo "== << client library "
+	(cd other   ; $(MAKERT) client;)
+	(cd parse   ; $(MAKERT) client;)
+	(cd interpr ; $(MAKERT) client;)
+	(cd engine  ; $(MAKERT) client;)
+	echo "== >> client library made"
+headers:
+	echo "== << Checking includes"
+	(cd include ; $(MAKERT) ;)
+test:  compile_all
+	( cd ../test ;  $(MAKE); )
+
+TAGS: force
+	etags */*.x */*.y */*.l */*.k */*.def */*.h */*/*.h */*.c */*/*.c `find . -name 'Makefile.in' -print`
+clean::
+	[ ! -f TAGS ] || $(RM) TAGS

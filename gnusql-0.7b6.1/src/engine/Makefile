@@ -1,0 +1,115 @@
+# Generated automatically from Makefile.in by configure.
+##########################################################################
+##                 GNU SQL Server  (server administrator daemon)        ##
+##                                                                      ##
+##			Administrator of                                ##
+##  Storage and Transaction Synchrohization Management System           ##
+##		    ( engine of SQL-server);                            ##
+##	   child prosesses: buf, mj, lj, srt, syn, trn                  ##
+##                                                                      ##
+##########################################################################
+##
+## $Id: Makefile.in,v 1.253 1998/09/29 21:24:53 kimelman Exp $
+##
+## This file is a part of GNU SQL Server
+##
+## Copyright (c) 1996-1998, Free Software Foundation, Inc
+## Developed at Institute of System Programming of Russian Academy of Science
+## This file is written by Michael Kimelman
+##
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free
+## Software Foundation; either version 2 of the License, or (at your option)
+## any later version.
+##
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+## more details.
+##
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, write to the Free Software Foundation, Inc.,
+## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+## Contacts: gss@ispras.ru
+##
+
+srcdir=/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine
+VPATH=/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine
+include ../Makefile_h
+##########################################################################
+#                make program                                            #
+##########################################################################
+SUBDIR= trans buf jour synch rcvutl
+
+all:    install
+createdirs:
+	- [ -d $(SERVDIR) ] || mkdir -p $(SERVDIR)
+	- [ -d $(SERVDIR)/db ] || mkdir -p $(SERVDIR)/db
+	- [ -d $(SERVBIN) ] || mkdir -p $(SERVBIN)
+	- [ -d $(CLNT) ] || mkdir -p $(CLNT)
+	- [ ! -f $(SERVDIR)/adm ] || rm -f $(SERVDIR)/adm
+	- [ ! -f $(SERVBIN)/prepup ] || rm -f $(SERVBIN)/prepup
+	- [ ! -f $(SERVBIN)/chpars ] || rm -f $(SERVBIN)/chpars
+
+install upgrade: createdirs bin
+
+boot: instclean upgrade
+	( cd $(SERVDIR) ; bin/prepup )
+
+instclean:
+	- [ -d $(SERVDIR) ] && ( cd $(SERVDIR); rm -r -f * )
+
+bin:    announce client server
+client: $(LIBCLI) chpars
+	$(CP)  chpars $(SERVBIN)
+server: subdirs $(LIBSR_DEP) adm prepup 
+	$(CP)  adm $(SERVDIR)/gsqls
+	$(CP)  prepup $(SERVBIN)
+libgss_cli : dispatch_clnt.o dispatch_xdr.o
+	echo $? >$@
+libgss_ser : dispatch_xdr.o
+	echo $? >$@
+
+subdirs: headers
+	for dir in $(SUBDIR); do \
+	( cd $$dir; $(MAKE) ; );  done
+
+adm:  adm.o dispatch.o dispatch_svc.o $(LIBSR_DEP)
+	echo --  generating $@
+	- $(RM) $@ 
+	$(LD) adm.o dispatch.o dispatch_svc.o  $(SRLIBS) -o $@ 
+
+adm.o: adm.c $(LIINC)/dispatch.h $(IINC)/pupsi.h $(INC)/global.h \
+    $(IINC)/inpop.h $(IINC)/expop.h   $(IINC)/totdecl.h\
+    $(IINC)/strml.h $(IINC)/adfstr.h  $(IINC)/rnmtp.h \
+    admdef.h rcvutl/puprcv.h 
+dispatch.o:      dispatch.c      $(LIINC)/dispatch.h admdef.h $(IINC)/totdecl.h
+dispatch_svc.o:  dispatch_svc.c  $(LIINC)/dispatch.h 
+dispatch_clnt.o: dispatch_clnt.c $(LIINC)/dispatch.h 
+dispatch_xdr.o:  dispatch_xdr.c  $(LIINC)/dispatch.h 
+
+dispatch_svc.c dispatch_clnt.c $(LIINC)/dispatch.h dispatch_xdr.c : dispatch.x $(srcdir)/../../etc/rpcgen-sh.in
+	$(RPCGEN) $(LIINC) $(srcdir)/dispatch.x
+prepup:  prepup.o rcvutl/libini.o $(LIBSR_DEP)
+	echo --  generating $@
+	- $(RM) $@ 
+	$(LD) prepup.o rcvutl/libini.o $(SRLIBS) -o $@ 
+
+prepup.o: prepup.c $(IINC)/rnmtp.h $(IINC)/adfstr.h $(IINC)/pupsi.h \
+             $(IINC)/totdecl.h admdef.h
+
+chpars:  chpars.o  $(LIBCL_DEP)
+	echo --  generating $@
+	- $(RM) $@ 
+	$(LD) chpars.o $(CLLIBS) -o $@ 
+
+chpars.o: chpars.c $(LIINC)/dispatch.h dyngspar.h gspstr.h
+
+clean::
+	- $(RM) adm prepup chpars
+	- $(RM) dispatch_svc.c dispatch_clnt.c dispatch.h dispatch_xdr.c
+
+headers : admdef.h $(LIINC)/dispatch.h dyngspar.h gspstr.h 
+	( cd rcvutl ; $(MAKERT) headers)
+	( cd synch  ; $(MAKERT) headers)

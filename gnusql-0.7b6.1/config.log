@@ -1,0 +1,377 @@
+This file contains any messages produced by compilers while
+running configure, to aid debugging if configure makes a mistake.
+
+configure:635: checking host system type
+configure:670: checking whether #! works in shell scripts
+configure:697: checking for gcc
+configure:774: checking whether the C compiler (gcc  ) works
+configure:788: gcc -o conftest    conftest.c  1>&5
+configure:785:1: warning: return type defaults to 'int' [-Wimplicit-int]
+ main(){return(0);}
+ ^
+configure:808: checking whether the C compiler (gcc  ) is a cross-compiler
+configure:813: checking whether we are using GNU C
+configure:822: gcc -E conftest.c
+configure:837: checking whether gcc accepts -g
+configure:865: checking how to run the C preprocessor
+configure:886: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:930: checking for mawk
+configure:968: checking for gcc option to accept ANSI C
+configure:1002: gcc  -c -g -O2  conftest.c 1>&5
+configure:1024: checking for function prototypes
+configure:1263: checking for a BSD compatible install
+configure:1323: checking for bison
+configure:1372: checking for flex
+configure:1405: checking for yywrap in -lfl
+configure:1424: gcc -o conftest -Wall -g3 -O4  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine -Wall -g3 -O4  conftest.c -lfl   1>&5
+configure:1626: checking whether ln -s works
+configure:1650: checking for ar
+configure:1697: checking for gmake
+configure:1697: checking for make
+configure:1732: checking for make include item
+configure:1769: checking if make able to identify short and long file name
+configure:2007: checking for rpcgen
+configure:2036: checking /usr/bin/rpcgen output
+In file included from configure:2070:0:
+./mytest.h:29:0: warning: "CT_P" redefined
+ #define CT_P 1
+ ^
+./mytest.h:23:0: note: this is the location of the previous definition
+ #define CT_P 3
+ ^
+In file included from ./mytest_svc.c:6:0,
+                 from configure:2085:
+./mytest.h:29:0: warning: "CT_P" redefined
+ #define CT_P 1
+ ^
+./mytest.h:23:0: note: this is the location of the previous definition
+ #define CT_P 3
+ ^
+In file included from configure:2101:0:
+mytest.h:29:0: warning: "CT_P" redefined
+ #define CT_P 1
+ ^
+mytest.h:23:0: note: this is the location of the previous definition
+ #define CT_P 3
+ ^
+configure:2245: checking for shmat
+configure:2273: gcc -o conftest -Wall -g3 -O4  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine -Wall -g3 -O4  conftest.c  1>&5
+configure:2361: checking for callrpc
+configure:2389: gcc -o conftest -Wall -g3 -O4  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine -Wall -g3 -O4  conftest.c  1>&5
+configure:2476: checking for ftok
+configure:2504: gcc -o conftest -Wall -g3 -O4  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine -Wall -g3 -O4  conftest.c  1>&5
+configure:2589: checking for dirent.h that defines DIR
+configure:2602: gcc -c -Wall -g3 -O4  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine conftest.c 1>&5
+configure: In function 'main':
+configure:2598:6: warning: unused variable 'dirp' [-Wunused-variable]
+ DIR *dirp = 0;
+      ^
+configure:2627: checking for opendir in -ldir
+configure:2646: gcc -o conftest -Wall -g3 -O4  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine -Wall -g3 -O4  conftest.c -ldir   1>&5
+/usr/bin/ld: cannot find -ldir
+collect2: error: ld returned 1 exit status
+configure: failed program was:
+#line 2635 "configure"
+#include "confdefs.h"
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char opendir();
+
+int main() {
+opendir()
+; return 0; }
+configure:2710: checking for ANSI C header files
+configure:2723: gcc -E  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine conftest.c >/dev/null 2>conftest.out
+configure:2790: gcc -o conftest -Wall -g3 -O4  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine -Wall -g3 -O4  conftest.c  1>&5
+configure: In function 'main':
+configure:2785:67: warning: implicit declaration of function 'exit' [-Wimplicit-function-declaration]
+ if (XOR (islower (i), ISLOWER (i)) || toupper (i) != TOUPPER (i)) exit(2);
+                                                                   ^
+configure:2785:67: warning: incompatible implicit declaration of built-in function 'exit'
+configure:2785:67: note: include '<stdlib.h>' or provide a declaration of 'exit'
+configure:2786:1: warning: incompatible implicit declaration of built-in function 'exit'
+ exit (0); }
+ ^
+configure:2786:1: note: include '<stdlib.h>' or provide a declaration of 'exit'
+configure:2814: checking for sys/wait.h that is POSIX.1 compatible
+configure:2835: gcc -c -Wall -g3 -O4  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine conftest.c 1>&5
+configure:2859: checking for stdio.h
+configure:2869: gcc -E  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine conftest.c >/dev/null 2>conftest.out
+configure:2859: checking for stdlib.h
+configure:2869: gcc -E  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine conftest.c >/dev/null 2>conftest.out
+configure:2859: checking for stdarg.h
+configure:2869: gcc -E  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine conftest.c >/dev/null 2>conftest.out
+configure:2859: checking for fcntl.h
+configure:2869: gcc -E  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine conftest.c >/dev/null 2>conftest.out
+configure:2859: checking for sys/file.h
+configure:2869: gcc -E  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine conftest.c >/dev/null 2>conftest.out
+configure:2859: checking for sys/time.h
+configure:2869: gcc -E  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine conftest.c >/dev/null 2>conftest.out
+configure:2859: checking for unistd.h
+configure:2869: gcc -E  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine conftest.c >/dev/null 2>conftest.out
+configure:2899: checking for sys/ipc.h
+configure:2909: gcc -E  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine conftest.c >/dev/null 2>conftest.out
+configure:2899: checking for sys/shm.h
+configure:2909: gcc -E  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine conftest.c >/dev/null 2>conftest.out
+configure:2899: checking for sys/msg.h
+configure:2909: gcc -E  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine conftest.c >/dev/null 2>conftest.out
+configure:2899: checking for sys/cdefs.h
+configure:2909: gcc -E  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine conftest.c >/dev/null 2>conftest.out
+configure:2937: checking for working const
+configure:2991: gcc -c -Wall -g3 -O4  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine conftest.c 1>&5
+configure: In function 'main':
+configure:2965:15: warning: unused variable 's' [-Wunused-variable]
+   char const *s = 0 ? (char *) 0 : (char const *) 0;
+               ^
+configure:2985:13: warning: unused variable 'foo' [-Wunused-variable]
+   const int foo = 10;
+             ^
+configure:2953:27: warning: unused variable 'zero' [-Wunused-variable]
+ static struct point const zero = {0,0};
+                           ^
+configure:2947:39: warning: unused variable 'x' [-Wunused-variable]
+ typedef int charset[2]; const charset x;
+                                       ^
+configure:2967:5: warning: 't' is used uninitialized in this function [-Wuninitialized]
+   *t++ = 0;
+     ^
+configure:2982:21: warning: 'b' is used uninitialized in this function [-Wuninitialized]
+   struct s *b; b->j = 5;
+                     ^
+configure:3012: checking for off_t
+configure:3045: checking for pid_t
+configure:3078: checking for size_t
+configure:3111: checking return type of signal handlers
+configure:3133: gcc -c -Wall -g3 -O4  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine conftest.c 1>&5
+configure: In function 'main':
+configure:3129:5: warning: unused variable 'i' [-Wunused-variable]
+ int i;
+     ^
+configure:3152: checking whether time.h and sys/time.h may both be included
+configure:3166: gcc -c -Wall -g3 -O4  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine conftest.c 1>&5
+configure: In function 'main':
+configure:3162:12: warning: unused variable 'tp' [-Wunused-variable]
+ struct tm *tp;
+            ^
+configure:3187: checking whether struct tm is in sys/time.h or time.h
+configure:3200: gcc -c -Wall -g3 -O4  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine conftest.c 1>&5
+configure: In function 'main':
+configure:3196:16: warning: statement with no effect [-Wunused-value]
+ struct tm *tp; tp->tm_sec;
+                ^
+configure:3222: checking for long double
+configure:3265: checking size of void*
+configure:3284: gcc -o conftest -Wall -g3 -O4  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine -Wall -g3 -O4  conftest.c  1>&5
+configure:3275:1: warning: return type defaults to 'int' [-Wimplicit-int]
+ main()
+ ^
+configure: In function 'main':
+configure:3278:11: warning: implicit declaration of function 'exit' [-Wimplicit-function-declaration]
+   if (!f) exit(1);
+           ^
+configure:3278:11: warning: incompatible implicit declaration of built-in function 'exit'
+configure:3278:11: note: include '<stdlib.h>' or provide a declaration of 'exit'
+configure:3279:14: warning: format '%d' expects argument of type 'int', but argument 3 has type 'long unsigned int' [-Wformat=]
+   fprintf(f, "%d\n", sizeof(void*));
+              ^
+configure:3280:3: warning: incompatible implicit declaration of built-in function 'exit'
+   exit(0);
+   ^
+configure:3280:3: note: include '<stdlib.h>' or provide a declaration of 'exit'
+configure:3304: checking size of char
+configure:3323: gcc -o conftest -Wall -g3 -O4  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine -Wall -g3 -O4  conftest.c  1>&5
+configure:3314:1: warning: return type defaults to 'int' [-Wimplicit-int]
+ main()
+ ^
+configure: In function 'main':
+configure:3317:11: warning: implicit declaration of function 'exit' [-Wimplicit-function-declaration]
+   if (!f) exit(1);
+           ^
+configure:3317:11: warning: incompatible implicit declaration of built-in function 'exit'
+configure:3317:11: note: include '<stdlib.h>' or provide a declaration of 'exit'
+configure:3318:14: warning: format '%d' expects argument of type 'int', but argument 3 has type 'long unsigned int' [-Wformat=]
+   fprintf(f, "%d\n", sizeof(char));
+              ^
+configure:3319:3: warning: incompatible implicit declaration of built-in function 'exit'
+   exit(0);
+   ^
+configure:3319:3: note: include '<stdlib.h>' or provide a declaration of 'exit'
+configure:3343: checking size of short
+configure:3362: gcc -o conftest -Wall -g3 -O4  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine -Wall -g3 -O4  conftest.c  1>&5
+configure:3353:1: warning: return type defaults to 'int' [-Wimplicit-int]
+ main()
+ ^
+configure: In function 'main':
+configure:3356:11: warning: implicit declaration of function 'exit' [-Wimplicit-function-declaration]
+   if (!f) exit(1);
+           ^
+configure:3356:11: warning: incompatible implicit declaration of built-in function 'exit'
+configure:3356:11: note: include '<stdlib.h>' or provide a declaration of 'exit'
+configure:3357:14: warning: format '%d' expects argument of type 'int', but argument 3 has type 'long unsigned int' [-Wformat=]
+   fprintf(f, "%d\n", sizeof(short));
+              ^
+configure:3358:3: warning: incompatible implicit declaration of built-in function 'exit'
+   exit(0);
+   ^
+configure:3358:3: note: include '<stdlib.h>' or provide a declaration of 'exit'
+configure:3382: checking size of int
+configure:3401: gcc -o conftest -Wall -g3 -O4  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine -Wall -g3 -O4  conftest.c  1>&5
+configure:3392:1: warning: return type defaults to 'int' [-Wimplicit-int]
+ main()
+ ^
+configure: In function 'main':
+configure:3395:11: warning: implicit declaration of function 'exit' [-Wimplicit-function-declaration]
+   if (!f) exit(1);
+           ^
+configure:3395:11: warning: incompatible implicit declaration of built-in function 'exit'
+configure:3395:11: note: include '<stdlib.h>' or provide a declaration of 'exit'
+configure:3396:14: warning: format '%d' expects argument of type 'int', but argument 3 has type 'long unsigned int' [-Wformat=]
+   fprintf(f, "%d\n", sizeof(int));
+              ^
+configure:3397:3: warning: incompatible implicit declaration of built-in function 'exit'
+   exit(0);
+   ^
+configure:3397:3: note: include '<stdlib.h>' or provide a declaration of 'exit'
+configure:3421: checking size of long
+configure:3440: gcc -o conftest -Wall -g3 -O4  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine -Wall -g3 -O4  conftest.c  1>&5
+configure:3431:1: warning: return type defaults to 'int' [-Wimplicit-int]
+ main()
+ ^
+configure: In function 'main':
+configure:3434:11: warning: implicit declaration of function 'exit' [-Wimplicit-function-declaration]
+   if (!f) exit(1);
+           ^
+configure:3434:11: warning: incompatible implicit declaration of built-in function 'exit'
+configure:3434:11: note: include '<stdlib.h>' or provide a declaration of 'exit'
+configure:3435:14: warning: format '%d' expects argument of type 'int', but argument 3 has type 'long unsigned int' [-Wformat=]
+   fprintf(f, "%d\n", sizeof(long));
+              ^
+configure:3436:3: warning: incompatible implicit declaration of built-in function 'exit'
+   exit(0);
+   ^
+configure:3436:3: note: include '<stdlib.h>' or provide a declaration of 'exit'
+configure:3460: checking size of long long
+configure:3479: gcc -o conftest -Wall -g3 -O4  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine -Wall -g3 -O4  conftest.c  1>&5
+configure:3470:1: warning: return type defaults to 'int' [-Wimplicit-int]
+ main()
+ ^
+configure: In function 'main':
+configure:3473:11: warning: implicit declaration of function 'exit' [-Wimplicit-function-declaration]
+   if (!f) exit(1);
+           ^
+configure:3473:11: warning: incompatible implicit declaration of built-in function 'exit'
+configure:3473:11: note: include '<stdlib.h>' or provide a declaration of 'exit'
+configure:3474:14: warning: format '%d' expects argument of type 'int', but argument 3 has type 'long unsigned int' [-Wformat=]
+   fprintf(f, "%d\n", sizeof(long long));
+              ^
+configure:3475:3: warning: incompatible implicit declaration of built-in function 'exit'
+   exit(0);
+   ^
+configure:3475:3: note: include '<stdlib.h>' or provide a declaration of 'exit'
+configure:3499: checking size of long double
+configure:3518: gcc -o conftest -Wall -g3 -O4  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine -Wall -g3 -O4  conftest.c  1>&5
+configure:3509:1: warning: return type defaults to 'int' [-Wimplicit-int]
+ main()
+ ^
+configure: In function 'main':
+configure:3512:11: warning: implicit declaration of function 'exit' [-Wimplicit-function-declaration]
+   if (!f) exit(1);
+           ^
+configure:3512:11: warning: incompatible implicit declaration of built-in function 'exit'
+configure:3512:11: note: include '<stdlib.h>' or provide a declaration of 'exit'
+configure:3513:14: warning: format '%d' expects argument of type 'int', but argument 3 has type 'long unsigned int' [-Wformat=]
+   fprintf(f, "%d\n", sizeof(long double));
+              ^
+configure:3514:3: warning: incompatible implicit declaration of built-in function 'exit'
+   exit(0);
+   ^
+configure:3514:3: note: include '<stdlib.h>' or provide a declaration of 'exit'
+configure:3539: checking for strftime
+configure:3567: gcc -o conftest -Wall -g3 -O4  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine -Wall -g3 -O4  conftest.c  1>&5
+configure:3551:6: warning: conflicting types for built-in function 'strftime'
+ char strftime();
+      ^
+configure:3635: checking for vprintf
+configure:3663: gcc -o conftest -Wall -g3 -O4  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine -Wall -g3 -O4  conftest.c  1>&5
+configure:3647:6: warning: conflicting types for built-in function 'vprintf'
+ char vprintf();
+      ^
+configure:3743: checking for strstr
+configure:3771: gcc -o conftest -Wall -g3 -O4  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine -Wall -g3 -O4  conftest.c  1>&5
+configure:3755:6: warning: conflicting types for built-in function 'strstr'
+ char $ac_func();
+      ^
+configure:3743: checking for memcpy
+configure:3771: gcc -o conftest -Wall -g3 -O4  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine -Wall -g3 -O4  conftest.c  1>&5
+configure:3755:6: warning: conflicting types for built-in function 'memcpy'
+ char $ac_func();
+      ^
+configure:3743: checking for uname
+configure:3771: gcc -o conftest -Wall -g3 -O4  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine -Wall -g3 -O4  conftest.c  1>&5
+configure:3743: checking for cftime
+configure:3771: gcc -o conftest -Wall -g3 -O4  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine -Wall -g3 -O4  conftest.c  1>&5
+/tmp/ccuwcoH1.o: In function `main':
+/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/configure:3765: undefined reference to `cftime'
+collect2: error: ld returned 1 exit status
+configure: failed program was:
+#line 3748 "configure"
+#include "confdefs.h"
+/* System header to define __stub macros and hopefully few prototypes,
+    which can conflict with char cftime(); below.  */
+#include <assert.h>
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char cftime();
+
+int main() {
+
+/* The GNU C library defines this for functions which it implements
+    to always fail with ENOSYS.  Some functions are actually named
+    something starting with __ and the normal name is an alias.  */
+#if defined (__stub_cftime) || defined (__stub___cftime)
+choke me
+#else
+cftime();
+#endif
+
+; return 0; }
+configure:3743: checking for getlogin
+configure:3771: gcc -o conftest -Wall -g3 -O4  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine -Wall -g3 -O4  conftest.c  1>&5
+configure:3743: checking for cuserid
+configure:3771: gcc -o conftest -Wall -g3 -O4  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine -Wall -g3 -O4  conftest.c  1>&5
+configure:3798: checking for svc_unreg
+configure:3826: gcc -o conftest -Wall -g3 -O4  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine -Wall -g3 -O4  conftest.c  1>&5
+/tmp/ccb0SyFg.o: In function `main':
+/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/configure:3820: undefined reference to `svc_unreg'
+collect2: error: ld returned 1 exit status
+configure: failed program was:
+#line 3803 "configure"
+#include "confdefs.h"
+/* System header to define __stub macros and hopefully few prototypes,
+    which can conflict with char svc_unreg(); below.  */
+#include <assert.h>
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char svc_unreg();
+
+int main() {
+
+/* The GNU C library defines this for functions which it implements
+    to always fail with ENOSYS.  Some functions are actually named
+    something starting with __ and the normal name is an alias.  */
+#if defined (__stub_svc_unreg) || defined (__stub___svc_unreg)
+choke me
+#else
+svc_unreg();
+#endif
+
+; return 0; }
+configure:3798: checking for svc_unregister
+configure:3826: gcc -o conftest -Wall -g3 -O4  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine -Wall -g3 -O4  conftest.c  1>&5
+configure:3798: checking for atexit
+configure:3826: gcc -o conftest -Wall -g3 -O4  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine -Wall -g3 -O4  conftest.c  1>&5
+configure:3798: checking for on_exit
+configure:3826: gcc -o conftest -Wall -g3 -O4  -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine -I. -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include -I/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine -Wall -g3 -O4  conftest.c  1>&5

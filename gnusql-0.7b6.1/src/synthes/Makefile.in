@@ -1,0 +1,56 @@
+##########################################################################
+##                GNU SQL Compiler  (Synthesys Stage)                   ##
+##########################################################################
+##
+## $Id: Makefile.in,v 1.247 1998/09/29 21:26:39 kimelman Exp $
+##
+## This file is a part of GNU SQL Server
+##
+## Copyright (c) 1996-1998, Free Software Foundation, Inc
+## Developed at Institute of System Programming of Russian Academy of Science
+## This file is written by Michael Kimelman
+##
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free
+## Software Foundation; either version 2 of the License, or (at your option)
+## any later version.
+##
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+## more details.
+##
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, write to the Free Software Foundation, Inc.,
+## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+## Contacts: gss@ispras.ru
+##
+
+
+CCFLAG1= -D__PRCD__
+srcdir=@srcdir@
+VPATH=@srcdir@
+include ../Makefile_h
+##======================================================================##
+##          other setups                                                ##
+##======================================================================##
+H=$(INC)/global.h syndef.h $(INC)/type_lib.h
+##########################################################################
+#                make program                                            #
+##########################################################################
+all: $(LIBSER)
+libgss_ser : codegen.o struct.o repack.o moddump.o optim.o synlib.o
+	echo $? >$@
+codegen.o: codegen.c $(H) $(INC)/const.h
+struct.o: struct.c $(H)
+repack.o: repack.c $(H)
+moddump.o: moddump.c $(H)
+optim.o: optim.c $(H) $(INC)/inprtyp.h
+synlib.o: synlib.c $(H)
+
+
+
+
+
+

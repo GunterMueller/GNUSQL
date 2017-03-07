@@ -1,0 +1,534 @@
+#!/bin/sh
+#### make-dist: create an GNU SQL Server distribution tar file from the current
+#### source tree.  This basically creates a duplicate directory
+#### structure, and then hard links into it only those files that should
+#### be distributed.  This means that if you add a file with an odd name,
+#### you should make sure that this script will include it.
+#
+# This file is part of GNU SQL Server.
+#
+# Copyright (c) 1996-1998, Free Software Foundation, Inc
+# Wriiten at Institute for System Programming of Russian Academy of Science
+#
+# GNU SQL Server is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# GNU SQL Server is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with GNU SQL Server; see the file COPYING.  If not, write to
+# the Free Software Foundation, 59 Temple Place - Suite 330,
+# Boston, MA 02111-1307, USA.
+#
+# Contacts: gss@ispras.ru
+#
+
+progname="$0"
+
+### Exit if a command fails.
+### set -e
+
+### Print out each line we read, for debugging's sake.
+### set -ex
+
+clean_up=yes
+make_tar=yes
+newer=""
+make_diff=yes
+gsshead="gnusql-"
+
+md_usage() {
+
+cat  >&2 <<EOF
+$1
+
+Usage: make-dist [options]           
+
+Options:
+
+--no-clean-up    This option tells make-dist not to delete the staging directory
+                 after it is done making the tar file.
+
+--version Ver_ID This option tells make-dist to use a given version number for created 
+                 tar instead of default value, stored in file 'version'
+
+--no-tar         This option tells make-dist not to make a tar file.  Since it is 
+                 rather pointless to build the whole staging directory and then
+                 nuke it, using this option also selects '--no-clean-up'.
+
+--dist-dir DIR   This option tells make-dist where distribution archives are collected.
+                 By default it tries to find it in '. .. ../.. ../../..' trees.
+
+--diff-with vers This option tells make-dist to create diff file. New distribution 
+                 compared with gnusql version 'vers'. If you omit this option make-dist 
+                 finds latest archive.  
+
+--no-diff        This option tells make-dist not to make a diff file.
+
+--newer filename This option tells make-dist to make the distribution normally, then
+                 remove all files older than the given timestamp file.  This is useful
+                 for creating incremental or patch distributions.
+
+--compress       This option tells make-dist to use 'compress' instead of gzip.
+                 Normally, make-dist uses gzip whenever it is present.
+
+--help           Show this help
+
+--verbose        Turn on 'set -x' mode
+
+EOF
+}
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+    ## This option tells make-dist not to delete the staging directory
+    ## after it's done making the tar file.
+    "--no-clean-up" )
+        clean_up=no
+    ;;
+    ## This option tells make-dist to use a given version number for created 
+    ## tar instead of default value, stored in file 'version'
+    "--version" | "-V" )
+        version="$2"
+        shift
+    ;;
+    ## This option tells make-dist not to make a tar file.  Since it's 
+    ## rather pointless to build the whole staging directory and then
+    ## nuke it, using this option also selects '--no-clean-up'.
+    "--no-tar" | "-t-")
+        make_tar=no
+        clean_up=no
+    ;;
+    "--no-diff" | "-d-" )
+        make_diff=no
+    ;;
+    ## This option tells make-dist to make the distribution normally, then
+    ## remove all files older than the given timestamp file.  This is useful
+    ## for creating incremental or patch distributions.
+    "--newer" | "-n" )
+        newer="$2"
+        new_extension=".new"
+        shift
+    ;;
+    ## This option tells make-dist to use `compress' instead of gzip.
+    ## Normally, make-dist uses gzip whenever it is present.
+    "--compress")
+        default_gzip="compress"
+    ;;
+    ## set distribution archive collection directory
+    "--dist-dir" | "--dir" | "-d" )
+        dist_dir="`(cd $2; pwd)`"
+        shift
+    ;; 
+    ## set previous revision id to create diff
+    "--diff-with"| "--diff" | "-p" )
+        diff_vers="$2"
+        shift
+    ;;
+    ## show help
+    "--help" | "-h" )
+        md_usage "make-dist: help"
+        exit 0
+    ;;
+    ## turn on verbose mode
+    "--verbose" | "-v" )
+        set -x
+    ;;
+    * )
+        md_usage "${progname}: Unrecognized argument: $1" 
+        exit 1
+    ;;
+  esac
+  shift
+done
+
+check_settings() {
+  ### Make sure we're running in the right place.
+  if [ ! -d src -o ! -f etc/dq.in -o ! -f version ]; then
+    echo "${progname}: Can't find 'src' tree." >&2
+    echo "${progname} must be run in the top directory of GNU SQL Server" >&2
+    echo "distribution tree.  cd to that directory and try again." >&2
+    exit 1
+  fi
+  
+  ### Find out which version of GSS this is.
+  if [ "x$version" = x ]; then
+    version=`cat version`                          ## read current version id
+    minor_v=`expr $version : '.*\([0-9][0-9]*\)$'` ## and  increment minor id
+    version=`expr $version : '\(.*\)[0-9][0-9]*$'``expr $minor_v + 1` ## of version
+  fi
+  
+  if [ ! "${version}" ]; then
+    echo "${progname}: can\'t find current GSS version in \`./version'." >&2
+    exit 1
+  fi
+  shortversion=`echo $version | sed -e 's/^\([0-9][0-9]*\.[0-9][0-9]*\).*$/\1/'`
+  
+  ### Make sure that given distr directory and diff_vers ae correct
+  if [ "x${dist_dir}" != "x" -a "${make_diff}" = "yes" -a "x${diff_vers}" != "x" ]; then
+    archive="${dist_dir}/${gsshead}${diff_vers}"
+    for extn in ".tar" ".tar.gz" ".tar.Z" ".tgz" ".tz" ; do
+      [ ! -f ${archive}${extn} ] || break;
+    done
+    if [ ! -f ${archive}${extn} -a ! -d ${archive} ]; then
+      extn=""
+    else
+        echo "${progname}: Can't find ${diff_vers} version of GNU SQL Server.    " >&2
+        md_usage "${progname}: either --dist-dir or --diff-with options was incorrect" 
+        exit 1
+    fi
+  fi
+  
+  echo $version and $shortversion
+  
+  if grep -s "GNU SQL Server version ${shortversion}" ./etc/gss.texi > /dev/null; then
+    true
+  else
+    echo "You must update the version number in \`./etc/gss.texi'"
+    sleep 5
+  fi
+  
+  ### Make sure we don't already have a directory  gnusql-${version}.
+  
+  gssname="${gsshead}${version}${new_extension}"
+  
+  if [ -d ${gssname} ]
+  then
+    echo Directory "${gssname}" already exists >&2
+    exit 1
+  fi
+  
+  ### Make sure the subdirectory is available.
+  tempparent="make-dist.tmp.$$"
+  if [ -d ${tempparent} ]; then
+    echo "${progname}: staging directory \`${tempparent}' already exists.
+  Perhaps a previous invocation of \`${progname}' failed to clean up after
+  itself.  Check that directories whose names are of the form
+  \`make-dist.tmp.NNNNN' don't contain any important information, remove
+  them, and try again." >&2
+    exit 1
+  fi
+  
+  ### Make sure configure is newer than configure.in.
+  if [ "x`ls -t configure configure.in | head -1`" != "xconfigure" ]; then
+    echo "\`./configure.in' seems to be newer than \`./configure.'" >&2
+    echo "Attempting to run autoconf." >&2
+    autoconf
+  fi
+}
+
+update_system() { 
+  echo "------------------"
+  echo " Updating system  "
+  echo "------------------"
+  ### Update:
+  if [ -f config.status ]; then
+    ./config.status --recheck
+    ./config.status
+  else
+    ./configure
+  fi
+
+  echo "Updating version number"
+  old_version=`cat version`
+  echo $version >version                          ## store version  id
+  awk \
+     '$1 " " $2 " " $3 " " $4 " " $5 == "This directory tree holds version" { $6 = version; print $0 }
+      $1 " " $2 " " $3 " " $4 " " $5 != "This directory tree holds version"' \
+     version=${version} README > tmp.README
+  mv tmp.README README
+  
+  make -k
+}
+
+create_distribution() {
+  echo "--------------------------------------------"
+  echo "Creating staging directory: \`${tempparent}'"
+  
+  mkdir ${tempparent}
+  tempdir="${tempparent}/${gssname}"
+  
+  echo "Creating top directory: \`${tempdir}'"
+  mkdir ${tempdir}
+  
+  ### We copy in the top-level files before creating the subdirectories in
+  ### hopes that this will make the top-level files appear first in the
+  ### tar file; this means that people can start reading the INSTALL and
+  ### README while the rest of the tar file is still unpacking.  Whoopee.
+  echo "Making links to top-level files." 
+  ln GETTING.GNU.SOFTWARE INSTALL PROBLEMS README BUGS make-dist ${tempdir}
+  ln ChangeLog* Makefile COPYING configure  version              ${tempdir}
+  ln configure.in config.h.in acconfig.h aclocal.m4              ${tempdir}
+  ln stamp-h stamp-h.in                                          ${tempdir}
+  cp -p Makefile.in ${tempdir}
+  ### Copy these files; they can be cross-filesystem symlinks.
+  cp -p config.sub ${tempdir}
+  cp -p config.guess ${tempdir}
+  cp -p install-sh ${tempdir}
+  
+  echo "Creating subdirectories and copy data"
+  for subdir in etc test src ; do
+    for dir in `find ${subdir} -type d ! -name "CVS" -print` ; do
+      [ -d ${tempdir}/$dir ] || mkdir -p ${tempdir}/$dir
+    done
+    for fn in `find ${subdir}  -type f -print` ; do
+      if [ -d ${tempdir}/`dirname $fn` ] ; then
+        ln $fn ${tempdir}/$fn
+      fi
+    done
+  done
+  
+  #### Make sure that there aren't any hard links between files in the
+  #### distribution; people with afs can't deal with that.  Okay,
+  #### actually we just re-copy anything with a link count greater
+  #### than two.  (Yes, strictly greater than 2 is correct; since we
+  #### created these files by linking them in from the original tree,
+  #### they'll have exactly two links normally.)
+  echo "Breaking intra-tree links."
+  for fn in `find ${tempdir} -type f -links +2 -print` ; do
+     cp -p $fn $$
+     rm -f $fn
+     mv    $$ $fn 
+  done
+  
+  #### preserve files, generated by language level tools, to not bother 
+  #### people by need of installing of all of these stuff.
+  #### (1) bison (2) flex (3) rpcgen
+  echo "preserving generated files."
+  find ${tempdir} -name '*.y' -exec etc/preserve save --bison  {} \;
+  find ${tempdir} -name '*.l' -exec etc/preserve save --flex   {} \;
+  find ${tempdir} -name '*.x' -exec etc/preserve save --rpcgen {} \;
+  
+  ## let's clean distribution
+  echo "Cleaning distribution"
+  ( 
+    cd ${tempdir}
+    ./configure
+    make distclean
+    find . -name Makefile -exec rm -f {} \; 
+    rm src/Makefile_h
+  )
+  
+  ## fix modes of distributed files
+  find ${tempparent}   -perm -100 -exec chmod 755 {} \;
+  find ${tempparent} ! -perm -100 -exec chmod 644 {} \;
+}
+
+####--------------------------------------------------------------------------------------------------
+####----- shipment directory       -------------------------------------------------------------------
+####--------------------------------------------------------------------------------------------------
+####--------------------------------------------------------------------------------------------------
+assert() {
+   if [ "$1" != "$2" ] ; then
+     echo "$0: Assertation failed : '$1 = $2' "
+     exit 1
+   fi
+}
+
+find_arcs() {
+  ## we should guess shipment directory and, if required, version to compare
+  ## set archive, extn, dist_dir and diff_vers
+  dist_dir=""
+  diff_vers=""
+  for dd in $1 . .. ../.. ../../.. ; do
+    [ "x${archive}" = "x" ] || break
+    list="`find $dd -name \"${gsshead}$2*\" -follow -print`"
+    [ "x${list}" != "x" ] || continue
+    for ff in ${list} ; do
+      dir=`dirname $ff` ; dir=`( cd $dir; pwd )`
+      arctail=`basename $ff | sed "s/${gsshead}//g;"`
+      echo -n " $arctail found... "
+      extn1=""
+      for ext in ".tgz" ".tz" ".gz" ".Z" ".tar" ; do
+        case $arctail in
+          *diff*  )
+                    echo "diff file... skipped"
+                    arctail=""
+                    break 
+                    ;;
+          *${ext} )
+                    extn1="${ext}${extn1}"
+                    arctail=`basename $arctail ${ext}`
+                    ;;
+        
+        esac
+      done
+      ## diff file or no version case
+      [ "x$arctail" != "x" ] || continue
+      if [ "$arctail" = "${version}" ] ; then
+        echo "is current... skipped" 
+        continue
+      fi
+      diff_vers=$arctail
+      echo -n "version (${diff_vers})... "
+      if [ "x${archive}" = "x" ] ; then
+        dist_dir=$dir
+        archive="${dist_dir}/${gsshead}${diff_vers}"
+        extn=${extn1}
+        echo "choosed to compare"
+      elif [ `ls -t ${archive}${extn} $ff | head -1` = $ff ] ; then
+        dist_dir=$dir
+        archive="${dist_dir}/${gsshead}${diff_vers}"
+        extn=${extn1}
+        echo "better for patch"
+      else
+        echo "skipped"
+      fi
+    done
+  done
+}
+
+choose_dest_dir() {
+  dir_save="${dist_dir}"
+  vers_save="${diff_vers}"
+  
+  
+  if [ "x${archive}" = "x" -a "x${vers_save}" != "x" ] ; then 
+      ## we need to find some particular version
+      assert "${make_diff}" "yes"
+      echo "Looking for version ${vers_save} archive..."
+      find_arcs "${dist_dir}" "${diff_vers}"
+      if [ "x${archive}" = "x" ] ; then
+        echo "$0: Warning: can't find ${vers_save} version  to make a diff. skipping..." >&2 
+        make_diff="no"
+      elif [ "x${dir_save}" != "x" -a "${dist_dir}" != "${dir_save}" ] ; then
+        echo "$0: Warning: required version found at another directory"   >&2 
+        echo "             default shipment directory set to ${dist_dir}" >&2 
+      fi
+  fi
+  if [ "x${archive}" = "x" -a "${make_diff}" = "yes" ] ; then
+      ## we need to find just some version
+      echo "Looking for previous versions' archives..."
+      find_arcs "${dir_save}" ""
+      if [ "x${archive}" = "x" ] ; then
+        echo "$0: Warning: can't find any previous version to make a diff. skipping..." >&2 
+        make_diff="no"
+      elif [ "x${dir_save}" != "x" -a "${dist_dir}" != "${dir_save}" ] ; then
+        echo "$0: Warning: required version found at another directory"   >&2 
+        echo "             default shipment directory set to ${dist_dir}" >&2 
+      fi
+  fi
+  
+  if [ "x${archive}" = "x" ]; then
+    assert "${make_diff}" "no"
+    if [ "x${dir_save}" != "x" ] ; then
+      dist_dir="${dir_save}"
+    else ## if no shipped version are found and no defaults are set
+      if [ "${make_tar}" = "yes" ]; then
+        dist_dir=`( cd .. ; pwd)`
+        echo "setting deliviry directory to ${dist_dir}"
+      fi
+    fi
+    [ "x${dizt_dir}" = "x" ] || mkdir -p ${dist_dir}
+  fi
+}
+
+create_diff() {
+  (
+    cd ${tempparent}
+    for extn in ".tar" ".tar.gz" ".tar.Z" ".tgz" ".tz" ; do
+      if [ -f ${archive}${extn} ] ; then
+        case $extn in
+        ".tar" )    
+                tar xf ${archive}${extn}
+                ;;
+        ".tar.gz" | ".tgz" )
+                gzip -d -c ${archive}${extn} | tar xf - 
+                ;;
+        ".tar.Z" | ".tz")
+                cp ${archive}${extn} a.Z
+                uncompress -c ${archive}${extn} | tar xf - 
+                ;;
+        esac
+        break
+      fi
+    done
+    if [ ! -d ${gsshead}${diff_vers} -a -d ${archive} ] ; then
+      ln -s ${archive} ${gsshead}${diff_vers}
+    fi
+    if [ -f ${gsshead}${diff_vers}/README ]; then
+      diff -rc ${gsshead}${diff_vers} ${gssname} >${diff_vers}-${version}.diff
+    else
+      echo "$0: Error: can't extract archive ${archive} to diff..." >&2 
+    fi
+  )
+}
+
+make_arc() {
+  if [ "${newer}" ]; then
+    echo "Removing files older than $newer."
+    find ${tempparent} ! -newer ${newer} -exec rm -f {} \;
+  fi
+
+  if [ "${make_tar}" = yes ]; then
+    if [ "${default_gzip}" = "" ]; then
+      echo "Looking for gzip."
+      temppath=`echo $PATH | sed 's/^:/.:/;s/::/:.:/g;s/:$/:./;s/:/ /g'`
+      default_gzip=`(
+        for dir in ${temppath}; do
+          if [ -f ${dir}/gzip ]; then echo 'gzip --best'; exit 0; fi
+        done
+        echo compress
+      )`
+    fi
+    case "${default_gzip}" in
+      compress* ) gzip_extension=.Z ;;
+      * )         gzip_extension=.gz ;;
+    esac
+    echo "Creating tar file."
+    arcname="${dist_dir}/${gssname}.tar${gzip_extension}"
+    (cd ${tempparent} ; tar cvf - ${gssname} ) \
+      | ${default_gzip} \
+      > ${arcname}.$$
+    [ ! -f ${arcname} ] || rm -f ${arcname}
+    mv ${arcname}.$$ ${arcname}
+    if [ "${make_diff}" = yes ]; then
+      gss_diff=${dist_dir}/${gsshead}${diff_vers}-${version}.diff${gzip_extension}
+      [ ! -f ${gss_diff} ] || rm -f ${gss_diff}
+      ( cd ${tempparent} ; cat ${diff_vers}-${version}.diff ) | ${default_gzip} > ${gss_diff}
+    fi
+  fi
+}
+
+cleanup() {
+          echo 'Interrupted...cleaning up the staging directory.'
+          rm -rf ${tempparent}
+          echo $old_version >version
+          exit 1
+}
+
+######################################
+###########  main routine  ###########
+######################################
+
+check_settings
+
+update_system
+
+### This trap ensures that the staging directory will be cleaned up even
+### when the script is interrupted in mid-career.
+if [ "${clean_up}" = yes ]; then
+  trap "cleanup" 1 2 15
+fi
+  
+create_distribution
+
+choose_dest_dir
+
+if [ "${make_diff}" = yes ]; then
+  create_diff
+fi
+
+make_arc
+
+if [ "${clean_up}" = yes ]; then
+  echo "Cleaning up the staging directory."
+  rm -rf ${tempparent}
+fi
+
+### make-dist ends here

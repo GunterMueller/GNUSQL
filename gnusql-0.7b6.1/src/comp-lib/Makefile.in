@@ -1,0 +1,88 @@
+##============================================================##
+##       GNU SQL compiler (engine interface library)          ##
+##============================================================##
+## $Id: Makefile.in,v 1.249 1998/09/29 21:24:47 kimelman Exp $
+##
+## This file is a part of GNU SQL Server
+##
+## Copyright (c) 1996-1998, Free Software Foundation, Inc
+## Developed at Institute of System Programming of Russian Academy of Science
+## This file is written by Michael Kimelman
+##
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free
+## Software Foundation; either version 2 of the License, or (at your option)
+## any later version.
+##
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+## more details.
+##
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, write to the Free Software Foundation, Inc.,
+## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+## Contacts: gss@ispras.ru
+##
+
+srcdir=@srcdir@
+VPATH=@srcdir@
+include ../Makefile_h
+
+UTILS=base runadm finadm 
+LOADLIBS=$(LIBCL)
+################################################################
+#          Compiler support library                            #
+################################################################
+all: $(LIBSER) 
+binaries: $(UTILS)
+clean ::
+	- $(RM) $(UTILS)
+
+libgss_ser : catfun.o copy.o libfunc1.o \
+             lib1.o db_cre_ser.o
+	echo $? >$@
+install	: $(UTILS)
+	for util in $(UTILS) ; do \
+	$(CP)  $$util $(SERVBIN)/$$util ; done
+################################################################
+# create  data base ( system catalogs )
+################################################################
+ADMOBJ= db_cre_cli.o
+base    :$(ADMOBJ) $(LIBCL_DEP)  
+	echo -- generating $@
+	- $(RM) $@ 
+	$(LD) $(ADMOBJ) $(CLLIBS) -o $@
+################################################################
+#       adm terminator                                         #
+################################################################
+FINOBJS = finadm.o
+finadm : $(FINOBJS) $(LIBCL_DEP) 
+	echo --  generating $@
+	- $(RM) $@ 
+	$(LD) $(FINOBJS)  $(CLLIBS) -o $@
+################################################################
+#       adm initiator                                          #
+################################################################
+INITOBJS = runadm.o
+runadm : $(INITOBJS) $(LIBCL_DEP) 
+	echo --  generating $@
+	- $(RM) $@ 
+	$(LD) $(INITOBJS) $(CLLIBS) -o $@
+################################################################
+#                 object files dependencies                    #
+################################################################
+H=      $(IINC)/rnmtp.h $(IINC)/pupsi.h $(IINC)/expop.h \
+        $(INC)/sql.h $(IINC)/fieldtp.h  $(INC)/exti.h \
+        $(IINC)/tptrn.h $(INC)/sql_type.h $(INC)/typeif.h \
+        $(INC)/funall.h
+
+copy.o	: copy.c $(H) 
+libfunc1.o	: libfunc1.c $(H) $(INC)/global.h $(IINC)/fdcltrn.h $(INC)/type_lib.h
+lib1.o	: lib1.c $(H) $(INC)/global.h $(IINC)/fdcltrn.h $(INC)/type_lib.h
+catfun.o	: catfun.c $(H) $(INC)/global.h $(INC)/type_lib.h $(INC)/sql.h $(INC)/const.h index.h
+db_cre_cli.o	: db_cre_cli.c $(INC)/cl_lib.h $(LINC)/gsqltrn.h
+db_cre_ser.o	: db_cre_ser.c $(H) $(INC)/global.h $(INC)/const.h $(INC)/type_lib.h
+finadm.o	: finadm.c $(H) $(LIINC)/dispatch.h 
+runadm.o	: runadm.c $(H) $(LIINC)/dispatch.h 

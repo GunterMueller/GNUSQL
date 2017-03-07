@@ -1,0 +1,568 @@
+/*
+ * treecode.def  - description of nodes, used by GNU SQL compiler
+ *                 tree library
+ *
+ *  This file is a part of GNU SQL Server
+ *
+ *  Copyright (c) 1996-1998, Free Software Foundation, Inc
+ *  Developed at the Institute of System Programming, Russia
+ *  This file is written by Michael Kimelman
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ *  Contact:  gss@ispras.ru
+ *
+ */
+
+/* $Id: treecode.def,v 1.247 1998/09/29 21:26:48 kimelman Exp $ */
+
+/*************************************************************************. 
+*     Each used by compiler tree node has to described here in the        *
+*  following format                                                       *
+*                                                                         *
+*    DEF_TOKEN(CODE,"code","prdav",'o',"01S")                             *
+*                                                                         *
+* where:                                                                  *
+*   CODE     -   node code, used as a symbolic constant in compiler       *
+*  "code"    -   string, which contains the same literal as a CODE, but   *
+*                in a bit more readable form. Used in dumps as image of   *
+*                CODE.                                                    *
+*         Note: uppercase("code") = "CODE"  - it's important for tree     *
+*               recognizer                                                *
+*  "prdav" -   node fields' descriptors                                   *
+*        p  - posiiton (just source line),                                *
+*        r  - reference to the right,                                     *
+*        d  - reference to the down ( to subtrees),                       *
+*        a  - arity, (generally need for self-testing)                    *
+*        v  - reference to the vocabulary (we don't print twice recursive *
+*             'v' fields)                                                 *
+*        V  - obsolete                                                    *
+*        t  - regular tree reference (in addition to 'right' & 'down' )   *
+*        s  - reference to stored literal (string)                        *
+*        l  - i4_t i4_t                                                    *
+*        x  - i4_t i4_t but dumped in hexadecimal format                   *
+*        f  - float,                                                      *
+*        y  - SQL type descriptor,                                        *
+*        R  - compound construction (dumped just as set of i4_t )         *
+*        T  - vector of tree references                                   *
+*        L  - vector of i4_t ints;                                        *
+*  'o'     -   node class                                                 *
+*       'o' - OPERATION,                                                  *
+*       's' - STATEMENT,                                                  *
+*       't' - DB_TABL,                                                    *
+*       'i' - DB_OBJ (item),                                              *
+*       'K' - Kitty actions,                                              *
+*       'C' - struct column    (vocabulary),                              *
+*       'T' - struct table     (vocabulary),                              *
+*       'R' - struct cursor    (vocabulary),                              *
+*       'S' - struct corr_name -- scan name (vocabulary) ,                *
+*       'N' - struct constant  (vocabulary) ,                             *
+*       'P' - struct parameter (vocabulary);                              *
+*  "01S"   - each letter in this string means class of flags applyable to *
+*            this node                                                    *
+*                                                                         *
+'*************************************************************************/
+
+#ifdef DEF_TOKEN
+  DEF_TOKEN(UNKNOWN,"UnKnown"  ,"*"      ,' ',"")
+  DEF_TOKEN(NIL_CODE,"nil"     ,"*"      ,' ',"")
+#endif
+
+/*******==================================================*******\
+*******             Special tree  nodes                    *******
+\*******==================================================*******/
+#ifdef DEF_TOKEN
+/*---------<<  Statements nodes >>----------------------------------*/
+  DEF_TOKEN(PREPARED	,"Prepared"	,"prda0s0V",'s',"0v")
+  DEF_TOKEN(INSERT	,"Insert"	,"prdal0tV",'s',"0iv")
+  DEF_TOKEN(SELECT	,"Select"	,"prdal00V",'s',"0tsv")
+  DEF_TOKEN(UPDATE	,"Update"	,"prdalLtV",'s',"0v")
+  DEF_TOKEN(DELETE	,"Delete"	,"prdalLtV",'s',"0v")
+  /*- - - - - < Cursors processing > - - - - - - - - - - - - - - - -*/
+  DEF_TOKEN(CUR_AREA	,"Cur_Area"	,"prdal000",'s',"0v")
+  DEF_TOKEN(DECL_CURS	,"Decl_Curs"	,"prda000V",'s',"0v")
+#if 0
+    /*- - < Not used because the statements below are too easy > - - - -*/
+    DEF_TOKEN(CLOSE	,"Close"	,"prdal000",'s',"0v") /* not used */
+    DEF_TOKEN(OPEN	,"Open"		,"prdal000",'s',"0v") /* not used */
+    /*- - < Not used because replace to direct engine call > - - - - -*/
+    DEF_TOKEN(ROLLBACK	,"Rollback"	,"pr00l000",'s',"0v") /* not used */
+    DEF_TOKEN(COMMIT	,"Commit"	,"pr00l000",'s',"0v") /* not used */
+#endif
+  DEF_TOKEN(FETCH	,"Fetch"	,"pr00l00V",'s',"0v") 
+  /*- - - - - < Schemes processing > - - - - - - - - - - - - - - - -*/
+  DEF_TOKEN(CREATE	,"Create"	,"prt0l00V",'s',"0v") /* v-table pointer */
+  DEF_TOKEN(DROP	,"Drop"		,"prt0l00V",'s',"0v") /* v-table pointer */
+  DEF_TOKEN(ALTER	,"Alter"	,"prt0l00V",'s',"0v") /* v-table pointer */
+  DEF_TOKEN(GRANT	,"Grant"	,"prdal000",'s',"0Gv") 
+  DEF_TOKEN(REVOKE	,"Revoke"	,"prdal000",'s',"0Gv") 
+
+#else
+  #define Is_Statement(node)      (STRUCT(CODE_TRN(node))=='s' && TstF_TRN(node,HAS_VCB_F))
+  #define Is_statement(node)      (STRUCT(CODe_TRN(node))=='s' && Tstf_TRN(node,HAS_VCB_F))
+  #define   STMT_NAME(node)       XLTR_TRN(node,5)
+  #define   STMT_UID(node)        XLNG_TRN(node,4)
+  #define   STMT_VCB(node)        XVCB_TRN(node,7)
+  #define   UPD_CURS(node)        XVCB_TRN(node,6)
+  #define   UPD_CLMNS(node)       XVEC_TRN(node,5)
+  #define   SCAN_PTR(node)        XVCB_TRN(node,6)
+
+  #define   CREATE_OBJ(node)      XVCB_TRN(node,2)
+  typedef struct statement{        /****************************/
+    enum token code;               /* statement code           */
+    MASKTYPE   mask;               /* mask of statement's flag */
+    POSITION   line_nmb;           /* source line info         */
+    TXTREF     right;              /* next statement           */
+    TXTREF     down;               /* chain of childrens       */
+    i4_t       arity;              /* number of childrens      */
+                                   /****************************/
+    i4_t       stmt_nmb;           /* source line number       */
+    TXTREF     upd_clmns;          /* vector of numbers of up- */
+                                   /* dated columns            */
+    VCBREF     cursor;             /* vocabulary reference to  */
+                                   /* updated cursor if need   */
+    VCBREF     vcbl;               /* local vocabulary chain   */
+                                   /****************************/
+  } STATEMENT, * PSTATEMENT;
+
+#endif
+#ifdef DEF_TOKEN
+/*---------<<  Operation nodes >>----------------------------------------*/
+/*-----------------------------------------------------------------------*/
+/*---------<<  Kitty operations  >>--------------------------------------*/
+/*-----------------------------------------------------------------------*/
+/* (Rule "rule_name" (pattern) "Cstyle test" [ (action) ...])       */
+/* !!!!!!! 0 - is used like STMT_UID in statement                   */
+  DEF_TOKEN(RULE		,"Rule"		,"srda0Ps"	,'K',"0R")  
+  DEF_TOKEN(RUN_RULE		,"Run"		,"srt"		,'K',"0")  
+/* (Op:n "test_routine_name") <-- in pattern                        */
+/* or simple (Op:n) in actions (perhaps even without parentheses)   */
+  DEF_TOKEN(OPERAND		,"Op"		,"Srda"		,'K',"0")
+/* if - operator when kitty is used in C-code directly              */
+/* P - pattern, S.1 - reference to tested variable,                 */
+/* S.2 - buffer address TXTREF bufer[15] ( for example )            */
+/* (? "in_tree" "Ops" (Add {(Const) (Const) })                      */
+  DEF_TOKEN(IF                  ,"?"           ,"sr0sP"        ,'K',"0")
+
+/* (C_code "C text with special processing for \" . ; ")            */
+/* Can be used outside of rules                                     */
+  DEF_TOKEN(TRLcmd_CCODE	,"C_code"	,"sr000"	,'K',"0")
+
+/* SET is used for assignment local variables (==Operands)          */
+/* Example: (SET:5 (tr_expression))                                 */
+  DEF_TOKEN(TRLcmd_SET		,"SET"		,"tr"		,'K',"0")
+  DEF_TOKEN(TRLcmd_DOWN		,"DOWN"		,"tr"		,'K',"0")
+  DEF_TOKEN(TRLcmd_RIGHT	,"RIGHT"	,"tr"		,'K',"0")
+  DEF_TOKEN(TRLcmd_COPY		,"COPY"		,"tr"		,'K',"0")
+
+/* IMAGE returns pointer to image of Op1, which has Op2 node as a   */
+/* ancestor, in Op3 tree, which must be a image of Op2 tree         */
+  DEF_TOKEN(TRLcmd_IMAGE	,"IMAGE"	,"trtt"		,'K',"0")
+
+/* DELETE deletes operand 0 from list of son1 or from list of OpR   */
+/* Example: (DELETE (DOWN (Op:1)) <(RIGHT (Op:3))> )                */
+  DEF_TOKEN(TRLcmd_DELETE	,"DELETE"	,"trt"		,'K',"0")
+
+/* INSERT inserts op0 in list of parameters of op2  before or after */
+/* op3 or, if op3 is omitted, at the begin or end of the whole list */
+/* Example: (INSERT<:before> (Op:1)  (Op:2) <(Op:3)> )              */
+  DEF_TOKEN(TRLcmd_INSERT	,"INSERT"	,"trtt"		,'K',"0I")
+  DEF_TOKEN(TRLcmd_REPLACE	,"REPLACE"	,"trtt"		,'K',"0")
+
+/* (REMOVE<:tree> (Op:5))                                           */
+  DEF_TOKEN(TRLcmd_REMOVE	,"REMOVE"	,"tr"		,'K',"0I")
+
+/* SWITCH define local var CC and set it to 0; than SW executes each*/
+/* son and checks value of CC after it. When CC become 1 SW finished*/
+/* CC==0 at the end of SW is recognized as a error                  */
+  DEF_TOKEN(TRLcmd_SWITCH	,"SWITCH"	,"trda"		,'K',"0a")
+  DEF_TOKEN(TRLcmd_CASE		,"CASE"		,"sr"		,'K',"0")
+
+/* SKIP_CODE (or even '-') in pattern means not to compare node     */
+  DEF_TOKEN(SKIP_CODE		,"Skip_Code","0r"		,'K',"0")  
+
+/* SKIP_CODES (or '--') means any number of any kind of parameters  */
+  DEF_TOKEN(SKIP_CODES		,"Skip_Codes","0r"		,'K',"0")  
+
+  
+/*-----------------------------------------------------------------------*/
+/*---------<<  SQL tree operations' codes >>-----------------------------*/
+/*-----------------------------------------------------------------------*/
+  DEF_TOKEN(ORDER 	,"Order"    	,"prda"	    ,'o',"0")
+  DEF_TOKEN(CHECK 	,"Check"    	,"prda"	    ,'o',"0")  /* a equal 1*/
+  DEF_TOKEN(UNIQUE	,"Unique"   	,"prdaRRRR" ,'o',"0")
+  DEF_TOKEN(PRIMARY	,"Primary" 	,"prdaRRRR" ,'o',"0")
+  DEF_TOKEN(INDEX  	,"Index"   	,"prdaRRRR" ,'o',"0")
+  DEF_TOKEN(FOREIGN	,"Foreign" 	,"prda"	    ,'o',"0")
+  DEF_TOKEN(REFERENCE	,"Reference"	,"prda"     ,'o',"0")
+  DEF_TOKEN(LOCALLIST	,"LocalList"	,"prda"     ,'o',"0") 
+  DEF_TOKEN(PRIVILEGIES	,"Privilegies"	,"prda"     ,'o',"0") 
+  DEF_TOKEN(GRANTEES	,"Granties"	,"prda"	    ,'o',"0") 
+  DEF_TOKEN(CONSTRAINTS	,"Constraints"	,"prda"	    ,'o',"0") 
+
+  DEF_TOKEN(NOT   	,"Not"      	,"prday0"   ,'o',"0")  /* a equal 1*/
+  DEF_TOKEN(AND   	,"And"      	,"prday0"   ,'o',"0")
+  DEF_TOKEN(OR    	,"Or"       	,"prday0"   ,'o',"0")
+
+  DEF_TOKEN(UNION       ,"Union"    	,"prda"     ,'o',"0u") /* ts->u 12.3*/
+
+ /* TBLEXP -- form for expressions QUERY,SUBQUERY etc. */
+  DEF_TOKEN(TBLEXP	,"TblExp"   	,"prda00"    ,'o',"0t")
+  DEF_TOKEN(SUBQUERY	,"SubQuery"	,"prday0"    ,'o',"0ts")
+  DEF_TOKEN(QUERY 	,"Query"    	,"prda00"    ,'o',"0ts")
+
+  DEF_TOKEN(FROM   	,"From"		,"prda"     ,'o',"0")
+  DEF_TOKEN(WHERE  	,"Where"	,"prda"     ,'o',"0")  /* a equal 1*/
+  DEF_TOKEN(HAVING	,"Having"	,"prda"     ,'o',"0")  /* a equal 1*/
+  DEF_TOKEN(GROUP	,"Group"	,"prda"     ,'o',"0")
+  DEF_TOKEN(SELECTION	,"Selection"	,"prda"	    ,'o',"0")
+  /* Result is the same thing as Selection but for subqueries where 'a'    */
+  /* be equal 1 */
+  DEF_TOKEN(RESULT	,"Result"	,"prda"     ,'o',"0")     
+  DEF_TOKEN(IVALUES	,"Ivalues"	,"prda"     ,'o',"0") /* operator INSERT */
+  DEF_TOKEN(VALUES	,"Values"	,"prday0"   ,'o',"0") /* predicate IN    */
+  /* INTO - param list in SELECT and column list in INSERT */
+  DEF_TOKEN(INTO        ,"Into"		,"prda"     ,'o',"0")
+
+  DEF_TOKEN(EQU		,"Equ"		,"prday0"   ,'o',"0o") /* a equal 2*/
+  DEF_TOKEN(NE		,"Ne"		,"prday0"   ,'o',"0o") /* a equal 2*/
+  DEF_TOKEN(LE		,"Le"		,"prday0"   ,'o',"0o") /* a equal 2*/
+  DEF_TOKEN(GE		,"Ge"		,"prday0"   ,'o',"0o") /* a equal 2*/
+  DEF_TOKEN(LT		,"Lt"		,"prday0"   ,'o',"0o") /* a equal 2*/
+  DEF_TOKEN(GT		,"Gt"		,"prday0"   ,'o',"0o") /* a equal 2*/
+
+  DEF_TOKEN(CALLPR      ,"Callpr"       ,"prday0"   ,'o',"0" )
+
+  DEF_TOKEN(NOOP        ,"Noop"         ,"lrday0"   ,'o',"0" ) /* a equal 1*/
+
+  DEF_TOKEN(EXISTS	,"Exists"	,"prday0"   ,'o',"0")  /* a equal 1*/
+  DEF_TOKEN(IN		,"In"		,"prday0"   ,'o',"0o") /* a equal 2*/
+  DEF_TOKEN(LIKE	,"Like"		,"prday0"   ,'o',"0o") /* a equal 2-3*/
+  DEF_TOKEN(BETWEEN	,"Between"	,"prday0"   ,'o',"0o") /* a equal 3*/
+  DEF_TOKEN(ISNULL	,"IsNull"	,"prday0"   ,'o',"0o") /* a equal 1*/
+  DEF_TOKEN(ISNOTNULL	,"IsNotNull"	,"prday0"   ,'o',"0o") /* a equal 1*/
+
+  DEF_TOKEN(ASSLIST	,"AssList"	,"prda"     ,'o',"0")
+  DEF_TOKEN(ASSIGN	,"Assign"	,"prday0"   ,'o',"0")  /* a equal 2*/
+  DEF_TOKEN(ADD		,"Add"		,"prday0"   ,'o',"0")
+  DEF_TOKEN(SUB		,"Sub"		,"prday0"   ,'o',"0")  /* a equal 2*/
+  DEF_TOKEN(MULT	,"Mult"		,"prday0"   ,'o',"0")
+  DEF_TOKEN(DIV		,"Div"		,"prday0"   ,'o',"0")  /* a equal 2*/
+  DEF_TOKEN(UMINUS	,"Uminus"	,"prday0"   ,'o',"0")  /* a equal 1*/
+
+  DEF_TOKEN(AVG		,"Avg"		,"prday0"   ,'o',"0s") /* a equal 1*/
+  DEF_TOKEN(MAX		,"Max"		,"prday0"   ,'o',"0s") /* a equal 1*/
+  DEF_TOKEN(MIN		,"Min"		,"prday0"   ,'o',"0s") /* a equal 1*/
+  DEF_TOKEN(SUM		,"Sum"		,"prday0"   ,'o',"0s") /* a equal 1*/
+  DEF_TOKEN(COUNT	,"Count"	,"prday0"   ,'o',"0s") /* a equal 1*/
+
+#else
+ #define   VAL_HOLE(node)          XLNG_TRN(node,5)
+ #define   OPRN_TYPE(node)         XOP_TRN(node,4).type
+ #define   FUNC_OBJ(node)          XTXT_TRN(node,2)
+ #define   IND_INDID(node)      *((Indid*)&(xOp_PARMS(Ptree(node),4,"RRRR")))
+
+ #define Is_TRLService(node)       (STRUCT(CODE_TRN(node))==' ')
+ #define Is_Operation(node)        (STRUCT(CODE_TRN(node))=='o')
+ #define Is_Predicate(node)        (FLAGS(CODE_TRN(node))[1]=='o')
+ #define Is_Function(node)         (AVG<=CODE_TRN(node) && CODE_TRN(node)<=COUNT)
+ #define Is_Log_Oper_Code(code)    (NOT <= (code) && (code) <= OR)
+ #define Is_Comp_Code(code)        (EQU <= (code) && (code) <= GT)
+ #define Is_Arithm_Code(code)      (ADD <= (code) && (code) <= UMINUS)
+ #define Is_Predic_Code(code)      (EXISTS <= (code) && (code) <= ISNOTNULL)
+ #define Is_SQPredicate_Code(code) ( EXISTS == (code) || (code) == SUBQUERY)
+ #define Is_Typed_Operation(node)  (FORMAT(CODE_TRN(node))[4]=='y')
+ typedef struct operation{        /*==== operation (subtree) ============*/
+   enum token code;               /* code of the operation               */
+   MASKTYPE   mask;               /* detalizing of the operation         */
+   POSITION   line_nmb;           /* source line number                  */
+   TXTREF     right;              /* next operation (right brother)      */
+   TXTREF     down;               /* reference to the first operand      */
+   i4_t       arity;              /* number of operands (children)       */
+   sql_type_t type;               /* operation result's type             */
+   i4_t       valuehole;          /* pointer to node's value             */
+  } OPERATION, * POPERATION;      /*=====================================*/
+
+#endif
+#ifdef DEF_TOKEN
+/* semantics of array is : [ 0 2 0 1 ] === order by (col 4) (Col 2)      */
+  DEF_TOKEN(SORTER,"Sorter"     ,"Lrt"     ,' ',"0s")    
+/* T is array of expressions, which computes values of assotiated column */
+/* in MakeGroup output table                                             */ 
+  DEF_TOKEN(MAKEGROUP ,"MakeGroup","Trt" ,' ',"0")    
+/*---------<<  Tree node for table ponters  >>---------------------------*/
+  DEF_TOKEN(TBLPTR,"TblPtr"   ,"prt"     ,'t',"0")
+#else
+ #define   TABL_DESC(node)        XVCB_TRN(node,2)
+ #define Is_TblPtr(node)         (STRUCT(CODE_TRN(node))=='t')
+ typedef struct db_tabl{          /*=====================================*/
+   enum token code;               /* node code                           */
+   MASKTYPE   mask;               /* node flags                          */
+   POSITION   line_nmb;           /* source line number                  */
+   TXTREF     right;              /* next leaf (right brother)           */
+   VCBREF     descr;              /* vocabulary reference                */
+  } DB_TABL, * PDB_TABL;          /*=====================================*/
+
+#endif
+#ifdef DEF_TOKEN
+/*---------<<  Tree object nodes >>--------------------------------------*/
+  DEF_TOKEN(OPTR     ,"OPtr"      ,"pr0t" ,'i',"0")
+  DEF_TOKEN(COLPTR   ,"ColPtr"    ,"pr0t" ,'i',"0")
+  DEF_TOKEN(PARMPTR  ,"ParmPtr"   ,"pr0t" ,'i',"0")
+  DEF_TOKEN(STAR     ,"Star"      ,"pr"   ,'i',"0")
+  DEF_TOKEN(NULL_VL  ,"Null_vl"   ,"pry"  ,'i',"0")
+  DEF_TOKEN(SORT_COL ,"Sort_Col"  ,"pr0t" ,'i',"0c")
+  DEF_TOKEN(SORT_POS ,"Sort_Pos"  ,"prl"  ,' ',"0c")  /*!!!*/
+  DEF_TOKEN(COL      ,"Col"       ,"lr"   ,' ',"0c")  /*!!!*/
+  DEF_TOKEN(USERNAME ,"UserName"  ,"prys" ,' ',"0")   /*!!!*/
+  DEF_TOKEN(VALUEHOLE,"ValueHole" ,"prs"  ,' ',"0")   /*!!!*/
+
+#else
+ #define   OBJ_ADDIT(node)        XTXT_TRN(node,2)
+ #define   OBJ_DESC(node)         XVCB_TRN(node,3)
+ #define   OBJ_AUX(node)          XVCB_TRN(node,4)
+
+ #define   SORT_CLM(node)         OBJ_DESC(node)
+ #define   SORT_IND(node)         XLNG_TRN(node,2)      /* for Sort_Pos  */
+ #define   USR_NAME(node)         XLTR_TRN(node,3)      /* for UserName  */
+ #define   USR_TYPE(node)         XOP_TRN(node,2).type  /* for UserName  */
+ #define   NULL_TYPE(node)        XOP_TRN(node,2).type  /* for Null_vl   */
+ #define   HOLE_NAME(node)        XLTR_TRN(node,2)      /* for valuehole */
+
+ #define Is_Object(node)          (STRUCT(CODE_TRN(node))=='i')
+ typedef struct db_object{        /*=====================================*/
+   enum token code;               /* object type code                    */
+   MASKTYPE   mask;               /* detalizing of the object type       */
+   POSITION   line_nmb;           /* source line number                  */
+   TXTREF     right;              /* next object of the same level       */
+   TXTREF     addit;              /* additional tree reference           */
+   VCBREF     descr;              /* reference to vocabulary             */
+   VCBREF     aux_ref;            /* additional referencnce to vocabulary*/
+   } DB_OBJ, * PDB_OBJ ;          /*=====================================*/
+
+#endif
+
+#ifdef DEF_TOKEN
+/*---------<<  Column nodes >>-------------------------------------------*/
+  DEF_TOKEN(COLUMN ,"Column"	,"srlyvt000" ,'C',"0")
+  DEF_TOKEN(SCOLUMN,"SColumn"	,"srlytt0l0" ,'C',"0")  /* scan column    */
+#else
+ #define   COL_NAME(node)        XLTR_TRN(node,0)
+ #define   COL_NEXT(node)        RIGHT_TRN(node)
+ #define   COL_NO(node)          XLNG_TRN(node,2)
+ #define   COL_TYPE(node)        XOP_TRN(node,3).type
+ #define   COL_TBL(node)         XVCB_TRN(node,4)
+ #define   COL_DEFAULT(node)     XTXT_TRN(node,5)
+ #define   COL_CONSTR(node)      XTXT_TRN(node,6)
+ #define   COL_ID(node)          XLNG_TRN(node,7)
+ #define   COL_ADR(node)         XTXT_TRN(node,7)
+ #define   COL_STAT(node)        XLNG_TRN(node,8)
+
+ #define Is_Column(node)         (STRUCT(CODE_TRN(node))=='C')
+ struct column{                   /*===================================*/
+          enum token code;        /*                                   */
+          MASKTYPE   flags;       /*                                   */
+          LTRLREF    name;        /* column name                       */
+          VCBREF     pcolumn;     /* next column of the same table     */
+          i4_t       column_no;   /* column number in table (DB info)  */
+          sql_type_t type;        /* column type                       */
+          VCBREF     ptable;      /* reference to the table, containing*/
+                                  /* this column                       */
+          TXTREF     default_val; /* reference to column default value */
+          TXTREF     constraint;  /*                                   */
+          i4_t       cl_id;       /* number of the column in           */     
+                                  /* the scan (? ? )                    */
+          i4_t       col_stat;    /* pointer to structure with statistic *
+                                   * info (max & min values in column)   */     
+                };                /*===================================*/
+
+#endif
+#ifdef DEF_TOKEN
+/*---------<<  table nodes >>--------------------------------------------*/
+  DEF_TOKEN(TABLE    ,"Table"    ,"srsNlNRRR0N000l"  ,'T',"0T")
+  DEF_TOKEN(TMPTABLE ,"Tmptable" ,"srsNlt000000f000" ,'T',"0T")
+  DEF_TOKEN(VIEW     ,"View"     ,"srsNltR00V00000"  ,'T',"0T")
+/* code ANY_TBL used for table nodes, which actual type isn't known yet  */
+/* and can be seen after parser but before semantic pass only            */
+  DEF_TOKEN(ANY_TBL  ,"Any_Tbl"  ,"srsNl00000000000" ,'T',"0T")
+#else
+ #define   TBL_FNAME(node)       XLTR_TRN(node,0)
+ #define   TBL_NAME(node)        XLTR_TRN(node,2)
+ #define   TBL_COLS(node)        XVCB_TRN(node,3)
+ #define   TBL_NCOLS(node)       XLNG_TRN(node,4)
+ #define   VIEW_QUERY(node)      XVCB_TRN(node,5)
+ #define   TBL_CONSTR(node)      XVCB_TRN(node,5)
+ #define   TBL_TABID(node)       XREL_TRN(node,6)
+ #define   VIEW_UNID(node)       XLNG_TRN(node,6)
+ #define   VIEW_VCB(node)        XVCB_TRN(node,9) 
+ #define   VIEw_VCB(node)        XVCb_TRN(node,9) 
+ #define   IND_INFO(node)        XTXT_TRN(node,10)
+ #define   TBL_VADR(node)        XTXT_TRN(node,11)
+ #define   BUILD_COST(node)      XFLT_TRN(node,12)
+ #define   CONSTR_INFO(node)     XLNG_TRN(node,13)
+ #define   TBL_NNULCOL(node)     XLNG_TRN(node,14)
+ #define   NROWS_EST(node)       XTXT_TRN(node,15)
+ #define Is_Table(node)         (STRUCT(CODE_TRN(node))=='T')
+ #define Is_table(ptr)          (STRUCT(CODe_TRN( ptr))=='T')
+ #include "type.h"
+ struct table{                    /*============================*/
+          enum token code;        /* code of the node           */
+          MASKTYPE   flags;       /*                            */
+          LTRLREF    autor_name;  /* table authorization name   */
+          VCBREF     next;        /* next vcb entry             */
+          LTRLREF    name;        /* table name                 */
+          VCBREF     pcolumn;     /* chain of the table columns */
+          i4_t       column_no;   /* total number of columns in */
+                                  /* the table                  */
+          VCBREF     query;       /* query for view or          */
+                                  /* constraints for table      */
+          Tabid      tblident;    /* table identifier in DB     */
+          TXTREF     local_view_vcb; /*                         */
+          TXTREF     ind_info;    /* chain of table indexes     */
+                                  /* each represented by tree   */
+          VADR       tab_vadr;    /* is used by codegen         */
+                                  /* - VADR of TABID            */
+          float      build_cost;  /* for TMPTABLE: cost of this */
+                                  /* table building             */
+          i4_t       constr_info; /* pointer to constraints     *
+                                   * (is used only by codegen)  */
+          i4_t       nnulcolnun;  /* number of first 'NOT NULL' *
+                                   * columns of the table       */
+                                  /* the table                  */
+          i4_t       nrows_est;   /* is used for TMPTABLEs for  */
+                                  /* saving of estimated rows count */
+          };                /*============================*/
+
+#endif
+#ifdef DEF_TOKEN
+/*---------<<  scans nodes >>--------------------------------------------*/
+  DEF_TOKEN(SCAN  ,"Scan"    ,"srlVt000000v" ,'S',"0T")
+#else
+ #define   COR_NAME(node)        XLTR_TRN(node,0)
+ #define   COR_NEXT(node)        RIGHT_TRN(node)
+ #define   COR_COLUMNS(node)     XTXT_TRN(node,3)
+ #define   COR_TBL(node)         XVCB_TRN(node,4)
+ #define   COR_NO(node)          XLNG_TRN(node,2)
+ #define   COR_SCANID(node)      XTXT_TRN(node,5)
+ #define   COR_TID(node)         XTXT_TRN(node,6)
+ #define   COR_MASK(node)        XLNG_TRN(node,7)
+ #define   COR_TAB_SP(node)      XTXT_TRN(node,8)
+ #define   COR_IND_SP(node)      XTXT_TRN(node,9)
+ #define   IND_CLM_CNT(node)     XLNG_TRN(node,10)
+ #define   COR_VIEW(node)        XVCB_TRN(node,11)
+
+ #define Is_Scan(node)          (STRUCT(CODE_TRN(node))=='S')
+ struct corr_name{                /*======================================*/
+          enum token code;        /* code SCAN stored here                */
+          MASKTYPE   flags;       /*                                      */
+          LTRLREF    name;        /* corellation name reference           */
+          VCBREF     next;        /* next vcb entry (right reference)     */
+          i4_t       instance_no; /* table instance number                */
+          VCBREF     pcolumn;     /* chain of scaned columns              */
+          VCBREF     pvocab;      /* reference to scaned table            */
+          TXTREF     scan_id;     /* address of ScanId hole               */
+          TXTREF     table_id;    /* address of TabId hole                */
+          i4_t       mask;        /*                                      */
+          TXTREF     tab_sp;      /* list of simple predicates applied to */
+                                  /* scan                                 */
+          TXTREF     ind_sp;      /* list of simple predicates applied to */
+                                  /* the used index                       */  
+                                  /* = NULL, if no index used,            */
+                                  /* = 1, if some index used but there    */
+                                  /*      aren't any appliable SP for it  */
+          i4_t       ind_clm_cnt; /* number of columns in used index      */
+          TXTREF     see_via_view;/* scan table throuth this view         */                 
+                };                /*======================================*/
+
+#endif
+#ifdef DEF_TOKEN
+/*---------<<  Cursors nodes >>------------------------------------------*/
+  DEF_TOKEN(CURSOR,"Cursor"   ,"sr0" ,'R',"0r")
+#else
+ #define   CUR_NAME(node)        XLTR_TRN(node,0)
+ #define   CUR_DECL(node)        XTXT_TRN(node,2)
+ #define Is_Cursor(node)         (STRUCT(CODE_TRN(node))=='R')
+ struct cursor_name{              /*==========================*/
+          enum token code;        /* code CURSOR stored here  */
+          MASKTYPE   flags;       /*                          */
+          LTRLREF    name;        /* reference to cursor name */
+          VCBREF     next;        /* next vcb entry           */
+          TXTREF     declare;     /*                          */
+                };                /*==========================*/
+#endif
+#ifdef DEF_TOKEN
+/*---------<<  constant nodes >>-----------------------------------------*/
+  DEF_TOKEN(CONST    ,"Const"       ,"sryy0" ,'N',"0")
+#else
+ #define   CNST_NAME(node)       XLTR_TRN(node,0)
+ #define   CNST_STYPE(node)      xOp_PARM(Ptree(node),2,'y').type
+ #define   CNST_TTYPE(node)      xOp_PARM(Ptree(node),3,'y').type
+
+ #define Is_Constant(node)         (STRUCT(CODE_TRN(node))=='N')
+ struct constant {                /*==========================*/
+          enum token code;        /* code CONST stored here   */
+          MASKTYPE   flags;       /*                          */
+          LTRLREF    text;        /* string image of constant */
+          VCBREF     next;        /* next vcb entry           */
+          sql_type_t type_source; /* original type            */
+          sql_type_t type_target; /* required type            */
+          TXTREF     valueptr;    /* reference to internal    */
+                                  /* representation           */
+                };                /*==========================*/
+
+#endif
+#ifdef DEF_TOKEN
+/*---------<<  parameters nodes >>---------------------------------------*/
+  DEF_TOKEN(PARAMETER,"Parameter" ,"sryy0t" ,'P',"0T")
+#else
+ #define   PAR_NAME(node)        XLTR_TRN(node,0)
+ #define   PAR_STYPE(node)       XOP_TRN(node,2).type
+ #define   PAR_TTYPE(node)       XOP_TRN(node,3).type
+ #define   PAR_ID(node)          XLNG_TRN(node,4)
+ #define   PAR_ADR(node)         XTXT_TRN(node,4)
+ #define   PAR_INDICATOR(node)	 XTXT_TRN(node,5)
+
+ #define Is_Param(node)          (STRUCT(CODE_TRN(node))=='P')
+ struct parameter {               /*==========================*/
+          enum token code;        /*code PARAMETER stored here*/
+          MASKTYPE   flags;       /*                          */
+          LTRLREF    name;        /* reference to par name    */
+          VCBREF     next;        /* next vcb entry           */
+          sql_type_t type_source; /* source type              */
+          sql_type_t type_target; /* required type            */
+          i4_t       par_id;      /* unique parameter ident.  */
+	  TXTREF     indicator;   /* reference to associated  */
+                                  /* indicator                */
+                };                /*==========================*/
+#endif
+
+/**************************************************************.
+*****---------<<  additional nodes description >>----------*****
+`**************************************************************/
+
+#ifdef DEF_TOKEN
+  /* scan column hole before context search pass              */
+  /* (3 names - perhaps partially empty)                      */
+  DEF_TOKEN(COLUMN_HOLE,"Column_Hole" ,"sss"  ,' ',"0")
+#else
+  #define CHOLE_AUTHOR(n)      XLTR_TRN(n,0)
+  #define CHOLE_TNAME(n)       XLTR_TRN(n,1)
+  #define CHOLE_CNAME(n)       XLTR_TRN(n,2)
+#endif
+
+#ifdef DEF_TOKEN
+  #undef DEF_TOKEN
+#endif
+

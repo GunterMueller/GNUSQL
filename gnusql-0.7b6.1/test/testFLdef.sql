@@ -1,0 +1,23 @@
+-- 
+-- failed test: pass 1
+-- reported by Andreas Florath <florath@stochastik.rwth-aachen.de>
+-- Date: Fri, 28 Feb 1997 10:42:37 +0100 (MET)
+--
+
+CREATE TABLE SPIELER
+(
+	SPIELERNR	SMALLINT	NOT NULL,
+	NAME		CHAR(15)	NOT NULL,
+	VORNAMEN	CHAR(5)		NOT NULL,
+	TITEL		CHAR(7)		,
+	GEB_JAHR	SMALLINT	,
+	GESCHLECHT	CHAR(1)		NOT NULL,
+	JAHRBEI		SMALLINT	NOT NULL,
+	STRASSE		CHAR(25)	NOT NULL,
+	NAUSNR		CHAR(4)		,
+	POSTLZ		CHAR(6)		,
+	ORT		CHAR(15)	,
+	TELEFON		CHAR(15)	,
+	VERBANDSNR	CHAR(4)
+)
+

@@ -1,0 +1,69 @@
+                                             
+                                             
+# this file is generated automatically by /home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/etc/conf-templ 
+# DON'T EDIT THIS FILE                       
+#                                            
+                                             
+                                             
+LN_S="ln -s"                             
+topdir=`pwd`                                 
+                                             
+#-------------------------------------------#
+fix_dir () {                                 
+  sfn=$1     ## configurable file            
+  dir=$2     ## target subdirectory          
+  tfn=$3     ## original template destination
+                                             
+ ( # go to sub shell                         
+   ## cd to target directory                 
+   cd $dir ## cd to target directory         
+   if [ ! -r ${sfn}.in ]; then               
+     ${LN_S} $tfn ${sfn}.in                  
+   fi                                        
+   if [ -x ${tfn} ]; then                    
+     chmod a+x  ${sfn}                       
+   fi                                        
+ )                                           
+                                             
+}                                            
+#-------------------------------------------#
+                                             
+fix_dir Makefile . /home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/Makefile.in 
+fix_dir Makefile src/other /home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/other/Makefile.in 
+fix_dir Makefile src/synthes /home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/synthes/Makefile.in 
+fix_dir Makefile src/include/engine /home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/engine/Makefile.in 
+fix_dir Makefile src/include /home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include/Makefile.in 
+fix_dir Makefile src/engine/jour /home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine/jour/Makefile.in 
+fix_dir Makefile src/engine /home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine/Makefile.in 
+fix_dir Makefile src/engine/rcvutl /home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine/rcvutl/Makefile.in 
+fix_dir Makefile src/engine/trans /home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine/trans/Makefile.in 
+fix_dir Makefile src/engine/synch /home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine/synch/Makefile.in 
+fix_dir Makefile src/engine/buf /home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/engine/buf/Makefile.in 
+fix_dir Makefile_h src /home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/Makefile_h.in 
+fix_dir Makefile src/kitty /home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/kitty/Makefile.in 
+fix_dir Makefile src/main /home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/main/Makefile.in 
+fix_dir Makefile src /home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/Makefile.in 
+fix_dir Makefile src/comp-lib /home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/comp-lib/Makefile.in 
+fix_dir Makefile src/parse /home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/parse/Makefile.in 
+fix_dir Makefile src/opt /home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/opt/Makefile.in 
+fix_dir Makefile src/interpr /home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/interpr/Makefile.in 
+fix_dir Makefile src/trl /home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/trl/Makefile.in 
+fix_dir Makefile src/semantic /home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/semantic/Makefile.in 
+fix_dir ansi2knr-sh etc /home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/etc/ansi2knr-sh.in 
+fix_dir arc etc /home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/etc/arc.in 
+fix_dir move-if-change etc /home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/etc/move-if-change.in 
+fix_dir make-util etc /home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/etc/make-util.in 
+fix_dir rpcgen-sh etc /home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/etc/rpcgen-sh.in 
+fix_dir preserve etc /home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/etc/preserve.in 
+fix_dir Makefile etc /home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/etc/Makefile.in 
+fix_dir Tdeps etc /home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/etc/Tdeps.in 
+fix_dir boot etc /home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/etc/boot.in 
+fix_dir dq etc /home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/etc/dq.in 
+fix_dir Makefile test /home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/test/Makefile.in 
+#-------------------------------------------#
+                                             
+if [ ! -r /home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/test/testdeps.mk    ];then 
+  ( cd /home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/test ; /home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/etc/Tdeps ) 
+fi                                           
+#-------------------------------------------#
+                                             

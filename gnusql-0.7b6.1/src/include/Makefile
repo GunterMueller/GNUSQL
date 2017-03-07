@@ -1,0 +1,83 @@
+# Generated automatically from Makefile.in by configure.
+##########################################################################
+##                 GNU SQL Compiler  (include dependencies)             ##
+##########################################################################
+##
+## $Id: Makefile.in,v 1.253 1998/09/29 21:25:50 kimelman Exp $
+##
+## This file is a part of GNU SQL Server
+##
+## Copyright (c) 1996-1998, Free Software Foundation, Inc
+## Developed at Institute of System Programming of Russian Academy of Science
+## This file is written by Michael Kimelman
+##
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free
+## Software Foundation; either version 2 of the License, or (at your option)
+## any later version.
+##
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+## more details.
+##
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, write to the Free Software Foundation, Inc.,
+## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+## Contacts: gss@ispras.ru
+##
+
+srcdir=/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include
+VPATH=/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1/src/include
+include ../Makefile_h
+##########################################################################
+#                make program                                            #
+##########################################################################
+all:   headers link
+headers    : trlheaders engheaders rpc_headers global.h cycler.h kitty.h typepf.h tree_gen.h sql.h exti.h cl_lib.h svr_lib.h inprtyp.h const.h dyn_funcs.h
+setup_os.h : config.h 
+	- touch $@
+const.h    : $(srcdir)/engine/pupsi.h
+	- touch $@
+kitty.h    : global.h
+	- touch $@
+cycler.h   : global.h
+	- touch $@
+global.h   : setup_os.h sql_type.h type.h xmem.h $(srcdir)/../trl/trl.h pr_glob.h sql_decl.h funall.h
+	- touch $@
+funall.h   : type.h typeif.h sql_type.h setup_os.h
+	- touch $@
+pr_glob.h  : type.h typecpi.h typepi.h typeif.h errors.h
+	- touch $@
+sql_decl.h : $(srcdir)/../trl/trl.h options.def
+	- touch $@
+type.h     : $(srcdir)/engine/rnmtp.h
+	- touch $@
+typecpi.h  : sql_type.h
+	- touch $@
+typeif.h   : $(srcdir)/engine/sctp.h $(srcdir)/engine/pupsi.h
+	- touch $@
+typepi.h   : typecpi.h
+	- touch $@
+xmem.h     : setup_os.h
+	- touch $@
+cl_lib.h   : engine/dispatch.h
+	- touch $@
+inprtyp.h  : type_lib.h
+	- touch $@
+type_lib.h : global.h gsqltrn.h
+	- touch $@
+sql_type.h : sql_type.def
+	- touch $@
+trlheaders : vmemory.h xmem.h setup_os.h sql_type.h
+	( cd ../trl; $(MAKERT) headers  )
+engheaders : engine
+	( cd engine; $(MAKERT) headers; )
+link       :
+	test -d $(srcdir)/gnusql || (cd $(srcdir) && $(LN_S) . gnusql)
+	test -d gnusql || $(LN_S) . gnusql
+rpc_headers:
+	( cd ../main; $(MAKERT) headers ; )
+clean::
+	- $(RM) gsqltrn.h gnusql

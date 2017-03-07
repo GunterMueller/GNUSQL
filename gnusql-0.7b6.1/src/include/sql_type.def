@@ -1,0 +1,65 @@
+/*
+ *  sql_type.def - description of SQL types, processed by GNU SQL compiler
+ *
+ *  This file is a part of GNU SQL Server
+ *
+ *  Copyright (c) 1996-1998, Free Software Foundation, Inc
+ *  Developed at the Institute of System Programming, Russia
+ *  This file is written by Michael Kimelman
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ *  Contact:  gss@ispras.ru
+ *
+ */
+
+/* $Id: sql_type.def,v 1.246 1998/09/29 21:25:57 kimelman Exp $ */
+
+/*************************************************************************\
+*     Each used by compiler SQL type has to be described here in the      *
+*  following format                                                       *
+*                                                                         *
+*    DEF_SQLTYPE(CODE,"SQLtypename","Ctypename",dyn_id)                   *
+*                                                                         *
+* where:                                                                  *
+*   CODE         - type code, used as a symbolic constant in compiler     *
+*  "SQLtypename" - string, assotiated with defined SQL type in tree dumps *
+*  "Ctypename"   - string contains C type, assotiated with defined SQL    *
+*                  type                                                   *
+*  dyn_id        - identifier of type (number) exactly as in ISO SQL'92   *
+*                                                                         *
+\*************************************************************************/
+
+#ifdef DEF_SQLTYPE
+  DEF_SQLTYPE(0       ,"Undef" ,"Unknown_type",0 )
+  DEF_SQLTYPE(Char    ,"Char"  ,"char*"       ,1 )
+  DEF_SQLTYPE(Short   ,"Short" ,"i2_t"       ,5 )
+  DEF_SQLTYPE(Int     ,"Int"   ,"i4_t"         ,4 )
+  DEF_SQLTYPE(Long    ,"Long"  ,"i4_t"        ,4 )
+  DEF_SQLTYPE(Num     ,"Num"   ,"__"          ,2 )
+  DEF_SQLTYPE(Float   ,"Float" ,"__"          ,6 )
+  DEF_SQLTYPE(Real    ,"Real"  ,"float"       ,7 )
+  DEF_SQLTYPE(Double  ,"Double","double"      ,8 )
+  DEF_SQLTYPE(Cstring ,"__"    ,"char*"       ,1 )
+  DEF_SQLTYPE(Pstring ,"__"    ,"Pstr"        ,0 )
+  DEF_SQLTYPE(Boolean ,"Bool"  ,"i4_t"         ,4 )
+  DEF_SQLTYPE(CharVar ,"ChVar" ,"CHARVAR"     ,12)
+  DEF_SQLTYPE(Bit     ,"Bit"   ,"i4_t"         ,14)
+  DEF_SQLTYPE(BitVar  ,"BitVar","BITVAR"      ,15)
+  DEF_SQLTYPE(Dec     ,"Dec"   ,"__"          ,3 )
+  DEF_SQLTYPE(DateTime,"DtTime","i4_t"         ,9 )
+  DEF_SQLTYPE(Interval,"Range" ,"i4_t"         ,10)
+#undef DEF_SQLTYPE
+#endif

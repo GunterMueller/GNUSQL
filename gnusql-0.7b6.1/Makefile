@@ -1,0 +1,169 @@
+# Generated automatically from Makefile.in by configure.
+##############################################################
+##                 GNU SQL Server                           ##
+##############################################################
+## $Id: Makefile.in,v 1.255 1998/09/30 01:58:33 kimelman Exp $
+##
+## This file is a part of GNU SQL Server
+##
+## Copyright (c) 1996-1998, Free Software Foundation, Inc
+## Developed at Institute of System Programming of Russian Academy of Science
+## This file is written by Michael Kimelman
+##
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free
+## Software Foundation; either version 2 of the License, or (at your option)
+## any later version.
+##
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+## more details.
+##
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, write to the Free Software Foundation, Inc.,
+## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+## Contacts: gss@ispras.ru
+##
+
+SHELL=/bin/sh
+
+# If Make doesn't predefine MAKE, set it here.
+MAKE=/usr/bin/make
+
+CC=gcc
+INSTALL=/usr/bin/install -c
+LN_S=ln -s
+RM=rm -f 
+
+# formal install directories (by 'ln -s')
+prefix=/usr/local
+host=
+version=0.7b6.1
+
+bindir=$(prefix)/bin
+mandir=$(prefix)/man
+infodir=$(prefix)/info
+
+#working directories
+dbhome=$(prefix)/share/gnusql/$(version)/$(host)
+
+#build settings
+srcdir=/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1
+VPATH=/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1
+builddir=/home/gunter/GM_DATABASES/DBMS/GnuSQL/gnusql-0.7b6.1
+
+SERVDIR=$(builddir)/sqlser
+SERVBIN=$(SERVDIR)/bin
+CLNT=$(SERVDIR)/client
+C_INC=$(CLNT)/include
+TOUCH=etc/Touch
+
+MAKERT=$(MAKE) -k REV=$(REV)
+MAKECLEAN=$(MAKERT) clean
+
+all     : confs
+	$(MAKERT) compile
+client : confs
+	$(MAKERT) client.stamp
+server  : confs
+	$(MAKERT) server.stamp
+compile : prepdirs.stamp
+	( cd etc ; $(MAKERT) )
+	( cd src ; $(MAKERT) )
+server.stamp : prepdirs.stamp
+	( cd etc ; $(MAKERT) )
+	( cd src ; $(MAKERT) server )
+client.stamp  : prepdirs.stamp
+	( cd src ; $(MAKERT) client )
+install-c : client.stamp
+install-s : server.stamp
+install : install-c install-s
+	@echo '======================================================'
+	@echo '======================================================'
+	@echo '======================================================'
+	@echo 'BE CAREFUL: THIS IS THE BETA TEST. AND IT HAS BUGS!!!!'
+	@echo 'type control-C now if you are not sure'
+	@echo '======================================================'
+	sleep 10
+	@echo 'Installation started .....'
+#    put docs in server dirs
+	( cd etc; $(MAKERT) install );
+#    put headers in server dirs
+	test -d $(C_INC)   || mkdir -p $(C_INC)
+	( cd $(srcdir)/src/include ; \
+           for f in setup_os.h config.h sql.h dyn_funcs.h sql_type.def errors.h ; do \
+             test -f $(C_INC)/$$f && rm $(C_INC)/$$f ;           \
+             $(INSTALL) -m 644 $$f $(C_INC)/$$f      ;           \
+           done                                                  \
+        )
+#    check existence of desctination directories
+	test -d $(dbhome)         || mkdir -p $(dbhome)
+	test -d $(bindir)         || mkdir -p $(bindir)
+	test -d $(prefix)/lib     || mkdir -p $(prefix)/lib
+	test -d $(prefix)/include || mkdir -p $(prefix)/include
+	test -d $(mandir)/man1    || mkdir -p $(mandir)/man1
+	test -d $(infodir)        || mkdir -p $(infodir)
+#    go to server and init it.
+	( cd $(SERVDIR); $(srcdir)/etc/boot >/dev/null ; bin/finadm </dev/null ; )
+#    install whole working system in appropriate directory
+	cp -r  $(SERVDIR)/* $(dbhome)
+	chmod -R go-rwx $(dbhome)
+	find $(dbhome)/client   -perm -100 -exec chmod 755 {} \;
+	find $(dbhome)/client ! -perm -100 -exec chmod 644 {} \;
+#    change place to store backup
+#	@echo what should I change here?? to point new backup place
+#
+#    put link to clients tools (compiler, runtime, mans, infos etc) 
+#    into commonly used places
+	$(builddir)/etc/make-util install "$(LN_S)" "$(dbhome)" "$(bindir)" \
+                                        "$(mandir)" "$(infodir)" "$(prefix)" 
+localclean:
+	- $(RM) *.cache *.log *.status
+	- $(RM) -r sqlser lib
+clean:  localclean
+	$(builddir)/etc/make-util clean "$(MAKECLEAN)"
+distclean: localclean
+	- $(RM) src/include/config.h 
+	$(builddir)/etc/make-util clean "$(MAKERT) distclean"
+	$(SHELL) $(srcdir)/etc/conf-templ clean
+	- $(RM) Makefile *.stamp etc/make-util
+prepdirs.stamp:
+	- [ -d $(SERVDIR) ]    || mkdir -p $(SERVDIR)
+	- [ -d $(SERVDIR)/db ] || mkdir -p $(SERVDIR)/db
+	- [ -d $(SERVBIN) ]    || mkdir -p $(SERVBIN)
+	- [ -d $(CLNT) ]       || mkdir -p $(CLNT)
+	- [ -d lib ]           || mkdir -p lib
+	echo "Ok">$@
+
+test: all
+	echo "starting DBMS server and initializing data base"
+	( cd $(SERVDIR); bin/boot 2>&1 | tee log )
+	echo "starting test sequence... (it must fail somewhere)"
+	( cd test ;  $(MAKE) 2>&1 | tee log ; )
+	echo "stopping DBMS server"
+	$(SERVDIR)/bin/finadm
+
+confs: stamp-h
+
+# because configure & autoheader not always update config.h & config.h.in 
+# we replace config.h & config.h.in by stap-h and stamp-h.in respectively
+stamp-h: stamp-h.in Makefile.in config.status 
+	./config.status
+
+config.status: ${srcdir}/configure
+	./config.status --recheck
+
+${srcdir}/configure: configure.in             aclocal.m4
+	[ ! -f config.cache ] || $(RM) config.cache
+	cd ${srcdir} && autoconf
+
+stamp-h.in : ${srcdir}/stamp-h.in   ## these files condidered different by make
+${srcdir}/stamp-h.in: configure.in acconfig.h aclocal.m4 
+	cd ${srcdir} && autoheader
+	echo "`hostname` `date` `who am i`" > ${srcdir}/stamp-h.in
+
+force:
+
+.SILENT:

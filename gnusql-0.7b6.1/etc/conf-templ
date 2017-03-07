@@ -1,0 +1,293 @@
+
+# leave fisrt line empty!
+#------------------------------------------------------------
+# conf-templ :  This script is an auxilary part of configure.
+#               It is called by 'configure' and does 
+#               configure templates pre & post -processing. 
+# 
+# This file is a part of GNU SQL Server
+#
+# Copyright (c) 1996-1998, Free Software Foundation, Inc
+# Developed at the Institute of System Programming
+# This file is written by Michael Kimelman
+# 
+# Outlines:
+#
+#   First pass finds templates to configure in source
+#   tree. Than it edits makefiles templates, if it's required. 
+#   Edited copies collected at ./templates. Finally it generates a
+#   list of dependencies to configure and postconfigure settings.
+#
+#   Next pass (postconfigure) deletes temporary configuration 
+#   information and creates necessary soft links.
+#
+# Contacts: gss@ispras.ru
+#
+
+#set -x
+
+# Constants declaration  --------------------------
+# templates working directory
+template_dir=templates
+# postconfigure file name
+postconfig=postconf
+# postconfigure file name
+errlog=log
+# common makefiles header 
+make_hd=Makefile_h
+# -------------------------------------------------
+
+# distribution source tree ------------------------
+srcdir=`echo $0 | sed 's/etc[/]conf-templ$//g' | sed 's/[/]$//g' `
+if [ x$srcdir = x ]; then 
+  srcdir="."
+fi
+localtree=`pwd`
+cd $srcdir
+srcdir=`pwd`
+cd $localtree
+# -------------------------------------------------
+# checking echo options
+if (echo "testing\c"; echo 1,2,3) | grep c >/dev/null; then
+  # Stardent Vistra SVR4 grep lacks -e, says ghazi@caip.rutgers.edu.
+  if (echo -n testing; echo 1,2,3) | sed s/-n/xn/ | grep xn >/dev/null; then
+    ac_n= ac_c='
+' ac_t='	'
+  else
+    ac_n=-n ac_c= ac_t=
+  fi
+else
+  ac_n= ac_c='\c' ac_t=
+fi
+
+##--------------------  proc_conf -----------------------------------
+proc_file () ## args: none
+{
+# dir  -- destination directory; ddir -- the same but '/' replaced by '.'
+# sfn  -- file name root of template file.
+# fn   -- configurable file: ${dir}/${sfn}
+# tfn  -- template file name ${dir}/${sfn}.in
+# pfn  -- template file name in a plane structure ${sfn}.${dir}.in
+#         this is synonym for tfn at template directory 
+  ## check for duplication
+  echo $ac_n "Checking template for $dir/$sfn... $ac_c"  1>&2
+  if [ "${ddir}" = "." ] ; then
+    pfn=${sfn}.in
+    dir1=""
+    dir="."
+  else
+    pfn=${sfn}.${ddir}.in 
+    dir1="${dir}/"
+  fi
+  if [ -f ${pfn}.stamp ]; then
+    echo " see above."  1>&2
+    return
+  fi
+  ## find original configuration template
+  if [ -f ${srcdir}/${dir1}${sfn}.in ]; then           ## if it exists in 'srcdir' tree
+    origin=""                                            ## and set to org. name
+    forigin=${srcdir}/${dir1}${sfn}.in                   ## and to full name
+  else 
+    echo "Configuration file has not been found             "  | tee ${errlog} 1>&2
+    echo "we have checked: ${srcdir}/${dir1}${sfn}.in       "  | tee ${errlog} 1>&2
+    exit 1
+  fi
+  echo "fix_dir $sfn $dir ${forigin} " >>${postconfig}
+  ## process previously parsed file
+  if [ "x${sed_cmd}" = "x" -o ${sfn} != Makefile ]; then ## nothing to edit
+    if [ x$origin = x ]; then 
+      deps="${dir1}${sfn}"
+      origin=$deps.in
+    else
+      deps="${dir1}${sfn}:${origin}"
+    fi
+  else ## Makefiles have to be edited here
+    if [ "x${make_includes}" = "x##include" ] ; then
+      ## we have to implement make includes by hand
+      cat ${make_hd}.src.in      > $$
+      cat ${forigin}            >> $$
+      sed "${sed_cmd}" $$        > ${pfn}.__
+      rm -f $$
+    else
+      sed "${sed_cmd}" $forigin  > ${pfn}.__
+    fi
+    origin="${template_dir}/${pfn}.__"
+    deps="${dir1}${sfn}:${origin}"
+  fi
+  echo "$deps" >> deps.$ddir
+  date > ${pfn}.stamp
+  echo " \"$origin\" "  1>&2
+}
+
+##--------------------------------------------------------------------
+##  MAIN program -----------------------------------------------------
+
+##  first of all check if we was pointed to the true srcdir directory
+if [ ! -f ${srcdir}/README -o `grep -i 'gss' ${srcdir}/README | wc -l` -lt 1 ];  then 
+  echo "$0: gss does not mentioned in '$srcdir' directory"  | tee ${errlog} 1>&2
+  exit 1
+fi
+
+##  Check local directory. is it proper place to run? We have to be at the
+##  top directory of distribution building tree
+
+
+if [ `pwd` != ${srcdir} ] ; then  ##  '--srcdir' compilation 
+  if [ -f ${srcdir}/Makefile ] ; then 
+    echo "$0: source tree contains it's own compilation tree '--srcdir' compilaiton is not allowed" | tee ${errlog} 1>&2
+    exit 1
+  fi
+fi
+  
+case $1 in
+  test)
+       $0 create "ln -s" make "include"
+       echo ------------------------------------------
+       echo ------------------------------------------
+       cat ${template_dir}/${errlog} 
+       echo ------------------------------------------
+       echo ------------------------------------------
+       ${template_dir}/${postconfig}
+       echo ------------------------------------------
+       echo ------------------------------------------
+       ;;
+  create)
+       LN_S=$2
+       make=$3
+       make_includes=$4
+       if [ ! -d ${template_dir} ]; then
+          mkdir ${template_dir}
+       fi
+       cd ${template_dir}
+
+       ## make sure there is no temporary files
+       rm -f deps.* *.in.stamp
+       if [ -f ${errlog} ]; then rm -f ${errlog}; fi
+       if [ -f ${postconfig} ]; then rm -f ${postconfig}; fi
+       ## -------------------------------------
+       
+       ## prepare sed command to fix makefiles 'include' entries
+       if [ "x${make_includes}" != "xinclude" ] ; then
+         sed_cmd="${sed_cmd}s/^include /${make_includes} /g;"
+         if [ ! -f ${make_hd}.src.in ]; then
+           ${LN_S}  ${srcdir}/src/${make_hd}.in ${make_hd}.src.in
+         fi
+       fi
+       if [ $srcdir != $localtree ]; then
+         if [ "x${sed_cmd}" != "x" ]; then
+           echo "Error: we need to edit makefiles for $make                     "  | tee ${errlog} 1>&2
+           echo "configuration in another directory is not allowed for this case"  | tee ${errlog} 1>&2
+           exit 1
+         fi
+       fi
+       ## cool filter command
+       if [ "x${sed_cmd}" != "x" ]; then ## sed command not empty
+         filt_cmd="sed \'${sed_cmd}\'"
+       else
+         filt_cmd="cat "
+       fi
+       ## prepare postconfiguration script header
+       echo '                                             '  >${postconfig}
+       echo '                                             ' >>${postconfig}
+       echo "# this file is generated automatically by $0 " >>${postconfig}
+       echo "# DON'T EDIT THIS FILE                       " >>${postconfig}
+       echo "#                                            " >>${postconfig}
+       echo "                                             " >>${postconfig}
+       echo "                                             " >>${postconfig}
+       echo "LN_S=\"${LN_S}\"                             " >>${postconfig}
+       echo 'topdir=`pwd`                                 ' >>${postconfig}
+       echo "                                             " >>${postconfig}
+       echo "#-------------------------------------------#" >>${postconfig}
+       echo 'fix_dir () {                                 ' >>${postconfig}
+       echo '  sfn=$1     ## configurable file            ' >>${postconfig}
+       echo '  dir=$2     ## target subdirectory          ' >>${postconfig}
+       echo '  tfn=$3     ## original template destination' >>${postconfig}
+       echo '                                             ' >>${postconfig}
+       echo ' ( # go to sub shell                         ' >>${postconfig}
+       echo '   ## cd to target directory                 ' >>${postconfig}
+       echo '   cd $dir ## cd to target directory         ' >>${postconfig}
+       echo '   if [ ! -r ${sfn}.in ]; then               ' >>${postconfig}
+       echo '     ${LN_S} $tfn ${sfn}.in                  ' >>${postconfig}
+       echo '   fi                                        ' >>${postconfig}
+       echo '   if [ -x ${tfn} ]; then                    ' >>${postconfig}
+       echo '     chmod a+x  ${sfn}                       ' >>${postconfig}
+       echo '   fi                                        ' >>${postconfig}
+       echo " )                                           " >>${postconfig}
+       echo "                                             " >>${postconfig}
+       echo "}                                            " >>${postconfig}
+       echo "#-------------------------------------------#" >>${postconfig}
+       echo "                                             " >>${postconfig}
+       chmod a+x ${postconfig}
+       ## Finding and processing configure templates
+       confs=` (
+          cd ${srcdir};
+          find . -name '*.in' -type f -print | 
+          sed 's/^\(.*\)[/]\([^/]*\)[.]in/\1 \2 /g;s/^[.][/]//g'  
+       ) `
+       while [ "x$confs" != x ]; do 
+         set $confs
+         dir=$1; sfn=$2; shift 2
+         confs=$*
+         if [ $dir = ${template_dir} ]; then continue; fi
+         ## avoid processing configure & config.h -- it's not our business
+         if [ $sfn = configure -o $sfn = config.h -o $sfn = stamp-h ]; then continue; fi
+         ddir=`echo $dir | tr '/' '.'`
+         proc_file 
+       done
+       ## output sorted dependencies file list
+       for deps in ` ls deps.* | sort ` ; do
+         cat $deps
+         rm -f $deps
+       done
+       rm -f *.in.stamp
+       ##
+       echo "#-------------------------------------------#" >>${postconfig}
+       echo "                                             " >>${postconfig}
+       echo "if [ ! -r $srcdir/test/testdeps.mk    ];then " >>${postconfig}
+       echo "  ( cd $srcdir/test ; $localtree/etc/Tdeps ) " >>${postconfig}
+       echo "fi                                           " >>${postconfig}
+       if [ $srcdir != $localtree ] ; then
+         echo "if [ ! -f $localtree/test/testdeps.mk ];then" >>${postconfig}
+         echo "  ${LN_S} $srcdir/test/testdeps.mk $localtree/test/testdeps.mk " >>${postconfig}
+         echo "fi                                           " >>${postconfig}
+       fi
+       echo "#-------------------------------------------#" >>${postconfig}
+       echo "                                             " >>${postconfig}
+       ;;
+       
+  postconfigure)
+       ## put links to RCS and makefiles template into the target directories
+       if [ -d ${template_dir} ] ; then  
+         [ ! -f  ${template_dir}/${postconfig} ] || ${template_dir}/${postconfig}
+         ( 
+           cd etc;
+           for fn in `ls` ; do
+             [ -x ${srcdir}/etc/$fn.in ] && chmod a+x $fn
+           done  
+         )
+         if [ `ls -1 ${template_dir} | wc -l` -eq 0 ]; then
+           rmdir ${template_dir}
+         fi
+       fi
+       ;;
+  clean)
+       if [ -d ${template_dir} ] ; then  
+         (
+           cd ${template_dir}
+           rm -f log *.in.stamp *.in.__ ${postconfig}
+           if [ `ls -1 | wc -l` -eq 1 -a -h RCS ]; then 
+             rm RCS;
+           fi
+         )
+         if [ `ls -1 ${template_dir} | wc -l` -eq 0 ]; then
+           rmdir ${template_dir}
+         fi
+       fi
+       ;;
+  *)
+       echo $0: incorrect parameters "$*" 
+       exit 1
+       ;;
+esac
+
+exit 0
