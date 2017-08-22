@@ -1,0 +1,77 @@
+.TH GNU "SQL Server" 0.7 "1996 October 1"
+.UC 4
+.SH NAME
+gsqlc \- GNU SQL-server compiler
+.SH SYNOPSIS
+.B gsqlc
+[
+.I command-line switches
+]
+.I files ...
+.br
+.SH DESCRIPTION
+.I GNU SQL Server compiler 
+is a part of 
+.I GNU SQL Server (GSS)
+developed by the the small team at Institute of System Programming,
+Russian Academy of Science.
+.br
+The primary documentation of GSS is in the GNU SQL Server Manual,
+which you can read on line using Info, a subsystem of Emacs.  Please
+look there for complete and up-to-date documentation. The GSS
+maintainers' priority goal is to minimize the amount of time this man
+page takes away from other more useful projects.
+.br
+.PP
+.SM gsqlc Options
+.PP
+The following options are of general interest:
+.TP 8
+.BI -hHOSTNAME
+gives the name of host where database server resides
+this option override value of environment variable 
+.I GSSHOST. 
+If both of them are omitted local host is supposed to run DB server
+.TP
+.BI \-rMODE
+gives the mode of file processing. The possible value of 
+.I MODE 
+are: 
+.I C,SQL,MODULE,SCHEMA.
+If this option is omitted compiler interprets extension  
+.B '.ec'
+as a C program with embedded SQL, and 
+.B '.sql'
+as a pure SQL code \- either schema or module definition.
+.PP
+.SH FILES
+.br
+.br
+.PP
+.SH BUGS
+
+Use \fBbug-gnu-sql@prep.ai.mit.edu\fR for reporting GNU SQL Server bugs and fixes.  But before
+reporting something as a bug, please try to be sure that it really is a bug,
+not a misunderstanding or a deliberate feature. We ask you to read the
+section ``Reporting GSS Bugs'' near the end of the reference manual (or Info
+system) for hints on how and when to report bugs. Also, include the version
+number of the GSS you are running in \fIevery\fR bug report that you send in.
+
+Do not expect a personal answer to a bug report.  The purpose of reporting
+bugs is to get them fixed for everyone in the next release, if possible.
+
+.PP
+.SH UNRESTRICTIONS
+.PP
+.I GNU SQL server 
+is free; anyone may redistribute copies of it to anyone under the terms 
+stated in the General Public License a copy of which accompanies each 
+copy of GNU SQL Server. In fact, the primary purpose of the General Public
+License is to prohibit anyone from attaching any other restrictions
+to redistribution of GNU SQL Server.
+.SH SEE ALSO
+gsqls(1)
+.SH AUTHORS
+.PP
+.I gsqlc
+was written at Institute for System Programming, Russian Academy of Science.

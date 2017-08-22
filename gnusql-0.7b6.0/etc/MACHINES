@@ -1,0 +1,27 @@
+This is a list of the status of GNU SQL Server on various machines and systems.
+
+For each system and machine, we give the configuration name you can
+pass to the `configure' script to prepare to build GSS for that
+system/machine.
+
+The `configure' script uses the configuration name to decide which
+known feature it should use. Right now it is required for debugging
+tools only. 
+
+If you add support for a new configuration, add a section to this
+file, and then edit the `configure' (and configure.in as well) script
+to tell it which configuration name(s) should select your new machine
+description and system description files.
+
+
+Here are the configurations gss is intended to work with, with the
+corresponding configuration names.  You can postpend version numbers
+to operating system names (e.g. sunos4.1) or architecture names (e.g.
+hppa1.1).  If you leave out the version number, the `configure' script
+will configure gss for the latest version it knows about.
+
+
+Early beta test:
+Sun Solaris 2.x    (sparc-sun-solaris2.*)
+i586 Linux  1.2.13 (ix86-*-linux*) 
+HP/700 HP_UX 9.0   (hppa1.1-hp-hpux9.07)

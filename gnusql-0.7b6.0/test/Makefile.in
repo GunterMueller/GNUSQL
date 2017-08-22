@@ -1,0 +1,85 @@
+##
+## $Id: Makefile.in,v 1.254 1998/09/28 06:03:08 kimelman Exp $
+##
+## This file is a part of GNU SQL Server
+##
+## Copyright (c) 1996, 1997, Free Software Foundation, Inc
+## Developed at Institute of System Programming of Russian Academy of Science
+## This file is written by Michael Kimelman
+##
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free
+## Software Foundation; either version 2 of the License, or (at your option)
+## any later version.
+##
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+## more details.
+##
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, write to the Free Software Foundation, Inc.,
+## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+## Contacts: gss@ispras.ru
+##
+
+srcdir=@srcdir@
+VPATH=@srcdir@
+SRC=$(srcdir)/../src
+ETC=../etc
+
+RM=rm -f 
+LIB=../sqlser/client
+LIBFILE=-lgss  @LIBS@
+CFLAGS=  @CFLAGS@ -I../src/include -I$(SRC)/include -I$(SRC)/trl $(CFLAGS1) @DEFS@
+LDFLAGS= @LDFLAGS@  -L$(LIB)
+CC=@CC@
+GSQLF=# -Dl  
+# disable BASE debug printing (redirecting to /dev/null)
+SHELL=/bin/sh
+ESQL=$(LIB)/gsqlc
+SQLCPP= $(ESQL) $(LIB)/../bin/gsqlt-dyn $(LIB)/../gsqls $(LIB)/../db/base.dat
+##############################################
+.c.exe:
+	echo "-- compiling $< ==>> $*.exe " 
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $*.exe $< $(LIBFILE)
+.ec.c:
+	echo "-- compiling $< ==>> $*.c"
+	$(ESQL) $(GSQLF) -rC  $<
+.sql.c:
+	echo "-- compiling $<"
+	$(ESQL) $(GSQLF)  $<
+.EC.c:
+	echo "-- compiling $<"
+	cp $< $*.c
+.ec.Sc:
+	echo "-- compiling $< ==>> $*.Sc"
+	$(ESQL) $(GSQLF) -rC  $<
+.exe.stamp:
+	echo "-- run $<"
+	./$<
+.SQL.stamp:
+	echo "-- processing $<"
+	$(LIB)/gsqlmon $<
+###########################################
+all:  do_all
+
+cleanall: clean
+	$(ETC)/Tdeps
+
+clean :
+	$(ETC)/make-util clean "$(MAKE) clean"
+	- $(RM) dynlog.* 
+distclean : clean
+	$(ETC)/make-util clean "$(MAKE) distclean"
+	- mkdir -p tmptest
+	- cp -p *.ec *.sql *.txt *.h *.EC *.SQL testdeps.mk tmptest 2>/dev/null
+	- $(RM) test* 
+	mv tmptest/* .
+	- $(RM) -r tmptest
+
+include testdeps.mk
+
+.SUFFIXES: .stamp .exe .c .Sc .SQL .EC .ec .sql
+.SILENT:

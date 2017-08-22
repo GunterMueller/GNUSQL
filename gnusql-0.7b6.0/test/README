@@ -1,0 +1,51 @@
+This a GNU SQL Server tests README file.
+
+This directory contains some of tests which we currently use
+for debugging purpose. Some of them should work while some
+should not. Theoretically all of them have to work, but some 
+features have not implemeted yet and some fails because of OS
+setting properties. Anyway we are interested in results of 
+this test on your site. If something failed let us know. We did not
+clear this directory, so you can find here some junk which
+is not work but their source can give you some hint.
+
+We expect this test to run here, in buildding tree. they sometimes
+can require header files from source tree. To run the test you need
+to start server first. Go to the ../sqlser directory and run either
+     host{user}sqlser > ../etc/boot 2>&1 >log 
+if you want to bootstrup a database or
+     host{user}sqlser > ./gsqls </dev/null 2>&1 >log &
+at any subsequential time ( until you don't want to recreat db ). 
+When you run server you should go to this 'test' directory and
+run make. The result will not be too impressive, just basic functions
+check and a lot of system tables contents on the screen. The whole amount of
+test can get a couple of hours before it finally fails on M1 test (at least
+it fails here :) for version 0.7b3). Below is brief test overview. 
+
+Basically this set can be separated to several groups. 
+1. test[0-9]*.ec 
+   This group check functioning of basic SQL SELECT operations.
+   This tests read data from database administrator (user=DEFINITION_SCHEMA)
+   tables. User recognized as a DBA if (s)he is an owner of DB server process
+   or, at least, has the same name (that is a bug).  
+   
+2. testIS?.sql -- group of test creating INFORMATION SCHEMA -- the set ov views
+   created DBA for users ( corrensponds to SQL/92 standard) IS.txt contains 
+   all of this as a whole thing. 
+
+3. testM(.*) -- the most complex test. it's permanently changed to find a new
+                bugs. Talking the true it's our main testbench  
+
+4. testA(.*) -- this and 2 following groups are early variation around M group
+5. testT(.*) 
+6. testZ(.*) 
+
+7. testd(.*) -- dynamic SQL tests. this set used dynamic SQL runtime library.
+                see specifications in 'dyn_funcs.h'. 
+                only d1 is working test all other are derivatives of 
+                different level from still unfinished DBA DBA monitor. (it has
+                not debugget yet - actually we even havn;t touched it for a 
+                monthes).
+
+8. testFL*.sql  tests was sent to us recently and reported that SQL server 
+                fails on it.

@@ -1,0 +1,62 @@
+##########################################################################
+##                  GNU SQL Compiler  (parser's phase)                  ##
+##########################################################################
+##
+## $Id: Makefile.in,v 1.248 1998/09/28 06:03:07 kimelman Exp $
+##
+## This file is a part of GNU SQL Server
+##
+## Copyright (c) 1996, 1997, Free Software Foundation, Inc
+## Developed at Institute of System Programming of Russian Academy of Science
+## This file is written by Michael Kimelman
+##
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free
+## Software Foundation; either version 2 of the License, or (at your option)
+## any later version.
+##
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+## more details.
+##
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, write to the Free Software Foundation, Inc.,
+## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+## Contacts: gss@ispras.ru
+##
+
+srcdir=@srcdir@
+VPATH=@srcdir@
+include ../Makefile_h
+##======================================================================##
+##          other setups                                                ##
+##======================================================================##
+TPH=$(INC)/type_lib.h
+##########################################################################
+all server: announce $(LIBSER)
+client: announce $(LIBCLI)
+install   : $(LIBCL_DEP) gsqlmon
+	$(CP)  gsqlmon $(CLNT)
+libgss_cli : scan_c.o
+	echo $? >$@
+libgss_ser : parse.o  scan_s.o
+	echo $? >$@
+t : parseNEW.o
+parse.c parse.h : parse.y
+#parse.c   : parse.y
+
+scan_c.c  : scan_c.l
+scan_s.c  : scan_s.l
+
+gsqlmon: gsqlmon.o 
+	$(LD) gsqlmon.o $(CLLIBS) -o $@
+gsqlmon.o : gsqlmon.c $(INC)/xmem.h $(INC)/dyn_funcs.h
+gsqlmon.c : gsqlmon.l
+scan_s.o  : scan_s.c $(TRL)/trl.h $(INC)/xmem.h parse.h $(INC)/const.h
+scan_c.o  : scan_c.c $(LINC)/gsqltrn.h procname.h $(INC)/sql_decl.h $(INC)/xmem.h
+parse.o   : parse.c parse.h procname.h $(INC)/tree_gen.h $(INC)/cycler.h $(TPH)
+clean::
+	- $(RM) y.tab* *.out* lex.* 
+	- $(RM) scan*.c gsqlmon.c gsqlmon

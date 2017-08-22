@@ -1,0 +1,53 @@
+##########################################################################
+##                  GNU SQL Compiler  (interpretator)                   ##
+##########################################################################
+##
+## $Id: Makefile.in,v 1.246 1998/09/28 06:03:06 kimelman Exp $
+##
+## This file is a part of GNU SQL Server
+##
+## Copyright (c) 1996, 1997, Free Software Foundation, Inc
+## Developed at Institute of System Programming of Russian Academy of Science
+## This file is written by Michael Kimelman
+##
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free
+## Software Foundation; either version 2 of the License, or (at your option)
+## any later version.
+##
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+## more details.
+##
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, write to the Free Software Foundation, Inc.,
+## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+## Contacts: gss@ispras.ru
+##
+
+srcdir=@srcdir@
+VPATH=@srcdir@
+include ../Makefile_h
+##======================================================================##
+##          other setups                                                ##
+##======================================================================##
+CFLAGS1=  -D__INTERPR__
+H=$(INC)/global.h
+LOCH=$(INC)/inprtyp.h $(INC)/type_lib.h
+##########################################################################
+#                make program                                            #
+##########################################################################
+
+all: server
+client: announce  $(LIBCLI)
+server: announce  $(LIBSER)
+libgss_ser : interpr.o intlib.o int_servlib.o 
+	echo $? >$@
+libgss_cli : int_cli.o
+	echo $? >$@
+interpr.o: interpr.c $(LOCH) $(H) $(INC)/sql.h
+int_cli.o: int_cli.c $(LOCH) $(H) $(LINC)/gsqltrn.h $(INC)/cl_lib.h $(INC)/sql.h
+int_servlib.o: int_servlib.c $(LOCH) $(H) $(LINC)/gsqltrn.h $(INC)/sql.h
+intlib.o : intlib.c $(LOCH) $(H) $(INC)/sql.h

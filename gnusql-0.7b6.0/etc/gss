@@ -1,0 +1,36 @@
+This is Info file gss, produced by Makeinfo version 1.67 from the input
+file /home/kml/gsql/gsql/etc/gss.texi.
+
+
+Indirect:
+gss-1: 112
+gss-2: 48333
+
+Tag Table:
+(Indirect)
+Node: Top112
+Node: Distrib1407
+Node: Copying3718
+Node: Intro22903
+Node: Architecture24503
+Node: Dialect28252
+Node: Dialect Intro29294
+Node: Data description31099
+Node: Data types32664
+Node: Schema33703
+Node: Access35682
+Node: Server36376
+Node: Client37869
+Node: Bugs39867
+Node: Bug Criteria40621
+Node: Understanding Bug Reporting41927
+Node: Checklist43012
+Node: Sending Patches48333
+Node: Manifesto53321
+Node: Acknowledgments79352
+Node: Key Index79997
+Node: Command Index80126
+Node: Variable Index80347
+Node: Concept Index80476
+
+End Tag Table

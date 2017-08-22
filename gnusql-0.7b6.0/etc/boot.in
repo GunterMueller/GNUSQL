@@ -1,0 +1,51 @@
+@INT_SHELL@
+#
+# boot :  create DB directories, initialize DB segments, 
+#         run DB manager in background and call bin/base utility
+#         to create set of DB system tables.
+#           
+# This file is a part of GNU SQL Server
+#
+# Copyright (c) 1996, 1997 Free Software Foundation, Inc.
+# This file is written by Michael Kimelman.
+#
+# Contacts: gss@ispras.ru
+#
+
+if [ "x$1" = "x" ] ; then 
+  X=`ls gsqls`
+  if [ "x$X" = "xgsqls" ] ; then
+    SER=.
+  else
+    SER=$GSQL/sqlser
+  fi
+else
+  SER=$1
+fi
+cd $SER
+pwd
+bin/finadm 
+sleep 1
+# bin/dq 
+rm -r -f jarchive db gmon.out gdbinit
+find . -name core -exec rm {} \;
+mkdir jarchive
+mkdir db
+ls -al
+bin/prepup
+./gsqls 2>&1 >log &
+while true 
+do
+      if grep "ready" log >/dev/null ; then
+         break
+      fi
+      sleep 1
+done
+bin/base </dev/null
+sleep 1
+echo =====================================
+exit
+sleep 10
+bin/finadm 
+sleep 1
+echo =====================================

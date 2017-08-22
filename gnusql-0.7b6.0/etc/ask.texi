@@ -1,0 +1,40 @@
+@c This is part of the GNU SQL Server manual.
+@c Copyright (C) 1996, Free Software Foundation, Inc
+@c See file gss.texi for copying conditions.
+@node Acknowledgments, Intro, Manifesto, Top
+@chapter Acknowledgments
+
+Many people have contributed code included in the Free Software
+Foundation's distribution of GNU SQL Server. To show our appreciation for
+their public spirit, we list here those who have written substantial
+portions.
+
+This package was originally developed by research staff of Institute
+of System Programming of Russian Academy of Science and students of
+Moscow State University. Contributors to GNU SQL Server include
+Sergei Kuznetsov, Michael Kimelman, Vera Ponomarenko,
+Konstantin Dyshlevoy, Andrei Yachine, Eugene Voinov.
+
+@c @itemize @bullet
+@c @c @item
+@c Per Abrahamsen wrote @file{double.el}, for typing accented characters
+@c not normally available from the keyboard, and @file{cpp.el}, which hides
+@c or highlights parts of C programs according to preprocessor conditionals.
+
+@c @item
+@c Jay K. Adams wrote @file{jka-compr.el}, providing automatic
+@c decompression and recompression for compressed files.
+
+@c @item
+@c Frank Bresz wrote @file{diff.el}, a program to display @code{diff}
+@c output.
+
+@c @end itemize
+
+@c Others too numerous to mention have reported and fixed bugs, and added
+@c features to many parts of Emacs.  We thank them for their generosity as
+@c well.
+
+@c This list is intended to mention every contributor of a major package or
+@c feature we currently distribute; if you know of someone we have omitted,
+@c please report that as a manual bug.

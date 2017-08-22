@@ -1,0 +1,171 @@
+/*
+ * treeflag.def  - description of flags, used by GNU SQL compiler
+ *                 tree library
+ *
+ *  This file is a part of GNU SQL Server
+ *
+ *  Copyright (c) 1996, 1997, Free Software Foundation, Inc
+ *  Developed at the Institute of System Programming, Russia
+ *  This file is written by Michael Kimelman
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ *  Contact:  gss@ispras.ru
+ *
+ */
+
+/* $Id: treeflag.def,v 1.245 1997/03/31 03:46:38 kml Exp $ */
+
+/*************************************************************************\
+*      All flags used in the tree nodes has to be described in this file. *
+* Each flag assotiated with a bit in the node mask. So it's impossible to *
+* apply more than 32 flag to a node. Flags are assotiated with  nodes  by *
+* flags` group identifier. Each node description contain  list  of  flags *
+* group identifier and each flag description specify the group. Format of *
+* flag`s description is given below                                       *
+*                                                                         *
+*    DEF_FLAG_BIT(FLAGNAME,"flagname",'0',bit_no)                         *
+*    DEF_FLAG    (FLAGNAME,"flagname",'0')                                *
+*                                                                         *
+* where:                                                                  *
+*   FLAGNAME  -  flag code, used as a symbolic constant in compiler       *
+*  "flagname" -  string, which contains the same literal as a  FLAGNAME,  *
+*                but in a bit more readable form. Used in dumps as image  *
+*                of FLAGNAME                                              *
+*         Note: uppercase("flagname") = "FLAGNAME"  - it`s important for  *
+*               tree recognizer.                                          *
+*  '0'        -  flags' group identifier;                                 *
+*  bit_no     -  number of bit, assotiated with this flag                 *
+*         (used in assignment for enumeration constant. if this parameter *
+*          omitted - def_flag - the assignment for current enum constant  *
+*          will be omitted and curent_bit_no = previous_bit_no + 1      ) *
+\*************************************************************************/
+
+/*-----------------------------------------------------------------------*\
+!*   group  '0' - general purpose flags                            * bit *!
+\*      VCB_F  -  vocabulary node                                  * No  */
+    DEF_FLAG(OP_B0_F   ,"op_b0_f"   ,'0')                         /*  0  */
+    DEF_FLAG(OP_B1_F   ,"op_b1_f"   ,'0')                         /*  1  */
+    DEF_FLAG(OP_B2_F   ,"op_b2_f"   ,'0')                         /*  2  */
+    DEF_FLAG(OP_B3_F   ,"op_b3_f"   ,'0')                         /*  3  */
+    DEF_FLAG(VCB_F     ,"vcb_f"     ,'0')                         /*  0+4*/
+    DEF_FLAG(LIST_F    ,"list"      ,'0')                         /*  5  */
+    DEF_FLAG(EXIST_OP_F,"exist_op"  ,'0')                         /*  6  */
+    DEF_FLAG(EXACT_F   ,"exact"     ,'0')                         /*  7  */
+    DEF_FLAG(PATTERN_F ,"pattern_f" ,'0')                         /*  8  */
+    DEF_FLAG(ACTION_F  ,"action_f"  ,'0')                         /*  9  */
+    DEF_FLAG(MARK1_F   ,"mark1_f"   ,'0')                         /* 10  */
+    DEF_FLAG(MARK_CMP_F,"mark_cmp_f",'0')                         /* 11  */
+    DEF_FLAG(MARK_CYC_F,"mark_cyc_f",'0')                         /* 12  */
+    DEF_FLAG(DEL_CUR_F ,"del_cur_f" ,'0')                         /* 13  */
+    DEF_FLAG(RO_F      ,"RO_f"      ,'0')                         /* 14  */
+    DEF_FLAG(MARK_F    ,"mark_f"    ,'0')                         /* 15  */
+/*      MARK_F  -  this remark used to avoid cycling.                    */
+/*                 It should be the last general purpose flag            */
+
+/*-----------------------------------------------------------------------*/
+/*   group  't' - table expressions flags                                */
+
+    DEF_FLAG_BIT(WHERE_F,"where_f"     ,'t',bt_MARK_F+1)          /* 16  */
+    DEF_FLAG(GROUP_F    ,"group_f"     ,'t')                      /* 17  */
+    DEF_FLAG(HAVING_F   ,"having_f"    ,'t')                      /* 18  */
+    DEF_FLAG(SUBQUERY_F ,"subquery_f"  ,'t')                      /* 19  */
+    DEF_FLAG(UPDATABLE_F,"updateable_f",'t')                      /* 20  */
+
+/*-----------------------------------------------------------------*-----*/
+/*   group  's' - flags of queries (select) and agregate functions *     */
+/*-----------------------------------------------------------------*-----*/
+
+    DEF_FLAG_BIT(DISTINCT_F,"distinct_f",'s',bt_UPDATABLE_F+1)    /* 21  */
+    DEF_FLAG(GROUP_BY_F    ,"group_by_f",'s')                     /* 22  */
+    DEF_FLAG(EMPTY_F       ,"empty_f"   ,'s')                     /* 23  */
+
+/*-----------------------------------------------------------------------*/
+/*   group  'r' - cursor flag                                            */
+
+    DEF_FLAG_BIT(UPD_CURS_F,"upd_curs_f",'r',bt_MARK_F+1)         /* 16  */
+    DEF_FLAG(ORDER_F       ,"order_f"   ,'r')                     /* 17  */
+    DEF_FLAG(CURS_DEL_F    ,"curs_del_f",'r')                     /* 18  */
+    DEF_FLAG(CURS_UPD_F    ,"curs_upd_f",'r')                     /* 19  */
+
+/*-----------------------------------------------------------------------*/
+/*   group  'c' - flags of sort direction                                */
+
+    DEF_FLAG_BIT(DESC_F    ,"desc_f"    ,'c',bt_MARK_F+1)         /* 16  */
+
+/*-----------------------------------------------------------------------*/
+/*   group  'u' - union's flags                                          */
+
+    DEF_FLAG_BIT(ALL_F,"all_f",'u',bt_MARK_F+1)                   /* 16  */
+
+/*-----------------------------------------------------------------------*/
+/*   group  'T' - tables', scans' and parameters' flags                  */
+
+    DEF_FLAG_BIT(CHECKED_F,"Checked_f"   , 'T',bt_MARK_F+1)       /* 16  */
+    DEF_FLAG(CHECK_OPT_F , "Check_Opt_f" , 'T')                   /* 17  */
+    DEF_FLAG(OUT_F       , "out_f"       , 'T')                   /* 18  */
+    DEF_FLAG(INDICATOR_F , "indicator_f" , 'T')                   /* 19  */
+    DEF_FLAG(PSEUDO_F    , "pseudo_f"    , 'T')                   /* 20  */
+/*-----------------------------------------------------------------------*/
+/*   group  'o' - predicate flags                                        */
+
+    DEF_FLAG_BIT(QUANTIF_F,"quantif_f",'o',bt_MARK_F+1)           /* 16  */
+    DEF_FLAG(SOME_F       ,"some_f"   ,'o')                       /* 17  */
+    DEF_FLAG(SIMPLE_F     ,"simple_f" ,'o')                       /* 18  */
+/*-----------------------------------------------------------------------*/
+/*   group  'i' - Insert node flags                                      */
+
+    DEF_FLAG_BIT(COLUMNS_F,"columns_f",'i',bt_MARK_F+1)           /* 16  */
+    DEF_FLAG(QUERY_F      ,"query_f"  ,'i')                       /* 17  */
+
+/*-----------------------------------------------------------------------*/
+/*   group  'I' - kitty constructors flags (and INSERT command as well)  */
+
+    DEF_FLAG_BIT(BEFORE_F ,"before"   ,'I',bt_MARK_F+1)           /* 16  */
+    DEF_FLAG(TREE_F       ,"tree"     ,'I')                       /* 17  */
+
+/*-----------------------------------------------------------------------*/
+/*   group  'G' - GRANT's flag                                           */
+
+    DEF_FLAG_BIT(GRANT_OPT_F,"grant_opt_f",'G',bt_MARK_F+1)       /* 16  */
+
+/*-----------------------------------------------------------------------*/
+/*   group  'v' - GRANT's flag                                           */
+
+    DEF_FLAG_BIT(HAS_VCB_F,"has_vcb_f",'v',gmax(bt_QUERY_F,bt_EMPTY_F)+1) 
+
+/*-----------------------------------------------------------------------*/
+/*   group  'R' - RULE`s flag                                            */
+
+    DEF_FLAG_BIT(STATIC_F,"static",'R',bt_MARK_F+1)               /* 16  */
+
+/*-----------------------------------------------------------------------*/
+/*   group  'a' - SWITCH construction of kitty flag                      */
+
+    DEF_FLAG_BIT(CYCLE_F,"cycle",'a',bt_MARK_F+1)                 /* 16  */
+
+/*-----------------------------------------------------------------------*/
+#if 0
+/*-----------------------------------------------------------------------*/
+/*   group  'x' - new flags` group                                       */
+    DEF_FLAG_BIT(FLAGNAME,"flagname",'x',bit_no)                  /* 16  */
+    DEF_FLAG    (FLAGNAME,"flagname",'x')                         /* 17  */
+/*-----------------------------------------------------------------------*/
+#endif
+
+#undef  DEF_FLAG_BIT
+#undef  DEF_FLAG
+
+

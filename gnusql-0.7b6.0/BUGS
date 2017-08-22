@@ -1,0 +1,16 @@
+If you think you may have found a bug in GNU SQL Server, please
+read the Bugs section of the GSS manual for advice on
+(1) how to tell when to report a bug, and
+(2) how to write a useful bug report and what information
+it needs to have.
+
+There are two ways to read the Bugs section.
+
+(1) With Info.  Start Emacs, do C-h i to enter Info,
+then m GSS RET to get to the GSS manual, then m Bugs RET
+to get to the section on bugs.  Or use standalone Info in
+a like manner.  (Standalone Info is part of the Texinfo distribution)
+
+(2) By hand.  Do
+    cat etc/gss* | more "+/^File: gss,  Node: Bugs,"
+

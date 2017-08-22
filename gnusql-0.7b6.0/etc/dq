@@ -1,0 +1,74 @@
+#! /bin/sh
+#
+# dq :  delete shared resources - all shared memory and queues owned
+#                                 by effective user id
+#
+# !!! Dangerous. Usefull in case of debugging SQL server crash only
+#           
+# This file is a part of GNU SQL Server
+#
+# Copyright (c) 1997 Free Software Foundation, Inc.
+# This file is written by Michael Kimelman.
+#
+# Contacts: gss@ispras.ru
+#
+
+host_os=solaris2.6
+ME=`who am i | nawk '{ print $1}' | sed 's/^.*!\([^.!]*\)$/\1/g'`
+if [ "$ME" = "root" ]; then
+  echo "$0 : too dangerous to use with root privilegies"
+  exit 1
+fi
+# -------------------------------------------------
+# checking echo options
+if (echo "testing\c"; echo 1,2,3) | grep c >/dev/null; then
+  # Stardent Vistra SVR4 grep lacks -e, says ghazi@caip.rutgers.edu.
+  if (echo -n testing; echo 1,2,3) | sed s/-n/xn/ | grep xn >/dev/null; then
+    ac_n= ac_c='
+' ac_t='	'
+  else
+    ac_n=-n ac_c= ac_t=
+  fi
+else
+  ac_n= ac_c='\c' ac_t=
+fi
+# -------------------------------------------------
+id=0
+list="`ipcs | grep -i id | head -1 `"
+for key in $list ; do
+    id=`expr $id + 1 `
+    case $key in
+    *id | *ID )
+        break
+    ;;
+    esac
+done
+cmd=" grep '$ME' | nawk '  { print \$$id } '"
+
+A=" ipcs -q | $cmd "
+A="`eval $A `"
+
+for qid in $A ; do
+        echo $ac_n "removing query $qid... $ac_c"
+        if [ "$host_os" = "linux-gnu" ]; then
+                ipcrm msg $qid
+        else
+                ipcrm -q $qid
+                echo "done"
+        fi
+done
+
+A=" ipcs -m | $cmd "
+A="`eval $A `"
+
+for mid in $A ;  do
+        echo $ac_n "removing memory segment $mid... $ac_c"
+        if [ "$host_os" = "linux-gnu" ] ; then
+                ipcrm shm $mid
+        else
+                ipcrm -m $mid
+                echo "done"
+        fi
+done
+echo -----------------------------
+ipcs

@@ -1,0 +1,71 @@
+##########################################################################
+##                 GNU SQL Compiler  (common support)                   ##
+##########################################################################
+##
+## $Id: Makefile.in,v 1.250 1998/07/30 03:23:38 kimelman Exp $
+##
+## This file is a part of GNU SQL Server
+##
+## Copyright (c) 1996, 1997, Free Software Foundation, Inc
+## Developed at Institute of System Programming of Russian Academy of Science
+## This file is written by Michael Kimelman
+##
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free
+## Software Foundation; either version 2 of the License, or (at your option)
+## any later version.
+##
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+## more details.
+##
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, write to the Free Software Foundation, Inc.,
+## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+## Contacts: gss@ispras.ru
+##
+
+srcdir=@srcdir@
+VPATH=@srcdir@
+include ../Makefile_h
+##########################################################################
+#                make program                                            #
+##########################################################################
+all: client server 
+client: $(LIBCLI) 
+server: $(LIBSER)
+
+libgss_ser : svr_lib.o vmemory.o sql_decl.o check_tp.o type_lib.o \
+             xmem.o sql_type.o @ALLOCA@ conn_handler.o
+	echo $? >$@
+# sorry for ugly technique
+	cp  xmem.o sql_decl.o $(LIB)
+
+libgss_cli :  cl_lib.o xmem.o sql_type.o sql_decl.o conn_handler.o
+	echo $? >$@
+
+alloca.o  : alloca.c   ../include/config.h
+xmem.o    : xmem.c     $(INC)/xmem.h 
+conn_handler.o : conn_handler.c $(INC)/xmem.h $(INC)/conn_handler.h
+vmemory.o : vmemory.c  $(INC)/vmemory.h $(INC)/xmem.h
+sql_decl.o: sql_decl.c $(INC)/global.h
+check_tp.o: check_tp.c $(INC)/global.h
+type_lib.o: type_lib.c $(INC)/global.h $(INC)/type_lib.h $(INC)/inprtyp.h \
+            $(INC)/sql.h $(IINC)/totdecl.h $(IINC)/fieldtp.h $(INC)/sql.h
+sql_type.o: sql_type.c $(INC)/global.h $(INC)/sql.h
+svr_lib.o : svr_lib.c  $(INC)/svr_lib.h  $(INC)/global.h $(IINC)/totdecl.h 
+cl_lib.o  : cl_lib.c   $(INC)/cl_lib.h $(INC)/sql.h $(LINC)/gsqltrn.h \
+               $(INC)/xmem.h $(INC)/errors.h $(INC)/sql_decl.h
+
+a2k:    a2k_p1 ansi2knr
+	$(CP) ansi2knr $(LIB)/ansi2knr.pass1
+	$(CP) a2k_p1   $(LIB)/ansi2knr.pass2
+
+ansi2knr : ansi2knr.c ../include/config.h
+a2k_p1 : a2k_p1.c
+a2k_p1.c : a2k_p1.l
+
+clean::
+	- rm -f a2k_p1 ansi2knr

@@ -1,0 +1,165 @@
+GNU SQL Server Installation Guide
+Copyright (c) 1996 Free Software Foundation, Inc
+Developed at Institute for System Programming of Russian Academy of Science
+
+   Permission is granted to anyone to make or distribute verbatim copies
+   of this document as received, in any medium, provided that the
+   copyright notice and permission notice are preserved,
+   and that the distributor grants the recipient permission
+   for further redistribution as permitted by this notice.
+
+   Permission is granted to distribute modified versions
+   of this document, or of portions of it,
+   under the above conditions, provided also that they
+   carry prominent notices stating who last changed them,
+   and that any new or changed statements about the activities
+   of the Free Software Foundation are approved by the Foundation.
+
+
+BUILDING AND INSTALLATION:
+(This is for a Unix or Unix-like system.)
+
+1) INTRODUCTION. Make sure your system has enough swapping space
+allocated to handle a program whose code and data exceed 10M bytes.
+
+Building GSS requires about 60 Mb of disk space (including the GSS
+sources).  Once installed, GSS occupies about 15 Mb for code and Doc-s
+in the file system where it is installed. You need there also additional
+space for database itself. We expect you need to have ~70M to install
+package
+
+2) CONFIGURATION. In the top directory of the GSS distribution, run the
+  program `configure' as follows:
+
+    ./configure CONFIGURATION-NAME [--OPTION[=VALUE]] ...
+
+The CONFIGURATION-NAME argument should be a configuration name given
+in `./etc/MACHINES'.  If omitted, `configure' will try to guess your
+system type; if it cannot, you must find the appropriate configuration
+name in `./etc/MACHINES' and specify it explicitly. We RECOMMEND to
+allow configure to guess your case.
+
+The `--prefix=PREFIXDIR' option specifies where the installation process
+should put GSS and its data files.  This defaults to `/usr/local'.
+All files, required for GSS to run, go to subtree
+'share/gnusql/version/configuration' unless you set 'dbhome' variable of
+makefile to another directory. In the directory:
+- server components stored in 'bin' subdirectory
+- client libraries and utilities in 'client' subdirectory
+- 'doc' subdirectory contains man's pages and info tutorial
+  respectively
+- 'db' subdirectory is intended to contain database segments, logs and is
+  a working space.
+- other sets of directories which are created empty are intended to store
+ database backups and log
+The Installation process also gives symbolic Links to
+- all of client executables as well as SQL server administrator
+  in PREFIXDIR/bin (unless the `--exec-prefix' option of configure
+  or 'bindir' variable of make says otherwise).
+- the client runtime library in PREFIXDIR/lib (make's 'libdir' variable)
+- man files in PREFIXDIR/man (make's 'mandir' variable)
+- info files in PREFIXDIR/info (make's 'infodir' variable)
+
+The `--enable-DEBUG' option specifies whether you need you need to 
+compile debugging features of server. In this case configuration
+will check for the debugger and some of it's possible 'graphical'
+environment (at least xterm). The compiled programs will ask you
+interactively if you want to start the debugger.
+
+The `--enable-PROFILE' option turns on the compiler and linker options for
+the profiling server and runtime library code. It will require you to use
+the same option with your own embedded SQL program.
+
+The `--help' will show you the list of possible options. A detailed
+description can be found in the 'configure' manual.
+
+For example, the command
+
+    ./configure sparc-sun-solaris2.4 --enable-DEBUG
+
+configures GSS to build for a SPARCstation running Solaris2.4, with
+support for the server's debug (automatic debugger start for desired
+subprocesses and other related stuff).
+
+`configure' doesn't do any compilation or installation
+itself.  It just creates the files that influence those things:
+`./Makefile', `src/.../makefile', `test/makefile',
+and `./src/include/config.h'.  For details on exactly what it 
+does, see the section called `CONFIGURATION BY HAND', below.
+
+When it is done, `configure' creates a shell script `config.status'
+which, when run, recreates the same configuration.  If `configure'
+exits with an error after disturbing the status quo, it removes
+`config.status'.  `configure' also creates a file `config.cache'
+that saves the results of its tests to make reconfiguring faster,
+and a file `config.log' containing compiler output (useful mainly
+for debugging `configure').  You can give `configure' the option
+`--cache-file=FILE' to use the results of the tests in FILE instead
+of `config.cache'.  Set FILE to `/dev/null' to disable caching, for
+debugging `configure'.
+
+The work of `configure' can be done by editing various files in the
+distribution, but using `configure' is supposed to be simpler.  See
+the section called "CONFIGURATION BY HAND" below if you want to do the
+configuration yourself.
+
+3) BUILDING. Run `make' in the top directory of the GSS distribution 
+to finish building GSS in the standard way.  The final executable and
+initialized database will be created at 'sqlser' subdirectory.
+
+Or you can "INSTALL" the executable and the other GSS related data
+into their installed locations, with `make install'.  By default, 
+GSS's files are installed in the directories listed above. At that time
+you can change package installation directory giving 'make-VAR=you_own_way' as
+one of make arguments. 'make-VAR' should be one of make variables
+described above.
+
+Remember that you must specify any variable values you need each time
+you run `make' in the top directory.  If you run `make' once to build
+GSS, test it, and then run `make' again to install the files, you
+must provide the same variable settings each time.  To make the
+settings persist, you can edit them into the `Makefile' in the top
+directory, but be aware that running the `configure' program erases
+`Makefile' and rebuilds it from `Makefile.in'.
+
+CONFIGURATION BY HAND
+
+   To be filled later
+
+( We strongly recommend to use configure. If you prefer to do it manually
+  we can only suggest you read the 'Autoconf' and 'configure' manuals
+  and consult 'configure.in'. And we would like to have your comments,
+ and any questions.)
+
+BUILDING GNU SQL Server BY HAND
+
+   To be filled later
+
+INSTALLATION BY HAND
+
+The steps below are done by running `make install' in the main
+directory of the GSS distribution.
+
+Strictly speaking, 'sqlser' subdirectory of the building tree is copied to
+a given place and symbolic links are created in all defaults directories 
+
+After that we recommend you identify the server as a separate user and
+change all files owner id to it.
+
+USING GSS
+
+To start SERVER you need to run 'gsqls' from 'dbhome' directory. If you 
+want to run it in background, you have to redirect output streams to log.
+
+To compile a client program you need to run 'gsqlc'. It finds the server
+checking option '-hHOSTNAME', environment variable 'GSSHOST' and, finally,
+'localhost'. Programs containing pure SQL code (SQL scheme declarations)
+should have '.sql' extension. SQL embedded to C programs should have '.ec'
+extension. Being compiled your code will be transformed to C code, which
+memorizes connected host. Options '-lgss' tells linker to use the runtime
+library.
+ 
+PROBLEMS
+
+See the file PROBLEMS in this directory for a list of various
+problems sometimes encountered, and what to do about them.

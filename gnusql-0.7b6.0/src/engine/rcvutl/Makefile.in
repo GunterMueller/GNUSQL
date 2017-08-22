@@ -1,0 +1,92 @@
+##########################################################################
+##               GNU SQL Server  (crash recovery utilities)             ##
+##########################################################################
+##
+## $Id: Makefile.in,v 1.248 1998/09/29 00:39:36 kimelman Exp $
+##
+## This file is a part of GNU SQL Server
+##
+## Copyright (c) 1996, 1997, Free Software Foundation, Inc
+## Developed at Institute of System Programming of Russian Academy of Science
+## This file is written by Michael Kimelman
+##
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free
+## Software Foundation; either version 2 of the License, or (at your option)
+## any later version.
+##
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+## more details.
+##
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, write to the Free Software Foundation, Inc.,
+## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+## Contacts: gss@ispras.ru
+##
+
+srcdir=@srcdir@
+VPATH=@srcdir@
+include ../../Makefile_h
+##======================================================================##
+##          other setups                                                ##
+##======================================================================##
+REPOS=$(SERVDIR)/repository
+
+all:	install
+install: $(SERVBIN)/rcvsc $(REPOS)/segs # it's just a 'reper' point
+$(SERVBIN)/rcvsc $(REPOS)/segs : i-stamp
+i-stamp : $(LIBSR_DEP) rcvsc rcvmc
+	[ -d $(SERVBIN)          ] || mkdir -p $(SERVBIN)
+	[ -d $(REPOS)/segs       ] || mkdir -p $(REPOS)/segs
+	[ -d $(REPOS)/ljs        ] || mkdir -p $(REPOS)/ljs
+	[ -d $(REPOS)/dubsegs    ] || mkdir -p $(REPOS)/dubsegs
+	[ -d $(SERVDIR)/segs     ] || mkdir -p $(SERVDIR)/segs
+	[ -d $(SERVDIR)/jrnls    ] || mkdir -p $(SERVDIR)/jrnls
+	[ -d $(SERVDIR)/jarchive ] || mkdir -p $(SERVDIR)/jarchive
+	$(CP)  rcvsc $(SERVBIN)
+	$(CP)  rcvmc $(SERVBIN)
+	[ ! -f $@ ] || $(RM) $@
+	echo .>$@
+
+bin: rcvsc rcvmc
+
+SRCS=	strgcr.c librcv.c libini.c
+SRCM=	memcr.c librcv.c libini.c
+
+SRCOBJS=        ${SRCS:.c=.o}
+SRCOBJM=        ${SRCM:.c=.o}
+
+rcvsc    : $(SRCOBJS) $(LIBSR_DEP) 
+	echo --  generating $@
+	- $(RM) $@ 
+	$(LD) $(SRCOBJS) $(SRLIBS) -o $@ 
+
+rcvmc    : $(SRCOBJM) $(LIBSR_DEP) 
+	echo --  generating $@
+	- $(RM) $@ 
+	$(LD) $(SRCOBJM) $(SRLIBS) -o $@ 
+
+clean::
+	- $(RM) rcvsc rcvmc 
+headers   : puprcv.h 
+strgcr.o  : strgcr.c $(IINC)/strml.h $(IINC)/destrn.h\
+            puprcv.h $(IINC)/adfstr.h $(IINC)/inpop.h \
+            $(IINC)/rnmtp.h $(IINC)/pupsi.h $(IINC)/tptrn.h \
+            $(INC)/sql.h $(IINC)/fieldtp.h $(IINC)/deftr.h fdclrcv.h 
+
+memcr.o   : memcr.c $(IINC)/strml.h $(IINC)/destrn.h\
+	    $(IINC)/inpop.h puprcv.h fdclrcv.h $(IINC)/totdecl.h
+
+librcv.o  : librcv.c $(IINC)/destrn.h $(IINC)/rnmtp.h \
+             $(IINC)/pupsi.h $(IINC)/tptrn.h $(INC)/sql.h \
+             $(IINC)/fieldtp.h $(IINC)/deftr.h $(IINC)/strml.h \
+             $(IINC)/inpop.h puprcv.h fdclrcv.h $(EINC)/admdef.h $(IINC)/totdecl.h
+
+libini.o  : libini.c $(IINC)/strml.h $(IINC)/adfstr.h $(EINC)/admdef.h \
+            $(IINC)/totdecl.h
+fdclrcv.h : $(IINC)/f1f2decl.h $(IINC)/fdcltrn.h
+	- touch $@
+

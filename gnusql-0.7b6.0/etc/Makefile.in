@@ -1,0 +1,33 @@
+#############################################################################
+##                    GNU SQL Server (etc directory)                       ##
+#############################################################################
+# $Id: Makefile.in,v 1.5 1998/05/07 18:35:07 kml Exp $
+#
+srcdir=@srcdir@
+VPATH=@srcdir@
+builddir=@builddir@
+
+SERVDIR=$(builddir)/sqlser
+SERVBIN=$(SERVDIR)/bin
+
+RM=rm -f
+CP=cp -p
+DOC=$(SERVDIR)/doc
+#############################################################################
+all            :  gss
+	$(CP) dq boot $(SERVBIN)
+install        : infos mans
+infos          : $(DOC)/gss
+mans           : $(DOC)/gsqlc.1
+$(DOC)/gss: $(DOC) gss
+	cp $(srcdir)/gss $(srcdir)/gss-* $(DOC)
+$(DOC)/gsqlc.1 : $(DOC) gsqlc.1 gsqls.1
+	cp $(srcdir)/*.1 $(DOC)
+gss : gss.texi gnu.texi ask.texi
+	makeinfo -I$(srcdir) $(srcdir)/gss.texi
+$(DOC)         :
+	- [ -d $(DOC) ] || mkdir -p $(DOC)
+clean          :
+	./make-util clean "make clean"
+distclean      :
+	./make-util clean "make distclean"

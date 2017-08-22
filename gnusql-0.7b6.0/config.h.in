@@ -1,0 +1,191 @@
+/* config.h.in.  Generated automatically from configure.in by autoheader.  */
+
+/* Define to empty if the keyword does not work.  */
+#undef const
+
+/* Define if you don't have vprintf but do have _doprnt.  */
+#undef HAVE_DOPRNT
+
+/* Define if the `long double' type works.  */
+#undef HAVE_LONG_DOUBLE
+
+/* Define if you have the strftime function.  */
+#undef HAVE_STRFTIME
+
+/* Define if you have <sys/wait.h> that is POSIX.1 compatible.  */
+#undef HAVE_SYS_WAIT_H
+
+/* Define if you have the vprintf function.  */
+#undef HAVE_VPRINTF
+
+/* Define to `long' if <sys/types.h> doesn't define.  */
+#undef off_t
+
+/* Define to `int' if <sys/types.h> doesn't define.  */
+#undef pid_t
+
+/* Define as the return type of signal handlers (int or void).  */
+#undef RETSIGTYPE
+
+/* Define to `unsigned' if <sys/types.h> doesn't define.  */
+#undef size_t
+
+/* Define if you have the ANSI C header files.  */
+#undef STDC_HEADERS
+
+/* Define if you can safely include both <sys/time.h> and <time.h>.  */
+#undef TIME_WITH_SYS_TIME
+
+/* Define if your <sys/time.h> declares struct tm.  */
+#undef TM_IN_SYS_TIME
+
+/* Define if you have ddd environment */
+#undef HAVE_DDD
+
+/* Define if you have xxgdb environment */
+#undef HAVE_XXGDB
+
+/* Define if you can run anything like xterm */
+#undef HAVE_XTERM
+
+/* Define if you have gdb  */
+#undef HAVE_GDB
+
+/* Define if you have dbx  */
+#undef HAVE_DBX
+
+/* there is no debugger or required window environment */
+#undef NOT_DEBUG
+
+/* generated rpc routines are of ..._svc style */
+#undef RPCSTUB_SVC_STYLE
+
+/* generated rpc skeleton contains prototyped main */
+#undef RPCMAIN_PROTO
+
+/* server version */
+#undef VERSION
+
+/* target host identification */
+#undef HOST
+
+#undef PROTOTYPES
+
+#undef DIRECT_MODE
+
+/* The number of bytes in a char.  */
+#undef SIZEOF_CHAR
+
+/* The number of bytes in a int.  */
+#undef SIZEOF_INT
+
+/* The number of bytes in a long.  */
+#undef SIZEOF_LONG
+
+/* The number of bytes in a long double.  */
+#undef SIZEOF_LONG_DOUBLE
+
+/* The number of bytes in a long long.  */
+#undef SIZEOF_LONG_LONG
+
+/* The number of bytes in a short.  */
+#undef SIZEOF_SHORT
+
+/* The number of bytes in a void*.  */
+#undef SIZEOF_VOIDP
+
+/* Define if you have the alloca function.  */
+#undef HAVE_ALLOCA
+
+/* Define if you have the atexit function.  */
+#undef HAVE_ATEXIT
+
+/* Define if you have the callrpc function.  */
+#undef HAVE_CALLRPC
+
+/* Define if you have the cftime function.  */
+#undef HAVE_CFTIME
+
+/* Define if you have the cuserid function.  */
+#undef HAVE_CUSERID
+
+/* Define if you have the ftok function.  */
+#undef HAVE_FTOK
+
+/* Define if you have the getlogin function.  */
+#undef HAVE_GETLOGIN
+
+/* Define if you have the memcpy function.  */
+#undef HAVE_MEMCPY
+
+/* Define if you have the on_exit function.  */
+#undef HAVE_ON_EXIT
+
+/* Define if you have the shmat function.  */
+#undef HAVE_SHMAT
+
+/* Define if you have the strstr function.  */
+#undef HAVE_STRSTR
+
+/* Define if you have the svc_unreg function.  */
+#undef HAVE_SVC_UNREG
+
+/* Define if you have the svc_unregister function.  */
+#undef HAVE_SVC_UNREGISTER
+
+/* Define if you have the uname function.  */
+#undef HAVE_UNAME
+
+/* Define if you have the yywrap function.  */
+#undef HAVE_YYWRAP
+
+/* Define if you have the <dirent.h> header file.  */
+#undef HAVE_DIRENT_H
+
+/* Define if you have the <fcntl.h> header file.  */
+#undef HAVE_FCNTL_H
+
+/* Define if you have the <ndir.h> header file.  */
+#undef HAVE_NDIR_H
+
+/* Define if you have the <rpc/rpc.h> header file.  */
+#undef HAVE_RPC_RPC_H
+
+/* Define if you have the <stdarg.h> header file.  */
+#undef HAVE_STDARG_H
+
+/* Define if you have the <stdio.h> header file.  */
+#undef HAVE_STDIO_H
+
+/* Define if you have the <stdlib.h> header file.  */
+#undef HAVE_STDLIB_H
+
+/* Define if you have the <string.h> header file.  */
+#undef HAVE_STRING_H
+
+/* Define if you have the <sys/cdefs.h> header file.  */
+#undef HAVE_SYS_CDEFS_H
+
+/* Define if you have the <sys/dir.h> header file.  */
+#undef HAVE_SYS_DIR_H
+
+/* Define if you have the <sys/file.h> header file.  */
+#undef HAVE_SYS_FILE_H
+
+/* Define if you have the <sys/ipc.h> header file.  */
+#undef HAVE_SYS_IPC_H
+
+/* Define if you have the <sys/msg.h> header file.  */
+#undef HAVE_SYS_MSG_H
+
+/* Define if you have the <sys/ndir.h> header file.  */
+#undef HAVE_SYS_NDIR_H
+
+/* Define if you have the <sys/shm.h> header file.  */
+#undef HAVE_SYS_SHM_H
+
+/* Define if you have the <sys/time.h> header file.  */
+#undef HAVE_SYS_TIME_H
+
+/* Define if you have the <unistd.h> header file.  */
+#undef HAVE_UNISTD_H

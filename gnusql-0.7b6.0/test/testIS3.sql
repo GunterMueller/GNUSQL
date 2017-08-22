@@ -1,0 +1,16 @@
+ALTER SCHEMA AUTHORIZATION INFORMATION_SCHEMA
+
+CREATE VIEW COLUMNS
+       AS ( SELECT
+          COLNAME, UNTABID , COLNO, COLTYPE, DEFNULL
+       FROM  DEFINITION_SCHEMA.SYSCOLUMNS
+       WHERE UNTABID
+             IN
+              ( SELECT UNTABID
+                FROM   DEFINITION_SCHEMA.SYSCOLAUTH          
+                WHERE  GRANTEE
+                       IN ( 'PUBLIC' , USER )
+              )
+       )
+
+GRANT SELECT ON COLUMNS                 TO PUBLIC

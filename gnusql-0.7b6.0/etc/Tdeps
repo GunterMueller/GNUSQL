@@ -1,0 +1,102 @@
+#! /bin/sh
+##
+## Tdeps: refreshing dependencies at test directory. usefull if set of 
+##                   tests are changed
+##
+## This file is a part of GNU SQL Server
+##
+## Copyright (c) 1996, Free Software Foundation, Inc
+## Developed at Institute of System Programming of Russian Academy of Science
+## This file is written by Michael Kimelman
+##
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free
+## Software Foundation; either version 2 of the License, or (at your option)
+## any later version.
+##
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+## more details.
+##
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, write to the Free Software Foundation, Inc.,
+## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+## Contacts: gss@ispras.ru
+##
+
+
+##  Check local directory. is it proper place to run. We have to be at the
+##  top directory of distribution building tree
+if [ ! -f ../README -o `grep -i 'gss' ../README | wc -l` -le 1 ]; then 
+  ## gss is not mentioned in current directory
+  cd ..
+  echo "$0: gss does not mentioned in '`pwd`' directory"  | tee ${errlog} 1>&2
+  exit 1
+fi
+
+gsql=`pwd`/..
+lib=$gsql/etc
+src=$gsql/src
+dep=testdeps.mk
+if [ -f $dep ]
+ then
+	rm -f $dep
+fi
+echo "# $dep " >$dep
+#
+# do_all : N
+# N: testN.stamp
+# testN.stamp : testN.exe 
+# testN.exe : testN.c testN.Sc tests.h 
+# testN.c testN.Sc : testN.ec $(SQLCPP)
+# 
+for fn in `ls *.sql`
+ do
+	echo "deps for $fn"
+        T=$fn.SQL.
+        N=.T.$T
+        echo "do_all : $T.stamp" >>$dep
+        echo "sql : $T.stamp" >>$dep
+        echo "$N: $T.stamp" >>$dep
+        echo "$T.stamp : $T.exe " >>$dep
+        echo "$T.exe : $T.c $T.Sc tests.h " >>$dep
+        echo "$T.c $T.Sc : $T.sql " '$(SQLCPP)' >>$dep
+done
+for fn in `ls *.ec`
+ do
+	echo "deps for $fn"
+        T=$fn.EC.
+        N=.T.$T
+        echo "do_all : $T.stamp"  >>$dep
+        echo "ec : $T.stamp"  >>$dep
+        echo "$N: $T.stamp" >>$dep
+        echo "	echo $T finished" >>$dep
+        echo "$T.stamp : $T.exe " >>$dep
+        echo "$T.exe : $T.c $T.Sc tests.h " >>$dep
+        echo "$T.c $T.Sc : $T.ec " '$(SQLCPP)' >>$dep
+done
+for fn in `ls *.SQL`
+ do
+	echo "deps for $fn"
+        T=$fn.SQL.
+        N=.T.$T
+        echo "do_all : $T.stamp"  >>$dep
+        echo "$N: $T.stamp" >>$dep
+        echo "$T.stamp : $T.SQL " '$(SQLCPP)' >>$dep
+done
+for fn in `ls *.EC`
+ do
+	echo "deps for $fn"
+        T=$fn.EC.
+        N=.T.$T
+        echo "do_all : $T.stamp"  >>$dep
+        echo "$N: $T.stamp" >>$dep
+        echo "$T.stamp : $T.exe " >>$dep
+        echo "$T.exe : $T.c tests.h " >>$dep
+        echo "$T.c : $T.EC " '$(SQLCPP)' >>$dep
+done
+sed -e "s/\.T\.test//g" -e "s/\.ec\.EC\.//g" -e "s/\.sql\.SQL\.//g" -e "s/\.SQL\.SQL\.//g" -e "s/\.EC\.EC\.//g" $dep >aa
+rm -f $dep
+mv aa $dep

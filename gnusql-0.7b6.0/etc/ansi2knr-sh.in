@@ -1,0 +1,40 @@
+@INT_SHELL@
+#
+# ansi2knr-sh :  ansi C to knr translator : top level routine 
+#           
+# This file is a part of GNU SQL Server
+#
+# Copyright (c) 1997 Free Software Foundation, Inc.
+# This file is written by Michael Kimelman.
+#
+# Contacts: gss@ispras.ru
+#
+
+srcdir=.
+lib=.
+files=""
+
+for opt 
+do
+  case $opt in	
+  srcdir=* ) srcdir=`echo $opt | sed 's/srcdir=//g'` ;;
+  lib=*    ) lib=`echo $opt | sed 's/lib=//g'      ` ;;
+  *        ) files="$files $opt"                     ;;
+  esac
+done
+
+if [ "x$files" = "x" ] ; then ## we need to process all subtree
+  files=`find $srcdir \( -name '*.c' -o  -name '*.h' -o  -name '*.def' \) -print`
+fi
+
+src=`echo $srcdir | tr '/' '|'`
+
+for ff in $files ; do
+  f1=`echo $ff | tr '/' '|' | sed "s/$src//g" | tr '|' '/'`
+  [ -f $fl ] || cp $srcdir/$fl $fl
+  ## 'echo ...' below is important (when no passes found)
+  for pass in "echo converting to knr:" `ls $lib/ansi2knr.pass? | sort` ; do
+    $pass $fl $$.c
+    mv -f $$.c $fl
+  done
+done

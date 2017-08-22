@@ -1,0 +1,108 @@
+#! /bin/sh
+# preserve:  tool to resolve abscence of external tools
+#
+# This file is part of GNU SQL Server
+# 
+# processing of preserved files 
+# usage: preserve save/restore case file 
+# where case is : 
+# --bison
+# --flex
+# --rpcgen [incdir] 
+# --custom="extension list_of_derivative_extensions"
+#
+# Contacts: gss@ispras.ru
+#
+
+progname=$0
+options=$*
+
+#set -xv
+case  $1 in
+save)
+  preserve=yes
+  ;;
+restore)
+  preserve=no
+  ;;
+*)
+  echo "$progname: $1 ... -- incorrect parameters"
+  exit 1
+  ;;
+esac
+
+fn=$3
+to_stdout=no
+case "$2" in
+ --bison) 
+    extension="y"
+    subst_list=".c .h"
+    ;;
+ --flex) 
+    extension="l"
+    subst_list=".c"
+    if [ "x$3" = "x-t" ]; then
+      fn="$4"
+      to_stdout=yes
+    fi
+    ;;
+ --rpcgen) 
+    extension="x"
+    subst_list=".h _svc.c _clnt.c _xdr.c _tbl.i"
+    if [ $preserve = 'no' ]; then ## simulate rpcgen
+      incdir=$fn
+      fn=$4
+    fi
+    ;;
+ --custom=*)
+    set `echo $2 | sed 's/--custom=//g'`
+    extension=$1;  shift;  subst_list=$*
+    ;;
+ *)
+    echo "$progname: $options -- incorrect parameters"
+    exit 1
+    ;;
+esac
+
+fn_root=`echo $fn | sed "s/[.]${extension}//g"`
+for tail in $subst_list ; do
+  cfn=${fn_root}${tail}
+  if [ $preserve = 'no' ] ; then
+    ## file.preserve has to be in distribution
+    if [ ! -f ${cfn}.preserve ] ; then
+      echo "cant find file $cfn.preserve" >&2
+      exit 1
+    fi 
+    lcfn=`basename ${cfn}`
+    if [ $to_stdout = "yes" ]; then
+      cat ${cfn}.preserve
+    else
+      if [ $extension = "x" -a $tail = ".h" ] ; then ## rpcgen header
+        `echo $0 | sed 's/preserve$/move-if-change/1'` mv ${cfn}.preserve ${incdir}/${lcfn}
+      else
+        cp -p ${cfn}.preserve ${lcfn}
+      fi
+    fi
+  else # let's preserve file
+    DONE=no
+    [ -f ${cfn}.preserve ] && [ `ls -t ${cfn}.preserve ${fn} | head -1` = ${cfn}.preserve ] && {
+       DONE=yes ; }
+    if [ $DONE = yes ] ; then
+      echo "$cfn has already preserved"
+    elif [ -f ${cfn} ] ; then
+      cat ${cfn} | sed 's/^[ ]*#[ ]*line.*$//g' > ${cfn}.preserve
+      if [ $extension = "l" ] ; then
+        echo "#ifndef yywrap            " >>${cfn}.preserve
+        echo "int yywrap() { return 1; }" >>${cfn}.preserve
+        echo "#endif                    " >>${cfn}.preserve
+        echo "/*end of ${cfn}.preserve*/" >>${cfn}.preserve
+      fi
+    elif [ $extension = "x" -a $tail = ".h" ] ; then
+      ## it's possible in the case of rpcgen generated header file
+      fn_only=`echo $fn_root | sed "s/[^/]*[/]//g"`
+      cat `find . -name ${fn_only}${tail} -print | head -1` | sed "s/^[ ]*#[ ]*line.*$//g" >${cfn}.preserve
+    else
+      echo "can\'t preserve file $cfn"
+    fi
+  fi
+done
